@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 
 const post = {
   series: "The Voronoi Platform Architecture",
@@ -83,7 +83,7 @@ const deformations = [
     shape: [1.0, 0.3, 0.3, 0.2, 0.3, 0.4],
     description:
       "The physical layer grew unchecked. Storage is vast and compute is abundant. Ingestion pipelines multiply. But no domain owns anything — a central team owns everything and nobody is accountable. Data products don't exist. Consumers queue for access to raw tables nobody trusts. Governance is aspirational. The marketplace is empty.",
-    industry: "Enterprise · Data Lake Era 2015\u20132020",
+    industry: "Enterprise · Data Lake Era 2015–2020",
     color: "#c87941",
   },
   {
@@ -100,7 +100,7 @@ const deformations = [
     symptom: "Locally rational, globally chaotic",
     shape: [0.6, 0.5, 0.7, 0.4, 0.3, 0.5],
     description:
-      "Finance chose Snowflake. Marketing chose Databricks. Operations chose Fabric. Each domain owns its compute — which is correct data mesh thinking — but nobody owns the interoperability. No federated catalog. No shared data product contracts. No marketplace where domains can discover each other\u2019s products. Domain sovereignty without platform coherence.",
+      "Finance chose Snowflake. Marketing chose Databricks. Operations chose Fabric. Each domain owns its compute — which is correct data mesh thinking — but nobody owns the interoperability. No federated catalog. No shared data product contracts. No marketplace where domains can discover each other's products. Domain sovereignty without platform coherence.",
     industry: "Large Enterprise · Post-Merger",
     color: "#8aab7a",
   },
@@ -115,14 +115,14 @@ const deformations = [
   },
 ];
 
-function HexagonDiagram({ forces, size = 200 }) {
+function HexagonDiagram({ forces, size = 200, animated = false }) {
   const [hovered, setHovered] = useState(null);
   const cx = size / 2;
   const cy = size / 2;
   const r = size * 0.36;
   const innerR = size * 0.22;
 
-  const hexPoints = forces.map((f) => {
+  const hexPoints = forces.map((f, i) => {
     const angle = (Math.PI / 180) * (f.angle - 90);
     return {
       x: cx + r * Math.cos(angle),
@@ -150,8 +150,10 @@ function HexagonDiagram({ forces, size = 200 }) {
           ))}
         </defs>
 
+        {/* Outer hex fill */}
         <path d={outerPath} fill="url(#hexGlow)" stroke="#c87941" strokeWidth="1" strokeOpacity="0.4" />
 
+        {/* Inner spokes */}
         {hexPoints.map((p, i) => (
           <line
             key={i}
@@ -164,6 +166,7 @@ function HexagonDiagram({ forces, size = 200 }) {
           />
         ))}
 
+        {/* 120° angle indicators */}
         {hexPoints.map((p, i) => {
           const next = hexPoints[(i + 1) % 6];
           const mx = (p.x + next.x) / 2;
@@ -180,6 +183,7 @@ function HexagonDiagram({ forces, size = 200 }) {
           );
         })}
 
+        {/* Hex boundary lines */}
         {hexPoints.map((p, i) => {
           const next = hexPoints[(i + 1) % 6];
           return (
@@ -195,6 +199,7 @@ function HexagonDiagram({ forces, size = 200 }) {
           );
         })}
 
+        {/* Force nodes */}
         {hexPoints.map((p, i) => (
           <g key={i}
             style={{ cursor: "pointer" }}
@@ -220,9 +225,11 @@ function HexagonDiagram({ forces, size = 200 }) {
           </g>
         ))}
 
+        {/* Centre */}
         <circle cx={cx} cy={cy} r="3" fill="#c87941" opacity="0.6" />
       </svg>
 
+      {/* Tooltip */}
       {hovered !== null && (
         <div style={{
           position: "absolute",
@@ -306,19 +313,17 @@ function PullQuote({ children }) {
 function Section({ title, children }) {
   return (
     <section style={{ marginBottom: "3rem" }}>
-      {title && (
-        <h2 style={{
-          fontFamily: "'Playfair Display', Georgia, serif",
-          fontSize: "1.6rem",
-          fontWeight: 700,
-          color: "#e8d5b0",
-          marginBottom: "1.25rem",
-          marginTop: 0,
-          letterSpacing: "-0.02em",
-        }}>
-          {title}
-        </h2>
-      )}
+      <h2 style={{
+        fontFamily: "'Playfair Display', Georgia, serif",
+        fontSize: "1.6rem",
+        fontWeight: 700,
+        color: "#e8d5b0",
+        marginBottom: "1.25rem",
+        marginTop: 0,
+        letterSpacing: "-0.02em",
+      }}>
+        {title}
+      </h2>
       {children}
     </section>
   );
@@ -340,11 +345,14 @@ function P({ children, style = {} }) {
   );
 }
 
-export default function VoronoiPost() {
+export default function VoronoiBlogPost() {
   const [activeDeformation, setActiveDeformation] = useState(0);
+  const [scrolled, setScrolled] = useState(false);
 
   useEffect(() => {
-    window.scrollTo(0, 0);
+    const handleScroll = () => setScrolled(window.scrollY > 80);
+    window.addEventListener("scroll", handleScroll);
+    return () => window.removeEventListener("scroll", handleScroll);
   }, []);
 
   return (
@@ -359,6 +367,7 @@ export default function VoronoiPost() {
         ::-webkit-scrollbar { width: 4px; }
         ::-webkit-scrollbar-track { background: #0a0a0a; }
         ::-webkit-scrollbar-thumb { background: #c87941; }
+        a { color: #c87941; }
       `}</style>
 
       {/* Hero */}
@@ -368,6 +377,7 @@ export default function VoronoiPost() {
         borderBottom: "1px solid #1e1e1e",
         overflow: "hidden",
       }}>
+        {/* Voronoi background pattern */}
         <svg style={{ position: "absolute", top: 0, left: 0, width: "100%", height: "100%", opacity: 0.04, pointerEvents: "none" }}
           viewBox="0 0 800 400" preserveAspectRatio="xMidYMid slice">
           {[
@@ -385,13 +395,16 @@ export default function VoronoiPost() {
         </svg>
 
         <div style={{ maxWidth: 720, margin: "0 auto", position: "relative" }}>
+          {/* Series label */}
           <div style={{
             display: "inline-flex",
             alignItems: "center",
             gap: 10,
             marginBottom: "1.5rem",
           }}>
-            <div style={{ width: 28, height: 1, background: "#c87941" }} />
+            <div style={{
+              width: 28, height: 1, background: "#c87941",
+            }} />
             <span style={{
               fontFamily: "'JetBrains Mono', monospace",
               fontSize: "0.7rem",
@@ -458,6 +471,7 @@ export default function VoronoiPost() {
       {/* Body */}
       <div style={{ maxWidth: 720, margin: "0 auto", padding: "3rem 2rem 6rem" }}>
 
+        {/* Opening */}
         <Section title="">
           <P>
             In September 1854, physician John Snow stood over a map of Soho, London, plotting cholera deaths
@@ -490,17 +504,18 @@ export default function VoronoiPost() {
 
           <P>
             Your enterprise data platform has the same problem cooling lava has. Six competing forces.
-            Equal pressure from every direction simultaneously. No natural dominant axis. And right now —
-            almost certainly — it isn't hexagonal. It's deformed. And that deformation is the root
-            cause of nearly every adoption failure, governance gap, and operational crisis your platform
-            has ever produced.
+            Equal pressure from every direction simultaneously. No natural dominant axis. And in many
+            cases — perhaps most at scale — it isn't hexagonal. It's deformed. And that deformation
+            is a recurring pattern beneath many of the adoption failures, governance gaps, and
+            operational crises that data platform teams encounter most frequently.
           </P>
           <P>
-            This is the first essay in a series about building the architecture that nature always
-            builds — and enterprises almost never do. We call it the <em>Voronoi Platform Architecture</em>.
+            This is the first essay in a series about the architecture that emerges when those forces
+            reach genuine equilibrium. We call it the <em>Voronoi Platform Architecture</em>.
           </P>
         </Section>
 
+        {/* Six Forces */}
         <Section title="The Six Forces">
           <P>
             Before we name the deformations, we have to name the forces. Not the tools. Not the
@@ -509,6 +524,7 @@ export default function VoronoiPost() {
             architecture apart if any one of them is allowed to dominate.
           </P>
 
+          {/* Hexagon diagram */}
           <div style={{
             display: "flex",
             flexDirection: "column",
@@ -543,16 +559,24 @@ export default function VoronoiPost() {
 
           <P>
             <strong style={{ color: "#e8d5b0" }}>Physical Sovereignty.</strong>{" "}
-            In a data mesh, a domain owns its data products end to end — and that means owning both the
-            storage substrate and the compute engines that process it. These are not separable concerns.
-            A domain that owns its Gold Iceberg tables in S3 but shares a central Spark cluster with
-            fifteen other domains does not truly own its data product — it owns a file. Physical
-            Sovereignty is the force that pulls toward complete domain autonomy over the full
-            storage-and-compute stack: the lakehouse partition, the processing engine, the table format,
-            the commit protocol. Raw events are the immutable ground truth. The domain's compute
-            transforms that truth into data products. Both are sovereign. Neither can be quietly
-            commandeered by a central team, a downstream pipeline, or a model output without the
-            domain's explicit contract.
+            In a data mesh, a domain owns its data products end to end — and that means owning both
+            the storage substrate and the compute engines that process it. These are not separable
+            concerns. A domain that owns its Gold Iceberg tables in S3 but shares a central Spark
+            cluster with fifteen other domains does not truly own its data product — it owns a file.
+            Physical Sovereignty is the force that pulls toward complete domain autonomy over the
+            full storage-and-compute stack: the lakehouse partition, the processing engine, the table
+            format, the commit protocol.
+          </P>
+          <P style={{ color: "#9a8a75" }}>
+            <em>This force is most relevant to platform architects and domain leads defining ownership
+            boundaries and provisioning models.</em>
+          </P>
+          <P>
+            Raw events are the immutable ground truth. The domain's compute transforms that truth into
+            data products. Both are sovereign. Neither can be commandeered by a central team, a
+            downstream pipeline, or a model output without the domain's explicit contract. When this
+            force is weak — when compute is centralised, when storage is shared without formal
+            ownership — the data mesh collapses into a data lake with a new name.
           </P>
           <P>
             <strong style={{ color: "#e8d5b0" }}>Intelligence.</strong>{" "}
@@ -607,7 +631,13 @@ export default function VoronoiPost() {
           </P>
         </Section>
 
+        {/* 120° Principle */}
         <Section title="The 120° Principle">
+          <P style={{ color: "#9a8a75" }}>
+            <em>This section is for architects and platform leads making decisions about how forces
+            are governed at their boundaries — not which tools to use, but how authority is
+            distributed between them.</em>
+          </P>
           <P>
             Here is the architectural insight that changes how you think about platform design — and
             why it took a mathematician named Georgy Voronoi, a physician named John Snow, and sixty
@@ -639,12 +669,12 @@ export default function VoronoiPost() {
             margin: "2rem 0",
           }}>
             {[
-              ["Physical Sovereignty \u2194 Intelligence", "Domain-owned compute powers AI feature engineering and model training. But intelligence does not commandeer domain storage or rewrite domain data products. Model outputs are new data products in their own right — with their own domain owner, lineage, and SLA. Neither force absorbs the other."],
-              ["Intelligence \u2194 Data Marketplace", "AI-generated predictions and insights are published to the marketplace as first-class data products — discoverable, versioned, and governed like any other domain output. But marketplace demand signals do not directly retrain production models without governance gates and domain owner approval. Neither dominates."],
-              ["Data Marketplace \u2194 Observability", "Every data product published to the marketplace — internal or external — is subject to the same observability standards as internal pipelines. SLA compliance, freshness, quality scores, and consumer telemetry are visible to the platform. But observability does not control what is published or how products are priced and contracted. Neither dominates."],
-              ["Observability \u2194 Governance", "Health signals feed governance decisions — a data product consistently breaching its quality SLA triggers a governance review and potential deprecation. But compliance and classification rules govern what observability telemetry can be retained, for how long, and who can query it. Neither dominates."],
-              ["Governance \u2194 Security", "Data classification propagates automatically from the governance plane into access control enforcement across every engine — Databricks, Snowflake, Fabric, Lake Formation — without human mediation. But security cannot override governance lineage, suppress audit records, or redact provenance when inconvenient. Neither dominates."],
-              ["Security \u2194 Physical Sovereignty", "Zero-trust identity and network policy protect the domain storage and compute boundary absolutely. But even the highest privilege security principal cannot alter a domain's immutable data product or bypass its schema contract. The domain's physical integrity is not a security configuration. Neither dominates."],
+              ["Physical Sovereignty ↔ Intelligence", "Domain-owned compute powers AI feature engineering and model training. But intelligence does not commandeer domain storage or rewrite domain data products. Model outputs are new data products in their own right — with their own domain owner, lineage, and SLA. Neither force absorbs the other."],
+              ["Intelligence ↔ Data Marketplace", "AI-generated predictions and insights are published to the marketplace as first-class data products — discoverable, versioned, and governed like any other domain output. But marketplace demand signals do not directly retrain production models without governance gates and domain owner approval. Neither dominates."],
+              ["Data Marketplace ↔ Observability", "Every data product published to the marketplace — internal or external — is subject to the same observability standards as internal pipelines. SLA compliance, freshness, quality scores, and consumer telemetry are visible to the platform. But observability does not control what is published or how products are priced and contracted. Neither dominates."],
+              ["Observability ↔ Governance", "Health signals feed governance decisions — a data product consistently breaching its quality SLA triggers a governance review and potential deprecation. But compliance and classification rules govern what observability telemetry can be retained, for how long, and who can query it. Neither dominates."],
+              ["Governance ↔ Security", "Data classification propagates automatically from the governance plane into access control enforcement across every engine — Databricks, Snowflake, Fabric, Lake Formation — without human mediation. But security cannot override governance lineage, suppress audit records, or redact provenance when inconvenient. Neither dominates."],
+              ["Security ↔ Physical Sovereignty", "Zero-trust identity and network policy protect the domain storage and compute boundary absolutely. But even the highest privilege security principal cannot alter a domain's immutable data product or bypass its schema contract. The domain's physical integrity is not a security configuration. Neither dominates."],
             ].map(([boundary, description], i) => (
               <div key={i} style={{
                 borderBottom: i < 5 ? "1px solid #1a1a1a" : "none",
@@ -679,18 +709,105 @@ export default function VoronoiPost() {
 
           <P>
             When any force dominates — the geometry deforms. And deformed platforms fail in ways that
-            are entirely predictable, entirely diagnosable, and entirely avoidable — if you know what
-            shape you are trying to build.
+            are predictable, diagnosable, and — with the right patterns — recoverable.
           </P>
         </Section>
 
-        <Section title="The Deformation Catalogue">
+        {/* When Equality Isn't Possible */}
+        <Section title="When Equality Isn't Possible">
           <P>
-            Walk into almost any large enterprise and you will find one of five deformed shapes. The
-            deformation tells you everything about the platform's history — which team had the most
-            budget, which incident drove the last major investment, which vendor won the last RFP.
+            The 120° principle is an architectural target, not an organisational given. Real enterprises
+            have legacy systems that pre-date the mesh, budget cycles that fund one force at the expense
+            of others, and CISOs who will not cede ground regardless of the geometric argument. Acknowledging
+            this is not a concession — it is the starting point for practical progress.
+          </P>
+          <P>
+            Three patterns have proven durable when genuine equilibrium is temporarily out of reach:
           </P>
 
+          <div style={{
+            display: "flex",
+            flexDirection: "column",
+            gap: 0,
+            margin: "1.5rem 0",
+            border: "1px solid #1e1e1e",
+          }}>
+            {[
+              {
+                number: "01",
+                title: "The Arbitration Board with Timeboxed Escalation",
+                body: "When two forces conflict — say, Security demanding network isolation that prevents the Data Marketplace from operating cross-cloud — establish a standing architecture forum with a fixed escalation window. The forum's mandate is not to pick a winner but to agree a minimum viable boundary: what is the least restrictive security posture that satisfies the threat model? What is the minimum marketplace capability that satisfies the domain's SLA? Timebox the resolution to two weeks. If unresolved, the platform default applies — which should always favour the more conservative force temporarily, with a documented review date. The key discipline is that the conflict is explicitly registered, owned, and time-limited. Unresolved force conflicts that drift without ownership are the most common cause of permanent deformation.",
+                color: "#c87941",
+              },
+              {
+                number: "02",
+                title: "Temporary Bilateral SLAs as Guardrails",
+                body: "When a force cannot be brought to equilibrium globally, scope the imbalance explicitly. A Security Fortress deformation in the network layer does not have to infect the semantic layer. Define a bilateral SLA between the two forces in conflict — Security and Data Marketplace, for example — that specifies what the constrained force can do within the current constraints, and what the dominant force commits to relaxing over a defined timeline. This turns a structural imbalance into a managed transition. The bilateral SLA is reviewed quarterly. It prevents the temporary constraint from becoming permanent architecture by keeping the tension visible and contractually bounded.",
+                color: "#7b9eb8",
+              },
+              {
+                number: "03",
+                title: "Guardrail Automation Enforcing Minimums",
+                body: "The most durable pattern: encode the minimum acceptable posture for every force as automated policy, enforced in CI before any infrastructure change is applied. OPA policies asserting that no domain provisioning can proceed without observability agents configured. Terraform checks that reject workspace creation without a governance classification tag. Pipeline gates that block model registration without lineage metadata. These automation guardrails do not achieve equilibrium — but they prevent any force from being driven below its minimum viable contribution. A platform with enforced minimums across all six forces will deform under pressure but will not collapse. It preserves the geometry's skeleton even when the flesh is under stress.",
+                color: "#8aab7a",
+              },
+            ].map((p, i) => (
+              <div key={i} style={{
+                padding: "1.5rem",
+                borderBottom: i < 2 ? "1px solid #1a1a1a" : "none",
+                borderLeft: `3px solid ${p.color}`,
+              }}>
+                <div style={{
+                  display: "flex",
+                  alignItems: "baseline",
+                  gap: 12,
+                  marginBottom: "0.75rem",
+                }}>
+                  <span style={{
+                    fontFamily: "'JetBrains Mono', monospace",
+                    fontSize: "0.65rem",
+                    color: p.color,
+                    opacity: 0.7,
+                  }}>{p.number}</span>
+                  <span style={{
+                    fontFamily: "'Playfair Display', Georgia, serif",
+                    fontSize: "1rem",
+                    fontWeight: 700,
+                    color: "#e8d5b0",
+                  }}>{p.title}</span>
+                </div>
+                <div style={{
+                  fontFamily: "'Lora', Georgia, serif",
+                  fontSize: "0.92rem",
+                  color: "#8a7a65",
+                  lineHeight: 1.8,
+                }}>
+                  {p.body}
+                </div>
+              </div>
+            ))}
+          </div>
+
+          <P>
+            These patterns do not replace the equilibrium target. They are the engineering discipline
+            for moving toward it when the organisational physics won't allow a direct path.
+          </P>
+
+        {/* Deformations */}
+        <Section title="The Deformation Catalogue">
+          <P style={{ color: "#9a8a75" }}>
+            <em>For CDOs, platform leads, and architects diagnosing why a platform investment
+            hasn't delivered the expected returns.</em>
+          </P>
+          <P>
+            Walk into many large enterprises and you will find one of five recognisable shapes. The
+            deformation tells you a great deal about the platform's history — which team had the most
+            budget, which incident drove the last major investment, which vendor won the last RFP.
+            None of these patterns are hypothetical. Each maps to documented failure modes that have
+            appeared repeatedly across the industry.
+          </P>
+
+          {/* Deformation selector */}
           <div style={{ margin: "2rem 0" }}>
             <div style={{
               display: "flex",
@@ -719,6 +836,7 @@ export default function VoronoiPost() {
               ))}
             </div>
 
+            {/* Active deformation detail */}
             {(() => {
               const d = deformations[activeDeformation];
               return (
@@ -790,20 +908,79 @@ export default function VoronoiPost() {
           </div>
 
           <P>
-            None of these deformations emerged from malice or incompetence. Every one of them is the
-            result of a rational local decision — the security team doing their job, the storage team
-            scaling to meet demand, the AI team responding to board-level pressure to ship GenAI use
-            cases. The deformation happens not because any individual force behaved wrongly, but because
-            the architecture had no principle governing the boundaries between forces.
+            None of these deformations emerged from malice or incompetence. Every one is the result
+            of a rational local decision — the security team doing their job, the storage team scaling
+            to meet demand, the AI team responding to board-level pressure to ship GenAI use cases.
+            The pattern repeats across industries and geographies because the forces are universal.
+            What varies is which force the organisation's history and incentives allow to dominate.
           </P>
+
+          {/* Real-world references */}
+          <div style={{
+            background: "#0d0d0d",
+            border: "1px solid #1e1e1e",
+            borderLeft: "3px solid #4a4035",
+            padding: "1.25rem 1.5rem",
+            margin: "1.5rem 0",
+          }}>
+            <div style={{
+              fontFamily: "'JetBrains Mono', monospace",
+              fontSize: "0.6rem",
+              color: "#4a4035",
+              letterSpacing: "0.12em",
+              textTransform: "uppercase",
+              marginBottom: "1rem",
+            }}>
+              Documented Patterns in the Industry
+            </div>
+            {[
+              {
+                ref: "NHS Data Programme (2003–2011)",
+                note: "A £12.7bn centralised data infrastructure programme that became one of the most studied examples of the Data Swamp deformation at national scale — vast central storage investment, negligible domain ownership, and governance that existed on paper but not in practice. The National Audit Office's 2011 report remains a canonical reference for how physical force dominance without mesh principles produces unusable platforms.",
+              },
+              {
+                ref: "Knight Capital Group (2012)",
+                note: "Not a data platform failure in the traditional sense — but a definitive case of Observability force collapse. A deployment error in a trading system went undetected for 45 minutes because monitoring was insufficient to surface it. $440m was lost. The incident is now a standard reference for what happens when the observability force is treated as optional infrastructure rather than a sovereign architectural concern.",
+              },
+              {
+                ref: "Gartner's 2019 Data & Analytics Summit findings",
+                note: "Gartner reported that through 2022, only 20% of analytic insights would deliver business outcomes. The primary causes cited — poor data quality, lack of trust, centralised bottlenecks, and governance theatre — map precisely to the Governance and Physical Sovereignty deformations. The statistic has since been widely cited as evidence that data lake investments routinely underperform not for technical reasons, but architectural ones.",
+              },
+            ].map((item, i) => (
+              <div key={i} style={{
+                marginBottom: i < 2 ? "1rem" : 0,
+                paddingBottom: i < 2 ? "1rem" : 0,
+                borderBottom: i < 2 ? "1px solid #1a1a1a" : "none",
+              }}>
+                <div style={{
+                  fontFamily: "'JetBrains Mono', monospace",
+                  fontSize: "0.68rem",
+                  color: "#c87941",
+                  marginBottom: "0.4rem",
+                }}>
+                  {item.ref}
+                </div>
+                <div style={{
+                  fontFamily: "'Lora', Georgia, serif",
+                  fontSize: "0.88rem",
+                  color: "#6a5a4a",
+                  lineHeight: 1.7,
+                }}>
+                  {item.note}
+                </div>
+              </div>
+            ))}
+          </div>
+
           <P>
-            The Voronoi Platform Architecture is not a prescription for which tools to use or how much
-            to invest in each capability. It is a principle for how forces should relate to their
-            neighbours — and a diagnostic for detecting when that relationship has broken down before
-            the platform fractures.
+            The Voronoi Platform Architecture is not a prescription for which tools to use or how
+            much to invest in each capability. It is a principle for how forces should relate to
+            their neighbours — and a diagnostic for detecting when that relationship has broken down
+            before the platform fractures.
           </P>
         </Section>
 
+        {/* What equilibrium feels like */}
         <Section title="What Equilibrium Actually Feels Like">
           <P>
             Before the engineering — before Iceberg and Bedrock and Terraform modules and federated
@@ -869,6 +1046,7 @@ export default function VoronoiPost() {
           </P>
         </Section>
 
+        {/* Closing */}
         <Section title="The Name">
           <P>
             We call this the <strong style={{ color: "#e8d5b0" }}>Voronoi Platform Architecture</strong> —
@@ -891,11 +1069,53 @@ export default function VoronoiPost() {
           </P>
           <P>
             The Voronoi diagram doesn't tell you where to place the seeds. That is the engineering
-            question — and it is where we go next.
+            question — and it is a concrete one. In the next essay, we begin with the physical and
+            catalog planes: how domain-owned storage and compute are structured on Apache Iceberg,
+            why the catalog layer is the most dangerous plane in a polyglot architecture, and what
+            a federated catalog federation model looks like in practice across Databricks, Snowflake,
+            AWS Glue, and Microsoft Fabric. The geometry gives you the principle. The engineering
+            gives you the platform.
           </P>
         </Section>
 
-        {/* Next in series */}
+        {/* The Principle — TL;DR for sharing */}
+        <div style={{
+          background: "#0d0d0d",
+          border: "1px solid #1e1e1e",
+          borderLeft: "3px solid #c87941",
+          padding: "1.75rem",
+          margin: "3rem 0 2rem",
+        }}>
+          <div style={{
+            fontFamily: "'JetBrains Mono', monospace",
+            fontSize: "0.6rem",
+            color: "#4a4035",
+            letterSpacing: "0.12em",
+            textTransform: "uppercase",
+            marginBottom: "1rem",
+          }}>
+            The Principle — in one paragraph
+          </div>
+          <p style={{
+            fontFamily: "'Playfair Display', Georgia, serif",
+            fontSize: "1.05rem",
+            fontStyle: "italic",
+            color: "#c8bfb0",
+            lineHeight: 1.8,
+            margin: 0,
+          }}>
+            A data platform achieves stable, scalable architecture not by optimising any single
+            capability, but by bringing six sovereign forces — Physical Sovereignty, Intelligence,
+            Data Marketplace, Observability, Governance, and Security — into genuine equilibrium
+            at their shared boundaries. When no adjacent force dominates its neighbour, the platform
+            tessellates completely: no ungoverned space, no capability gaps, no structural failure
+            points. This is the geometry that nature uses to partition space efficiently. It is called
+            the Voronoi tessellation. And it is the target shape for every enterprise data platform
+            operating at scale.
+          </p>
+        </div>
+
+        {/* Next */}
         <div style={{
           borderTop: "1px solid #1e1e1e",
           paddingTop: "2rem",
