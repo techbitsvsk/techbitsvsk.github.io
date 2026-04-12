@@ -200,38 +200,45 @@ export default function Home() {
               <p className="section-label">Background</p>
               <h2 className="section-title">Where the thinking comes from</h2>
               <p>
-                A Techno-Functional Leader at the strategic crossroads of Data Engineering, Cloud
-                Transformation, and Intelligent Automation, architecting how enterprises redefine
-                decision intelligence, accelerate digital innovation, and achieve large-scale,
-                sustainable growth.
+                The projects here are not demos — they are distillations of problems I have solved
+                at scale. The <strong>Data Product Platform</strong> came from witnessing teams
+                duplicate schema definitions across dozens of pipelines; JSON Schema as the single
+                source of truth, auto-generating POJOs with three-layer validation, eliminated that class
+                of error entirely.
               </p>
               <p style={{ marginTop: '16px' }}>
-                Backed by 18+ years of global experience, I have led mission-critical data
-                modernisation programmes, AI/GenAI enablement, and enterprise-grade platform
-                engineering across leading banks and digital-first organisations.
+                The <strong>TWA Provisioner</strong> was born from the governance gap in Fabric deployments
+                — human admins creating workspace connections outside any approval workflow. Wiring
+                ServiceNow change management into the provisioning pipeline made governance structural,
+                not procedural.
               </p>
               <p style={{ marginTop: '16px' }}>
-                My expertise extends to designing resilient, future-proof architectures — where
-                Architecture Decision Records are standardised across all platforms, including
-                GenAI, Data Lake, and enterprise integration ecosystems, ensuring consistency,
-                governance, and engineering discipline at scale.
+                <strong>Catalog Sync</strong> tackled the hardest part of data mesh: keeping Iceberg
+                metadata consistent across platform boundaries without locking into any one catalog.
+                OPA policy enforcement and row/column-level security made it safe to federate without
+                losing control.
+              </p>
+              <p style={{ marginTop: '16px' }}>
+                The <strong>Multi-Cloud Pipeline</strong> proved that medallion architecture can run
+                identically on AWS Glue, Microsoft Fabric, and local Spark — the same PySpark code,
+                the same Iceberg tables, validated by 13 smoke tests in under five minutes on Docker.
               </p>
             </div>
             <div className="about-meta">
               <div className="meta-block">
-                <p className="meta-label">Industry</p>
-                <p className="meta-value">Banking & Financial Services</p>
-                <p className="meta-sub">18+ years across global banking — credit risk, regulatory transformation, enterprise data platforms</p>
+                <p className="meta-label">Core Disciplines</p>
+                <p className="meta-value">Platform Engineering · Data Governance</p>
+                <p className="meta-sub">Schema-driven design · Zero-trust provisioning · Policy-as-code · Multi-cloud lakehouse</p>
               </div>
               <div className="meta-block">
-                <p className="meta-label">Domains</p>
+                <p className="meta-label">Built With</p>
                 <div style={{ display: 'flex', flexWrap: 'wrap', gap: '6px', marginTop: '8px' }}>
-                  <span className="pill pill-blue">Credit Risk</span>
-                  <span className="pill pill-blue">Telecom</span>
-                  <span className="pill pill-sage">Investment Banking</span>
-                  <span className="pill pill-sage">ECommerce</span>
-                  <span className="pill pill-grey">Core Banking</span>
-                  <span className="pill pill-grey">Enterprise Data Platform</span>
+                  <span className="pill pill-blue">Apache Iceberg</span>
+                  <span className="pill pill-blue">Microsoft Fabric</span>
+                  <span className="pill pill-sage">OPA</span>
+                  <span className="pill pill-sage">Terraform</span>
+                  <span className="pill pill-grey">PySpark</span>
+                  <span className="pill pill-grey">Spring Boot</span>
                 </div>
               </div>
             </div>
