@@ -9,8 +9,19 @@
 
 <body>
     <header>
+        <div class="topbar">
+            <a class="brand" href="index.html">TECHBITSVSK</a>
+            <nav class="site-nav">
+                <a href="blogs/index.html">Blogs</a>
+                <a href="technology/index.html">Code</a>
+                <a href="resume.html">Resume</a>
+            </nav>
+        </div>
         <h1 class="title">TECHBITSVSK</h1>
         <p class="subtitle">Cross‑Cloud Data Architect • Platform Engineer • AWS SA‑Pro</p>
+        <div class="hero-actions">
+            <a class="button" href="blogs/index.html">Explore blogs</a>
+        </div>
     </header>
 
     <section class="hero">
@@ -67,9 +78,28 @@
     <section class="section">
         <h3>Latest Blogs</h3>
         <ul class="blog-list">
-            <li><a href="blogs/iceberg-sync.html">Iceberg Sync: Architecture, Metadata Flow & Automation Patterns</a></li>
-            <li><a href="blogs/fabric-platform.html">Building a Full Microsoft Fabric Platform: Governance, Automation & Observability</a></li>
+            <li><a href="blogs/architects-of-insight.html">The Architects of Insight: A Tale of Data Kingdoms</a></li>
+            <li><a href="blogs/voronoi-platform-architecture.html">The Voronoi Platform Architecture: Equilibrium for Enterprise Data</a></li>
+            <li><a href="blogs/fabric-platform.html">Building a Full Microsoft Fabric Platform: Governance & Automation</a></li>
         </ul>
+    </section>
+
+    <section class="section">
+        <h3>Featured Code & Projects</h3>
+        <div class="cards">
+            <div class="card">
+                <h4>Fabric Workspace Provisioner</h4>
+                <p>Automated self-service workspace creation with policy guardrails across ADLS Gen2 and Microsoft Fabric.</p>
+            </div>
+            <div class="card">
+                <h4>Cross-cloud Iceberg Sync</h4>
+                <p>Architected a resilient Iceberg metadata and table synchronization approach between AWS and Azure.</p>
+            </div>
+            <div class="card">
+                <h4>Catalog & Metadata Flow</h4>
+                <p>Documentation, lineage, and metadata automation patterns for modern data mesh platforms.</p>
+            </div>
+        </div>
     </section>
 
     <section class="section">
@@ -89,6 +119,10 @@
 
     <footer>
         <p>© 2026 TechBitsVSK — Cross‑Cloud Data Architect. Engineered with Precision.</p>
+        <div class="footer-links">
+            <a href="https://github.com/techbitsvsk" target="_blank">GitHub</a>
+            <a href="https://linkedin.com/in/sravankumarvadaga" target="_blank">LinkedIn</a>
+        </div>
     </footer>
 </body>
 </html>

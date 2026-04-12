@@ -1,0 +1,3 @@
+# Ignore Visual Studio Code workspace settings
+./vscode
+./.vscode/settings.json

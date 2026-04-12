@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Code & Projects | TechBitsVSK</title>
+    <link rel="stylesheet" href="../styles.css">
+</head>
+<body>
+    <header class="page-header">
+        <div class="topbar">
+            <a class="brand" href="../index.html">TECHBITSVSK</a>
+            <nav class="site-nav">
+                <a href="../index.html">Home</a>
+                <a href="../blogs/index.html">Blogs</a>
+                <a href="index.html">Code</a>
+                <a href="../resume.html">Resume</a>
+            </nav>
+        </div>
+        <div class="hero-copy">
+            <p class="eyebrow">Code & Projects</p>
+            <h1>Platform tooling, automation, and architecture patterns</h1>
+            <p class="hero-description">
+                A showcase of the code, automation, and integration designs that power modern cross-cloud data platforms.
+                Explore my GitHub repositories for implementation details and working examples.
+            </p>
+            <div class="hero-actions">
+                <a class="button" href="https://github.com/techbitsvsk" target="_blank">View on GitHub</a>
+            </div>
+        </div>
+    </header>
+
+    <main class="resume-main">
+        <section class="section">
+            <div class="cards blog-cards">
+                <article class="card">
+                    <h3>Fabric Workspace Provisioner</h3>
+                    <p>Automated workspace provisioning with policy guardrails, security controls, and self-service delivery.</p>
+                </article>
+                <article class="card">
+                    <h3>Cross-cloud Iceberg Sync</h3>
+                    <p>Syncing Iceberg metadata and tables across AWS and Azure for resilient multi-cloud data products.</p>
+                </article>
+                <article class="card">
+                    <h3>Metadata Automation</h3>
+                    <p>Airflow operators and DataHub integration to keep catalog and lineage in sync with platform events.</p>
+                </article>
+                <article class="card">
+                    <h3>Observability Patterns</h3>
+                    <p>Platform-level telemetry for pipeline health, query performance, and AI inference governance.</p>
+                </article>
+            </div>
+        </section>
+
+        <section class="section">
+            <h2 class="section-title">Code snippets</h2>
+            <div class="code-examples">
+                <div class="code-block">
+                    <h4>Fabric Workspace Provisioner (Python)</h4>
+                    <pre><code>import azure.identity
+from azure.mgmt.fabric import FabricManagementClient
+
+def provision_fabric_workspace(subscription_id, resource_group, workspace_name):
+    credential = DefaultAzureCredential()
+    client = FabricManagementClient(credential, subscription_id)
+    
+    workspace = client.workspaces.create_or_update(
+        resource_group_name=resource_group,
+        workspace_name=workspace_name,
+        workspace={
+            "location": "UK South",
+            "properties": {
+                "description": "Self-service Fabric workspace"
+            }
+        }
+    )
+    return workspace</code></pre>
+                </div>
+                <div class="code-block">
+                    <h4>Iceberg Cross-Cloud Sync (Python)</h4>
+                    <pre><code>from pyiceberg.catalog import load_catalog
+from pyiceberg.table import Table
+
+def sync_iceberg_table(source_catalog, target_catalog, table_name):
+    source_table = load_catalog(source_catalog).load_table(table_name)
+    target_table = load_catalog(target_catalog).load_table(table_name)
+    
+    # Sync metadata and data
+    target_table.overwrite(source_table.to_pandas())
+    print(f"Synced {table_name} from {source_catalog} to {target_catalog}")</code></pre>
+                </div>
+            </div>
+        </section>
+
+        <section class="section">
+            <h2 class="section-title">Project showcase</h2>
+            <div class="cards">
+                <div class="card">
+                    <h4>Enterprise Platform Governance</h4>
+                    <p>Defined enterprise guardrails combining ADLS, Purview, Entra ID, and workspace policies.</p>
+                </div>
+                <div class="card">
+                    <h4>Risk Platform Modernization</h4>
+                    <p>Modernized legacy reporting systems into Spring Boot, Spark, and cloud-native microservices.</p>
+                </div>
+                <div class="card">
+                    <h4>High-scale Data Marketplaces</h4>
+                    <p>Designed data discovery and product exchange models for internal consumers, data teams, and SaaS ecosystems.</p>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <footer class="footer">
+        © 2026 TechBitsVSK — Code and project patterns for modern data platforms
+    </footer>
+</body>
+</html>
