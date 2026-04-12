@@ -60,12 +60,12 @@ export default function Home() {
           <div className="hero-grid">
             <div className="hero-left fade-up">
               <p className="hero-eyebrow">
-                Data Strategist · VP · Glasgow, Scotland
+                Data Strategist · Finacial Services · Glasgow, Scotland
               </p>
               <h1 className="hero-name">Sravan Vadaga</h1>
               <p className="hero-title">
                 Enterprise Data Architecture &nbsp;·&nbsp; Cloud Transformation
-                &nbsp;·&nbsp; AI/GenAI Platform Engineering
+                &nbsp;·&nbsp; Platform Engineering
               </p>
               <p className="hero-desc">
                 Techno-Functional Leader at the crossroads of Data Engineering, Cloud Transformation,
