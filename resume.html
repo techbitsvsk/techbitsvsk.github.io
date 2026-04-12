@@ -1,200 +1,289 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Sravan Vadaga | Resume</title>
-    <link rel="stylesheet" href="styles.css">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Resume — Sravan Vadaga</title>
+  <meta name="description" content="Career history, technical skills, and achievements of Sravan Vadaga — Lead Platform Architect, VP at Barclays.">
+  <link rel="stylesheet" href="styles.css">
 </head>
 <body>
-    <header class="page-header">
-        <div class="topbar">
-            <a class="brand" href="index.html">TECHBITSVSK</a>
-            <nav class="site-nav">
-                <a href="index.html">Home</a>
-                <a href="resume.html">Resume</a>
-            </nav>
+
+  <header class="site-header">
+    <div class="topbar">
+      <a class="brand" href="index.html">TechBits<span>VSK</span></a>
+      <nav class="site-nav">
+        <a href="blogs/index.html">Writing</a>
+        <a href="technology/index.html">Projects</a>
+        <a href="resume.html" class="active">Resume</a>
+        <a href="https://github.com/techbitsvsk" target="_blank" rel="noopener">GitHub ↗</a>
+      </nav>
+    </div>
+  </header>
+
+  <!-- ── Page Hero ───────────────────────────────────────── -->
+  <div class="page-hero">
+    <div class="container">
+      <p class="section-label">Career &amp; Experience</p>
+      <h1>Sravan Vadaga</h1>
+      <p style="font-size:1.05rem;color:var(--primary);font-weight:500;margin:8px 0 16px;">
+        Lead Platform Architect, VP &nbsp;·&nbsp; Barclays &nbsp;·&nbsp; Glasgow, Scotland
+      </p>
+      <p style="max-width:680px;font-size:0.97rem;line-height:1.85;color:var(--text-muted);">
+        Platform engineer and architect with 18+ years of experience, primarily in Java (2007–2020) and Python.
+        Currently leading data platform architecture at Barclays across AWS and Azure. Background in
+        designing multi-team operating models, governance frameworks, and provisioning automation
+        in regulated financial services environments. AWS Certified Solutions Architect – Professional.
+      </p>
+      <div style="display:flex;gap:12px;flex-wrap:wrap;margin-top:24px;">
+        <a href="mailto:sravankvadaga@gmail.com" class="btn btn-primary">sravankvadaga@gmail.com</a>
+        <a href="tel:+447505931288" class="btn btn-outline">+44 7505 931 288</a>
+        <a href="https://linkedin.com/in/sravankumarvadaga" target="_blank" class="btn btn-outline">LinkedIn ↗</a>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── Resume Body ─────────────────────────────────────── -->
+  <div class="resume-layout">
+
+    <!-- ── Left: Experience ──────────────────────────────── -->
+    <main>
+
+      <div class="resume-section">
+        <p class="resume-section-title">Experience</p>
+        <div class="timeline">
+
+          <!-- Barclays -->
+          <div class="timeline-item">
+            <div class="timeline-dot"></div>
+            <div class="timeline-date">May 2023 – Present</div>
+            <div class="timeline-company">Barclays · Glasgow, Scotland</div>
+            <div class="timeline-role">Lead Platform Architect, VP — Enterprise Data Platform (EDP)</div>
+            <div class="timeline-content">
+              <p style="font-size:0.85rem;margin-bottom:12px;color:var(--text-muted);">
+                Responsible for platform architecture, governance, and provisioning across On-Prem, AWS and Azure.
+              </p>
+              <ul>
+                <li>Designed the security architecture for Microsoft Fabric and ADLS Gen2 — a multi-layer model (ADLS RBAC → OneLake → Purview protection policies → CMK revocation) enforcing zero-human-admin provisioning through service principal automation.</li>
+                <li>Built a production Fabric workspace provisioner in Python with CI/CD pipelines, enabling data application teams to self-serve within platform-defined guardrails.</li>
+                <li>Architected a <strong>GenAI central gateway</strong> — a firm-wide entry point to LLMs following a gateway pattern, with standardised access, usage controls, and audit logging.</li>
+                <li>Designed and built an <strong>Iceberg catalog sync</strong> package for cross-cloud resilience (AWS → Azure failover), including binary-level Avro metadata rewriting, pluggable storage backends (S3/ADLS/GCS), and Airflow operators.</li>
+                <li>Integrated DataHub into the catalog layer, implementing a DatahubCatalog class and DatahubEmitterOperator for Airflow to automate metadata propagation across the data mesh.</li>
+                <li>Defined enterprise logging and monitoring architecture spanning four teams, with OneLake as the central Delta store and Microsoft Sentinel as CSO SIEM.</li>
+                <li>Produced Architecture Decision Records (ADRs), C4 models (Structurizr DSL), and versioned architecture documents — the standard artefacts for IARB, XARB, and TAC governance reviews.</li>
+                <li>Evaluated and benchmarked platform components using TPC-DS/TPC-H frameworks to inform compute and storage decisions across AWS and Azure.</li>
+              </ul>
+              <div class="timeline-stack">
+                <span class="pill pill-blue">Python</span>
+                <span class="pill pill-blue">Java</span>
+                <span class="pill pill-blue">Azure Fabric</span>
+                <span class="pill pill-blue">ADLS Gen2</span>
+                <span class="pill pill-blue">Purview</span>
+                <span class="pill pill-blue">AWS Glue · S3 · Lake Formation</span>
+                <span class="pill pill-sage">Kafka</span>
+                <span class="pill pill-sage">Airflow</span>
+                <span class="pill pill-sage">Iceberg · Delta Lake</span>
+                <span class="pill pill-sage">DataHub</span>
+                <span class="pill pill-grey">Kubernetes</span>
+                <span class="pill pill-grey">Terraform</span>
+                <span class="pill pill-grey">GitLab CI/CD</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- JPMorgan -->
+          <div class="timeline-item">
+            <div class="timeline-dot"></div>
+            <div class="timeline-date">Feb 2016 – May 2023</div>
+            <div class="timeline-company">JPMorgan Chase &amp; Co. · Glasgow, Scotland · Team: 30 (US · UK · India)</div>
+            <div class="timeline-role">VP, Engineering Lead — Credit Risk (CRSS/RACS), Prime Brokerage &amp; Wholesale Credit Risk</div>
+            <div class="timeline-content">
+              <ul>
+                <li>Led the <strong>MRIA regulatory transformation</strong> — delivered in 8 months against a 3-year baseline. Architected a reusable framework that standardised development across business units and accelerated delivery velocity by ~70%.</li>
+                <li>Re-architected RACS (WebLogic monolith, Oracle, 12-hour report generation) into <strong>CRSS</strong> — Spring Boot microservices on Cloudera Hadoop, reducing report generation from 12 hours to under 2 hours.</li>
+                <li>Introduced a technical debt governance model to systematically identify, prioritise, and remediate legacy inefficiencies.</li>
+                <li>Designed DAMA-aligned data quality and governance frameworks covering accuracy, timeliness, validity, and consistency across risk and finance reporting.</li>
+                <li>Re-architected the stress testing framework for RACS and Wealth Management using JMS (Qpid) and Spring microservices, achieving 40% reduction in batch processing time.</li>
+                <li>Implemented PII protection, encryption, and RBAC in collaboration with Cyber Risk, ensuring GDPR compliance.</li>
+                <li>Integrated Dynatrace and Elasticsearch for production observability across critical applications.</li>
+                <li>Established GitLab CI/CD pipelines and standardised testing frameworks (JUnit, BDD, TDD) across all service lines.</li>
+              </ul>
+              <div class="timeline-stack">
+                <span class="pill pill-blue">Java · Spring Boot</span>
+                <span class="pill pill-blue">Python</span>
+                <span class="pill pill-sage">Kafka · JMS/Qpid</span>
+                <span class="pill pill-sage">Spark · Hive · Hadoop</span>
+                <span class="pill pill-blue">AWS (Glue, EMR, S3, RDS)</span>
+                <span class="pill pill-grey">Docker · Kubernetes</span>
+                <span class="pill pill-grey">Dynatrace · ELK</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Virtusa -->
+          <div class="timeline-item">
+            <div class="timeline-dot" style="background:var(--text-light);box-shadow:0 0 0 2px var(--text-light);"></div>
+            <div class="timeline-date">Oct 2007 – Jan 2016</div>
+            <div class="timeline-company">Virtusa · UK &amp; India</div>
+            <div class="timeline-role">Senior Consultant → Developer — Java/Spring across 4 enterprise client engagements</div>
+            <div class="timeline-content">
+              <ul>
+                <li><strong>S&amp;P Capital IQ</strong> (Mar 2013 – Jan 2016): Built data integration services and rating calculation engines in Java/Spring for the global ratings platform.</li>
+                <li><strong>Vodafone eCommerce</strong> (Aug 2012 – Mar 2013): Developed order management and fulfilment services for Vodafone UK's online retail platform.</li>
+                <li><strong>British Telecom</strong> (Jul 2008 – Jul 2012): Built and maintained billing and provisioning systems across BT's consumer and wholesale platforms.</li>
+                <li><strong>Temenos Core Banking</strong> (Oct 2007 – Jul 2008): Implemented core banking modules using Java and T24 platform.</li>
+              </ul>
+              <div class="timeline-stack">
+                <span class="pill pill-grey">Java · Spring</span>
+                <span class="pill pill-grey">Oracle · SQL Server</span>
+                <span class="pill pill-grey">WebLogic · JBoss</span>
+                <span class="pill pill-grey">SOAP/REST</span>
+              </div>
+            </div>
+          </div>
+
         </div>
+      </div>
 
-        <div class="resume-hero">
-            <div class="hero-copy">
-                <p class="eyebrow">SRAVAN VADAGA</p>
-                <h1>Platform Architect | Data Platform Leader</h1>
-                <p class="hero-description">
-                    Balanced delivery of deep Java/Python engineering, enterprise data architecture,
-                    and leadership across AWS, Azure, Microsoft Fabric, and regulated financial
-                    services.
-                </p>
-                <div class="contact-row">
-                    <a href="mailto:sravankvadaga@gmail.com">sravankvadaga@gmail.com</a>
-                    <span>•</span>
-                    <a href="tel:+447505931288">+44 7505 931 288</a>
-                    <span>•</span>
-                    <a href="https://linkedin.com/in/sravankumarvadaga" target="_blank">linkedin.com/in/sravankumarvadaga</a>
-                    <span>•</span>
-                    <a href="https://github.com/techbitsvsk" target="_blank">github.com/techbitsvsk</a>
-                </div>
-            </div>
-            <div class="hero-meta">
-                <div class="stat-block">
-                    <strong>18+</strong>
-                    <span>Years experience</span>
-                </div>
-                <div class="stat-block">
-                    <strong>30+</strong>
-                    <span>Person teams led</span>
-                </div>
-                <div class="stat-block">
-                    <strong>AWS</strong>
-                    <span>SA-Pro certified</span>
-                </div>
-            </div>
+      <!-- Education & Cert -->
+      <div class="resume-section">
+        <p class="resume-section-title">Education &amp; Certification</p>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;">
+          <div class="sidebar-card">
+            <h4>Education</h4>
+            <ul>
+              <li>B.Tech, Computer Science &amp; Engineering · 2007</li>
+            </ul>
+          </div>
+          <div class="sidebar-card">
+            <h4>Certification</h4>
+            <ul>
+              <li>AWS Certified Solutions Architect – Professional</li>
+            </ul>
+          </div>
         </div>
-    </header>
+      </div>
 
-    <main class="resume-main">
-        <section class="section">
-            <h2 class="section-title">Professional summary</h2>
-            <p class="resume-intro">
-                Distinguished engineer with 18+ years delivering enterprise-scale data platforms across regulated financial services.
-                Expert in cross-cloud architecture, platform governance, and modernization leadership. Proven track record of
-                transforming monolithic systems into resilient, automated platforms that support AI/ML at scale while maintaining
-                compliance and operational excellence.
-            </p>
-        </section>
-
-        <section class="section">
-            <h2 class="section-title">Core strengths</h2>
-            <div class="pill-list">
-                <span>Data Platform Architecture</span>
-                <span>Cloud Governance</span>
-                <span>Microsoft Fabric</span>
-                <span>Apache Iceberg</span>
-                <span>AWS & Azure</span>
-                <span>Platform Automation</span>
-                <span>Enterprise Observability</span>
-                <span>Regulatory Delivery</span>
-                <span>Modernization Leadership</span>
-                <span>Cross-cloud Resilience</span>
-                <span>Metadata & Lineage</span>
-                <span>Team Enablement</span>
-            </div>
-        </section>
-
-        <section class="section resume-grid">
-            <article class="experience-block">
-                <h2 class="section-title">Experience</h2>
-
-                <div class="timeline-item">
-                    <div class="timeline-date">May 2023 – Present</div>
-                    <div class="timeline-content">
-                        <h3>Lead Platform Architect, VP</h3>
-                        <p class="timeline-location">Barclays — Glasgow, Scotland</p>
-                        <ul>
-                            <li>Led enterprise data platform architecture for Barclays, designing zero-human-admin security models
-                                combining ADLS RBAC, OneLake protection policies, Purview enforcement, and CMK revocation automation.</li>
-                            <li>Built production Fabric workspace provisioner in Python with CI/CD guardrails, enabling self-service
-                                workspace creation within platform-defined policies.</li>
-                            <li>Architected GenAI gateway for enterprise LLM access with standardized audit, usage controls, and governance.</li>
-                            <li>Delivered cross-cloud Iceberg catalog sync for AWS→Azure resilience, including metadata rewriting and
-                                pluggable storage backends.</li>
-                            <li>Integrated DataHub metadata automation with Airflow emitter patterns for catalog consistency across data mesh.</li>
-                            <li>Defined enterprise logging architecture spanning OneLake Delta stores and Microsoft Sentinel for CSO visibility.</li>
-                            <li>Produced ADRs, Structurizr C4 models, and versioned artefacts for IARB/XARB/TAC governance reviews.</li>
-                        </ul>
-                    </div>
-                </div>
-
-                <div class="timeline-item">
-                    <div class="timeline-date">Feb 2016 – May 2023</div>
-                    <div class="timeline-content">
-                        <h3>VP, Engineering Lead</h3>
-                        <p class="timeline-location">JPMorgan Chase — Glasgow, Scotland</p>
-                        <ul>
-                            <li>Led a 30-person cross-regional platform delivery team for credit risk, prime
-                                brokerage, and wholesale credit risk systems.</li>
-                            <li>Delivered an MRIA regulatory transformation in 8 months by creating a reusable
-                                platform framework that standardised delivery across business units.</li>
-                            <li>Re-architected RACS from a WebLogic/Oracle monolith into a Spring Boot microservices
-                                platform on Cloudera Hadoop, reducing report generation from 12 hours to under 2 hours.</li>
-                            <li>Introduced technical debt governance and DAMA-aligned data quality controls for
-                                accu30-person cross-regional platform delivery team for credit risk, prime brokerage, and wholesale
-                                credit risk systems at JPMorgan Chase.</li>
-                            <li>Delivered MRIA regulatory transformation in 8 months (vs. 3-year baseline) by creating reusable
-                                platform framework that standardized delivery across business units.</li>
-                            <li>Re-architected RACS from WebLogic/Oracle monolith (12-hour reports) into Spring Boot microservices
-                                on Cloudera Hadoop, reducing report generation to under 2 hours.</li>
-                            <li>Introduced technical debt governance and DAMA-aligned data quality controls for accuracy,
-                                timeliness, validity, and consistency across risk and finance reporting.</li>
-                            <li>Implemented PII protection, encryption, and role-based access controls with Cyber Risk and
-                                GDPR-aligned retention policies.</li>
-                            <li>Integrated Dynatrace and Elasticsearch for real-time production observability across critical applications.</li>
-                            <li>Established GitLab CI/CD pipelines and standardized testing practices (JUnit, BDD, TDD) across service lines
-                        <h3>Senior Consultant → Developer</h3>
-                        <p class="timeline-location">Virtusa — UK & India</p>
-                        <ul>
-                            <li>Delivered Java/Spring enterprise integration services for S&P Capital IQ, Vodafone ecommerce,
-                                and British Telecom billing platforms.</li>
-                            <li>Supported pre-sales, technical evaluations, POCs, and license demos for enterprise clients.</li>
-                            <li>Migrated legacy systems to modern architectures, improved operational reliability, and
-                                aligned delivery with regulatory and client objectives.</li>
-                            <li>Built high-throughput data integration and reporting systems using Java, Spring, Oracle,
-                                and messaging middleware.</li>
-                        </ul>
-                    </div>
-                </div>
-            </article>
-
-            <aside class="sidebar">
-                <div class="sidebar-card">
-                    <h3>Key achievements</h3>
-                    <ul>
-                        <li>Reduced report generation time from 12 hours to under 2 hours</li>
-                        <li>Accelerated regulatory delivery by 70% through platform standardization</li>
-                        <li>Delivered MRIA transformation in 8 months vs. 3-year baseline</li>
-                        <li>Led teams of 30+ across multiple time zones</li>
-                        <li>Architected cross-cloud resilient data platforms</li>
-                    </ul>
-                </div>
-
-                <div claTechnical expertise</h3>
-                    <ul>
-                        <li>Microsoft Fabric, ADLS Gen2, Purview, OneLake</li>
-                        <li>AWS Glue, EMR, Lake Formation, Athena, EKS</li>
-                        <li>Apache Iceberg, Spark, Kafka, Airflow</li>
-                        <li>Java/Spring Boot, Python, Terraform</li>
-                        <li>DataHub, OpenLineage, Dynatrace, Elasticsearch
-                        Certifications</h3>
-                    <ul>
-                        <li>AWS Certified Solutions Architect – Professional</li>
-                    </ul>
-                </div>
-
-                <div class="sidebar-card">
-                    <h3>Education</h3>
-                    <p>B.Tech, Computer Science and Engineering — 2007</p>
-                </div>
-
-                <div class="sidebar-card">
-                    <h3>Domains</h3>
-        <p>© 2026 Sravan Vadaga — Distinguished Engineer | Platform Architecture | Enterprise Data Leadership</p>
-        <div class="footer-links">
-            <a href="https://github.com/techbitsvsk" target="_blank">GitHub</a>
-            <a href="https://linkedin.com/in/sravankumarvadaga" target="_blank">LinkedIn</a>
-            <a href="mailto:sravankvadaga@gmail.com">Email</a>
-        </div>ory Compliance • Data Mesh • Platform Governance
-                </div>
-
-                <div class="sidebar-card">
-                    <h3>Domains</h3>
-                    <p>Banking & Financial Services • Credit Risk • Wealth Management • Telecommunications • eCommerce • Regulatory Reporting</p>
-                </div>
-            </aside>
-        </section>
     </main>
 
-    <footer class="footer">
-        © 2026 Sravan Vadaga — Data Platform Architecture, Cloud Governance, Strategic Delivery
-    </footer>
+    <!-- ── Right: Skills Sidebar ─────────────────────────── -->
+    <aside>
+
+      <div class="sidebar-card">
+        <h4>Languages</h4>
+        <ul>
+          <li>Java — 17 years</li>
+          <li>Python — 4 years</li>
+          <li>SQL</li>
+          <li>Scala (reading)</li>
+        </ul>
+      </div>
+
+      <div class="sidebar-card">
+        <h4>Java Ecosystem</h4>
+        <ul>
+          <li>Spring Boot, Spring Batch</li>
+          <li>Microservices</li>
+          <li>JMS / Qpid</li>
+          <li>JUnit, BDD, TDD</li>
+          <li>WebLogic (legacy)</li>
+        </ul>
+      </div>
+
+      <div class="sidebar-card">
+        <h4>AWS</h4>
+        <ul>
+          <li>Glue, EMR, S3</li>
+          <li>Lake Formation, Athena</li>
+          <li>Lambda, EKS, RDS</li>
+          <li>API Gateway, CDK</li>
+        </ul>
+      </div>
+
+      <div class="sidebar-card">
+        <h4>Azure</h4>
+        <ul>
+          <li>ADLS Gen2</li>
+          <li>Microsoft Fabric</li>
+          <li>Entra ID, Purview</li>
+          <li>Databricks</li>
+        </ul>
+      </div>
+
+      <div class="sidebar-card">
+        <h4>Data &amp; Streaming</h4>
+        <ul>
+          <li>Apache Kafka</li>
+          <li>Apache Airflow</li>
+          <li>Apache Spark, Hive</li>
+          <li>Iceberg, Delta Lake</li>
+        </ul>
+      </div>
+
+      <div class="sidebar-card">
+        <h4>Data Governance</h4>
+        <ul>
+          <li>DataHub, Apache Atlas</li>
+          <li>OpenLineage, Purview</li>
+          <li>DAMA frameworks</li>
+        </ul>
+      </div>
+
+      <div class="sidebar-card">
+        <h4>Infrastructure</h4>
+        <ul>
+          <li>Kubernetes, Docker</li>
+          <li>Terraform</li>
+          <li>GitLab CI/CD, Jenkins</li>
+          <li>Buildkite</li>
+        </ul>
+      </div>
+
+      <div class="sidebar-card">
+        <h4>Observability</h4>
+        <ul>
+          <li>Dynatrace</li>
+          <li>Elasticsearch, Kibana</li>
+          <li>TPC-DS / TPC-H</li>
+        </ul>
+      </div>
+
+      <div class="sidebar-card">
+        <h4>Databases</h4>
+        <ul>
+          <li>Oracle, PostgreSQL, MySQL</li>
+          <li>Glue Catalog, Redshift</li>
+        </ul>
+      </div>
+
+      <div class="sidebar-card">
+        <h4>Domain Experience</h4>
+        <ul>
+          <li>Banking &amp; Financial Services</li>
+          <li>Credit Risk &amp; Prime Brokerage</li>
+          <li>Regulatory Compliance</li>
+          <li>Wealth Management</li>
+          <li>Telecommunications</li>
+          <li>eCommerce &amp; Capital Markets</li>
+        </ul>
+      </div>
+
+    </aside>
+  </div>
+
+  <footer>
+    <div class="footer-inner">
+      <div>
+        <p class="footer-brand">TechBitsVSK</p>
+        <p class="footer-tagline">Platform Architect · Data Engineering Leader · Glasgow, Scotland</p>
+      </div>
+      <div class="footer-links">
+        <a href="https://github.com/techbitsvsk" target="_blank" rel="noopener">GitHub</a>
+        <a href="https://linkedin.com/in/sravankumarvadaga" target="_blank" rel="noopener">LinkedIn</a>
+        <a href="mailto:sravankvadaga@gmail.com">Email</a>
+      </div>
+    </div>
+  </footer>
+
 </body>
 </html>

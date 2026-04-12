@@ -1,84 +1,194 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Building a Full Microsoft Fabric Platform | TechBitsVSK</title>
-    <link rel="stylesheet" href="../styles.css">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Building a Full Microsoft Fabric Platform | TechBitsVSK</title>
+  <meta name="description" content="Practical platform engineering for Microsoft Fabric — governance, workspace provisioning, data marketplace design, and enterprise observability.">
+  <link rel="stylesheet" href="../styles.css">
 </head>
 <body>
-    <header class="page-header">
-        <div class="topbar">
-            <a class="brand" href="../index.html">TECHBITSVSK</a>
-            <nav class="site-nav">
-                <a href="../index.html">Home</a>
-                <a href="index.html">Blogs</a>
-                <a href="../technology/index.html">Code</a>
-                <a href="../resume.html">Resume</a>
-            </nav>
+
+  <header class="site-header">
+    <div class="topbar">
+      <a class="brand" href="../index.html">TechBits<span>VSK</span></a>
+      <nav class="site-nav">
+        <a href="index.html" class="active">Writing</a>
+        <a href="../technology/index.html">Projects</a>
+        <a href="../resume.html">Resume</a>
+        <a href="https://github.com/techbitsvsk" target="_blank" rel="noopener">GitHub ↗</a>
+      </nav>
+    </div>
+  </header>
+
+  <div class="blog-layout">
+
+    <!-- ── Left Sidebar ─────────────────────────────────── -->
+    <aside class="blog-sidebar">
+
+      <div class="sidebar-section">
+        <p class="sidebar-label">On this page</p>
+        <ul class="toc-list">
+          <li><a href="#problem">The problem</a></li>
+          <li><a href="#governance">Platform governance</a></li>
+          <li><a href="#automation">Automation &amp; observability</a></li>
+          <li><a href="#security">Security model</a></li>
+          <li><a href="#why">Why it matters</a></li>
+        </ul>
+      </div>
+
+      <div class="sidebar-section">
+        <p class="sidebar-label">All essays</p>
+        <ul class="sidebar-blog-links">
+          <li><a href="voronoi-platform-architecture.html">The Voronoi Platform Architecture</a></li>
+          <li><a href="architects-of-insight.html">The Architects of Insight</a></li>
+          <li><a href="fabric-platform.html" class="current">Building a Full Fabric Platform</a></li>
+        </ul>
+      </div>
+
+      <div class="sidebar-section">
+        <p class="sidebar-label">Related code</p>
+        <ul class="sidebar-blog-links">
+          <li><a href="../technology/index.html">Fabric Control Plane</a></li>
+          <li><a href="../technology/index.html">TWA Provisioner</a></li>
+          <li><a href="https://github.com/techbitsvsk" target="_blank" rel="noopener">GitHub ↗</a></li>
+        </ul>
+      </div>
+
+    </aside>
+
+    <!-- ── Main Content ──────────────────────────────────── -->
+    <article class="blog-content">
+
+      <div class="blog-meta">
+        <span class="blog-cat">Platform Engineering</span>
+        <span style="color:var(--border);font-size:0.8rem;">·</span>
+        <span style="font-size:0.82rem;color:var(--text-light);">Practical</span>
+      </div>
+
+      <h1>Building a Full Microsoft Fabric Platform</h1>
+      <p class="blog-subtitle">
+        Governance, provisioning, data marketplace thinking, and enterprise observability — turning Fabric
+        from a UI layer into a trusted platform.
+      </p>
+
+      <h2 id="problem">The problem</h2>
+
+      <p>
+        Many organisations treat Fabric as a UI layer rather than the foundation of a governed platform.
+        The result is workspaces that spin up without policy, data products that are hard to discover,
+        and compliance that is incomplete across the lakehouse estate.
+      </p>
+
+      <p>
+        The pattern is predictable: a team gets access to Fabric, creates a workspace, and starts loading
+        data. Within weeks there are thirty workspaces with inconsistent naming, no lineage, no quality
+        contracts, and audit trails that satisfy no one. The platform team inherits the debt and is asked
+        to retrofit governance onto a system designed without it.
+      </p>
+
+      <blockquote>
+        <p>
+          Governance retrofitted is governance resisted. The only governance that works at enterprise scale
+          is governance that is enforced before the first workspace is created.
+        </p>
+      </blockquote>
+
+      <h2 id="governance">Platform governance</h2>
+
+      <p>
+        A robust Fabric platform enforces policies before a workspace exists. Identity, storage, and
+        classification must be wired together so every workspace is provisioned with the same guardrails.
+      </p>
+
+      <ul>
+        <li><strong>ADLS Gen2 RBAC and OneLake protection policies</strong> are the first line of control — not the last. Storage permissions define what the platform can do; OneLake policies define what users within the platform can do.</li>
+        <li><strong>Purview classification and data lineage</strong> must be attached to every published data product. A data product without lineage is not a product — it is an undocumented asset.</li>
+        <li><strong>Zero-human-admin provisioning</strong> ensures teams can move fast without drifting outside policy. Service principal automation removes the human as a single point of failure and as a governance bypass.</li>
+        <li><strong>CMK revocation</strong> as a kill-switch — not an afterthought. When a workspace needs to be decommissioned, revocation of the customer-managed key is the authoritative mechanism.</li>
+      </ul>
+
+      <h2 id="automation">Automation and observability</h2>
+
+      <p>
+        Automation is the platform's operating system. A self-service Fabric platform needs workspace
+        provisioners, catalog sync jobs, and continuous observability across clusters, pipelines, and AI workloads.
+      </p>
+
+      <ul>
+        <li><strong>Workspace provisioning pipelines</strong> enforce naming, capacity assignment, networking constraints, and security rules in a single idempotent operation. The provisioner is the contract between the platform team and the domain teams.</li>
+        <li><strong>DataHub or Purview-based metadata automation</strong> ensures catalog consistency and lineage. Every pipeline run is an event. Every event is a lineage node. Every node is queryable.</li>
+        <li><strong>Observability dashboards</strong> capture pipeline health, query performance, and model telemetry. OneLake as the central Delta store for telemetry, with Microsoft Sentinel as CSO SIEM, provides a unified audit surface for both engineering and compliance.</li>
+      </ul>
+
+      <h2 id="security">Security model</h2>
+
+      <p>
+        The security architecture for a mature Fabric platform is a multi-layer model, not a perimeter:
+      </p>
+
+      <ul>
+        <li><strong>Layer 1 — Storage (ADLS RBAC):</strong> Who can read or write the physical storage. Service principals only. No human access to raw storage.</li>
+        <li><strong>Layer 2 — Platform (OneLake security):</strong> Which workspace can access which lakehouse. Enforced through Fabric's own access model.</li>
+        <li><strong>Layer 3 — Data (Purview protection policies):</strong> Which data products are accessible to which consumers. Row-level and column-level security applied at the product layer.</li>
+        <li><strong>Layer 4 — Keys (CMK revocation):</strong> The nuclear option. Revocation of the customer-managed key makes the workspace's data cryptographically inaccessible, regardless of any other access grant.</li>
+      </ul>
+
+      <h2 id="why">Why it matters</h2>
+
+      <p>
+        Packed with governance and automation, a Fabric platform can support both analytic speed and
+        enterprise control. That balance is what turns a technology stack into a trusted platform for
+        business users, auditors, and risk teams.
+      </p>
+
+      <p>
+        The platform team's job is not to own the data — it is to make the guardrails invisible to
+        teams moving fast, and impenetrable to everyone else. When provisioning is self-service and
+        governance is automatic, the platform team stops being a bottleneck and starts being infrastructure.
+      </p>
+
+      <div class="blog-related">
+        <h4>Continue Reading</h4>
+        <div class="blog-related-links">
+          <a href="voronoi-platform-architecture.html">The Voronoi Platform Architecture: Equilibrium for Enterprise Data</a>
+          <a href="architects-of-insight.html">The Architects of Insight: A Tale of Data Kingdoms</a>
+          <a href="../technology/index.html">Projects &amp; Code Examples</a>
+          <a href="https://github.com/techbitsvsk" target="_blank" rel="noopener">GitHub — techbitsvsk</a>
         </div>
-    </header>
+      </div>
 
-    <main class="resume-main">
-        <section class="section">
-            <p class="eyebrow">Essay</p>
-            <h1>Building a Full Microsoft Fabric Platform</h1>
-            <p class="hero-description">
-                Practical platform engineering for Microsoft Fabric that combines governance, workspace provisioning,
-                data marketplace thinking, and enterprise observability.
-            </p>
-        </section>
+    </article>
+  </div>
 
-        <section class="section">
-            <h2 class="section-title">The problem</h2>
-            <p class="resume-intro">
-                Many organisations treat Fabric as a UI layer rather than the foundation of a governed platform.
-                The result is workspaces that spin up without policy, data products that are hard to discover, and
-                compliance that is incomplete across the lakehouse estate.
-            </p>
-        </section>
+  <footer>
+    <div class="footer-inner">
+      <div>
+        <p class="footer-brand">TechBitsVSK</p>
+        <p class="footer-tagline">Platform Architect · Data Engineering Leader · Glasgow, Scotland</p>
+      </div>
+      <div class="footer-links">
+        <a href="https://github.com/techbitsvsk" target="_blank" rel="noopener">GitHub</a>
+        <a href="https://linkedin.com/in/sravankumarvadaga" target="_blank" rel="noopener">LinkedIn</a>
+        <a href="mailto:sravankvadaga@gmail.com">Email</a>
+      </div>
+    </div>
+  </footer>
 
-        <section class="section">
-            <h2 class="section-title">Platform governance</h2>
-            <p class="resume-intro">
-                A robust Fabric platform enforces policies before a workspace exists. Identity, storage, and
-                classification must be wired together so every workspace is provisioned with the same
-                guardrails.
-            </p>
-            <ul>
-                <li>ADLS Gen2 RBAC and OneLake protection policies are the first line of control.</li>
-                <li>Purview classification and data lineage must be attached to every published data product.</li>
-                <li>Zero-human-admin provisioning ensures teams can move fast without drifting outside policy.</li>
-            </ul>
-        </section>
+  <script>
+    const headings = document.querySelectorAll('article h2[id], article h3[id]');
+    const tocLinks = document.querySelectorAll('.toc-list a');
+    const observer = new IntersectionObserver(entries => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          tocLinks.forEach(l => l.classList.remove('active'));
+          const active = document.querySelector(`.toc-list a[href="#${entry.target.id}"]`);
+          if (active) active.classList.add('active');
+        }
+      });
+    }, { rootMargin: '-20% 0px -70% 0px' });
+    headings.forEach(h => observer.observe(h));
+  </script>
 
-        <section class="section">
-            <h2 class="section-title">Automation and observability</h2>
-            <p class="resume-intro">
-                Automation is the platform's operating system. A self-service Fabric platform needs workspace
-                provisioners, catalog sync jobs, and continuous observability across clusters, pipelines, and
-                AI workloads.
-            </p>
-            <ul>
-                <li>Workspace provisioning pipelines enforce naming, capacity, networking, and security rules.</li>
-                <li>DataHub or Purview-based metadata automation ensures catalog consistency and lineage.
-                </li>
-                <li>Observability dashboards capture pipeline health, query performance, and model telemetry.</li>
-            </ul>
-        </section>
-
-        <section class="section">
-            <h2 class="section-title">Why it matters</h2>
-            <p class="resume-intro">
-                Packed with governance and automation, a Fabric platform can support both analytic speed and
-                enterprise control. That balance is what turns a technology stack into a trusted platform for
-                business users, auditors, and risk teams.
-            </p>
-        </section>
-    </main>
-
-    <footer class="footer">
-        © 2026 TechBitsVSK — Microsoft Fabric Platform Engineering
-    </footer>
 </body>
 </html>

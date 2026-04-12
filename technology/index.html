@@ -1,118 +1,358 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Code & Projects | TechBitsVSK</title>
-    <link rel="stylesheet" href="../styles.css">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Projects — TechBitsVSK</title>
+  <meta name="description" content="Platform tooling, automation, and architecture patterns by Sravan Vadaga — Iceberg sync, Fabric provisioning, data product platforms, and more.">
+  <link rel="stylesheet" href="../styles.css">
 </head>
 <body>
-    <header class="page-header">
-        <div class="topbar">
-            <a class="brand" href="../index.html">TECHBITSVSK</a>
-            <nav class="site-nav">
-                <a href="../index.html">Home</a>
-                <a href="../blogs/index.html">Blogs</a>
-                <a href="index.html">Code</a>
-                <a href="../resume.html">Resume</a>
-            </nav>
+
+  <header class="site-header">
+    <div class="topbar">
+      <a class="brand" href="../index.html">TechBits<span>VSK</span></a>
+      <nav class="site-nav">
+        <a href="../blogs/index.html">Writing</a>
+        <a href="index.html" class="active">Projects</a>
+        <a href="../resume.html">Resume</a>
+        <a href="https://github.com/techbitsvsk" target="_blank" rel="noopener">GitHub ↗</a>
+      </nav>
+    </div>
+  </header>
+
+  <!-- ── Hero ───────────────────────────────────────────── -->
+  <div class="page-hero">
+    <div class="container">
+      <p class="section-label">Open Source &amp; Side Projects</p>
+      <h1>Platform tooling &amp;<br>architecture patterns</h1>
+      <p style="max-width:620px;margin-top:16px;">
+        Production-grade platform tooling built to solve real enterprise problems — Iceberg catalog
+        replication, Fabric workspace provisioning, data product APIs, and multi-cloud pipelines.
+        All code on GitHub.
+      </p>
+      <div style="margin-top:24px;">
+        <a href="https://github.com/techbitsvsk" target="_blank" class="btn btn-primary" rel="noopener">
+          github.com/techbitsvsk ↗
+        </a>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── Projects Grid ──────────────────────────────────── -->
+  <section class="section">
+    <div class="container">
+      <p class="section-label">Featured Projects</p>
+      <h2 class="section-title">What I've built</h2>
+
+      <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(320px,1fr));gap:24px;">
+
+        <!-- catalog-sync -->
+        <div class="project-card">
+          <div class="project-header">
+            <h3>Iceberg Catalog Sync</h3>
+            <a href="https://github.com/techbitsvsk/catalog-sync" target="_blank" class="project-gh-link" rel="noopener">↗ GitHub</a>
+          </div>
+          <p>
+            Enterprise-grade Apache Iceberg catalog replication with full metadata chain rewrite,
+            OAuth 2.0 authentication, and fine-grained OPA policy enforcement. Solves the core
+            problem: Iceberg metadata embeds absolute storage URIs — copying Parquet files without
+            rewriting metadata leaves every on-prem table pointing back at the cloud source.
+          </p>
+          <div class="project-highlights">
+            <ul>
+              <li>Binary-level Avro metadata rewriting for cross-cloud failover (AWS → Azure)</li>
+              <li>Pluggable storage backends: S3, ADLS Gen2, GCS, MinIO</li>
+              <li>OAuth 2.0 (RS256 JWT) + Open Policy Agent for fine-grained access control</li>
+              <li>Airflow operators for pipeline orchestration</li>
+              <li>Nessie catalog with PostgreSQL version store</li>
+            </ul>
+          </div>
+          <div class="card-tags">
+            <span class="pill pill-blue">Python</span>
+            <span class="pill pill-sage">Iceberg</span>
+            <span class="pill pill-sage">Airflow</span>
+            <span class="pill pill-grey">OPA</span>
+            <span class="pill pill-grey">OAuth 2.0</span>
+            <span class="pill pill-grey">Nessie</span>
+          </div>
         </div>
-        <div class="hero-copy">
-            <p class="eyebrow">Code & Projects</p>
-            <h1>Platform tooling, automation, and architecture patterns</h1>
-            <p class="hero-description">
-                A showcase of the code, automation, and integration designs that power modern cross-cloud data platforms.
-                Explore my GitHub repositories for implementation details and working examples.
-            </p>
-            <div class="hero-actions">
-                <a class="button" href="https://github.com/techbitsvsk" target="_blank">View on GitHub</a>
-            </div>
+
+        <!-- edp_fabric_control_plane_mvp -->
+        <div class="project-card">
+          <div class="project-header">
+            <h3>Fabric Control Plane</h3>
+            <a href="https://github.com/techbitsvsk/edp_fabric_control_plane_mvp" target="_blank" class="project-gh-link" rel="noopener">↗ GitHub</a>
+          </div>
+          <p>
+            Idempotent, API-driven provisioning and governance for Microsoft Fabric workspaces.
+            Deployable as a standalone FastAPI service or as an Azure Functions app via
+            AsgiMiddleware — zero vendor lock-in, simple local development.
+          </p>
+          <div class="project-highlights">
+            <ul>
+              <li>Creates/updates Fabric workspaces idempotently by display name</li>
+              <li>Assigns F-SKU/A-SKU capacity and Fabric domain</li>
+              <li>Reconciles Azure AD group role assignments with exponential backoff</li>
+              <li>Entra ID JWT validation via JWKS; structured JSON logs with correlation IDs</li>
+              <li>GitLab CI/CD pipeline; passes IARB, XARB, TAC governance reviews</li>
+            </ul>
+          </div>
+          <div class="card-tags">
+            <span class="pill pill-blue">Python</span>
+            <span class="pill pill-blue">FastAPI</span>
+            <span class="pill pill-blue">Azure Functions</span>
+            <span class="pill pill-sage">Fabric</span>
+            <span class="pill pill-grey">GitLab CI/CD</span>
+          </div>
         </div>
-    </header>
 
-    <main class="resume-main">
-        <section class="section">
-            <div class="cards blog-cards">
-                <article class="card">
-                    <h3>Fabric Workspace Provisioner</h3>
-                    <p>Automated workspace provisioning with policy guardrails, security controls, and self-service delivery.</p>
-                </article>
-                <article class="card">
-                    <h3>Cross-cloud Iceberg Sync</h3>
-                    <p>Syncing Iceberg metadata and tables across AWS and Azure for resilient multi-cloud data products.</p>
-                </article>
-                <article class="card">
-                    <h3>Metadata Automation</h3>
-                    <p>Airflow operators and DataHub integration to keep catalog and lineage in sync with platform events.</p>
-                </article>
-                <article class="card">
-                    <h3>Observability Patterns</h3>
-                    <p>Platform-level telemetry for pipeline health, query performance, and AI inference governance.</p>
-                </article>
-            </div>
-        </section>
+        <!-- twa-provisioner -->
+        <div class="project-card">
+          <div class="project-header">
+            <h3>TWA Provisioner</h3>
+            <a href="https://github.com/techbitsvsk/twa-provisioner" target="_blank" class="project-gh-link" rel="noopener">↗ GitHub</a>
+          </div>
+          <p>
+            Automated provisioning for Microsoft Fabric Trusted Workspace Access (TWA).
+            A Python orchestrator + Terraform infra + ServiceNow ITSM change gate.
+            Enforces a dry-run → CAB approval → live promotion flow before touching any Azure resource.
+          </p>
+          <div class="project-highlights">
+            <ul>
+              <li>ServiceNow change gate: CAB approval required before any resource mutation</li>
+              <li>GitLab MR triggers validate (dry-run) then provision (live) stages</li>
+              <li>Terraform manages ADLS Resource Instance Rules and RBAC assignments</li>
+              <li>YAML workspace manifests for declarative, version-controlled provisioning</li>
+              <li>Full audit trail from change request to Azure resource creation</li>
+            </ul>
+          </div>
+          <div class="card-tags">
+            <span class="pill pill-blue">Python</span>
+            <span class="pill pill-grey">Terraform</span>
+            <span class="pill pill-sage">Fabric</span>
+            <span class="pill pill-grey">ServiceNow</span>
+            <span class="pill pill-grey">GitLab CI/CD</span>
+          </div>
+        </div>
 
-        <section class="section">
-            <h2 class="section-title">Code snippets</h2>
-            <div class="code-examples">
-                <div class="code-block">
-                    <h4>Fabric Workspace Provisioner (Python)</h4>
-                    <pre><code>import azure.identity
-from azure.mgmt.fabric import FabricManagementClient
+        <!-- data-product-platform -->
+        <div class="project-card">
+          <div class="project-header">
+            <h3>Data Product Platform</h3>
+            <a href="https://github.com/techbitsvsk/data-product-platform" target="_blank" class="project-gh-link" rel="noopener">↗ GitHub</a>
+          </div>
+          <p>
+            Schema-driven Java 17 / Spring Boot 3.2 platform for onboarding data products into a
+            marketplace. JSON Schema files are the single source of truth — POJOs are generated at
+            build time, and every request passes three validation layers before any action.
+          </p>
+          <div class="project-highlights">
+            <ul>
+              <li>jsonschema2pojo plugin generates POJOs + validation annotations at build time</li>
+              <li>Three-layer validation: JSON Schema → Bean Validation → Controller</li>
+              <li>SchemaRegistry auto-discovers schemas — zero Java code to add a new product type</li>
+              <li>Schema introspection and dry-run endpoints for safe onboarding</li>
+              <li>REST API + CLI utility for data product management</li>
+            </ul>
+          </div>
+          <div class="card-tags">
+            <span class="pill pill-blue">Java 17</span>
+            <span class="pill pill-blue">Spring Boot 3.2</span>
+            <span class="pill pill-grey">JSON Schema</span>
+            <span class="pill pill-grey">Maven</span>
+          </div>
+        </div>
 
-def provision_fabric_workspace(subscription_id, resource_group, workspace_name):
-    credential = DefaultAzureCredential()
-    client = FabricManagementClient(credential, subscription_id)
-    
-    workspace = client.workspaces.create_or_update(
-        resource_group_name=resource_group,
-        workspace_name=workspace_name,
-        workspace={
-            "location": "UK South",
-            "properties": {
-                "description": "Self-service Fabric workspace"
-            }
-        }
+        <!-- cloud_agnostic_project (Iceberg multi-cloud) -->
+        <div class="project-card">
+          <div class="project-header">
+            <h3>Multi-Cloud Iceberg Pipeline</h3>
+            <a href="https://github.com/techbitsvsk/cloud_agnostic_project" target="_blank" class="project-gh-link" rel="noopener">↗ GitHub</a>
+          </div>
+          <p>
+            A single PySpark pipeline that ingests TPC-H datasets through Bronze → Silver → Gold
+            Iceberg tables. Runs unchanged on AWS Glue, Microsoft Fabric, and local Spark + MinIO —
+            true cloud-agnostic design without platform-specific forks.
+          </p>
+          <div class="project-highlights">
+            <ul>
+              <li>Single codebase for AWS Glue, Azure Fabric, and local Spark</li>
+              <li>TPC-H orders and lineitem datasets through Bronze → Silver → Gold medallion</li>
+              <li>Bicep + Terraform for infrastructure provisioning</li>
+              <li>Local development with MinIO (S3-compatible) in under 5 minutes</li>
+              <li>Smoke test suite for all three runtime environments</li>
+            </ul>
+          </div>
+          <div class="card-tags">
+            <span class="pill pill-blue">Python</span>
+            <span class="pill pill-sage">PySpark</span>
+            <span class="pill pill-sage">Iceberg</span>
+            <span class="pill pill-blue">AWS Glue</span>
+            <span class="pill pill-blue">Azure Fabric</span>
+            <span class="pill pill-grey">Terraform</span>
+          </div>
+        </div>
+
+        <!-- fabric_e2e -->
+        <div class="project-card">
+          <div class="project-header">
+            <h3>Fabric End-to-End Platform</h3>
+            <a href="https://github.com/techbitsvsk/fabric_e2e" target="_blank" class="project-gh-link" rel="noopener">↗ GitHub</a>
+          </div>
+          <p>
+            End-to-end Microsoft Fabric platform implementation — from data generation to ADLS upload,
+            workspace provisioning, notebook orchestration, and pipeline execution. A reference
+            architecture for a complete, production-style Fabric deployment.
+          </p>
+          <div class="project-highlights">
+            <ul>
+              <li>Structured in stages: data generation → ADLS upload → Fabric provisioning → notebooks → pipelines → orchestration</li>
+              <li>Config-driven via YAML; idempotent workspace and capacity management</li>
+              <li>Airflow-based orchestration layer</li>
+              <li>Complete environment isolation via service principal automation</li>
+            </ul>
+          </div>
+          <div class="card-tags">
+            <span class="pill pill-blue">Python</span>
+            <span class="pill pill-sage">Fabric</span>
+            <span class="pill pill-sage">Airflow</span>
+            <span class="pill pill-blue">ADLS Gen2</span>
+            <span class="pill pill-grey">YAML</span>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+  <!-- ── Code Samples ───────────────────────────────────── -->
+  <section class="section section-alt">
+    <div class="container">
+      <p class="section-label">Code Samples</p>
+      <h2 class="section-title">Implementation patterns</h2>
+      <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(380px,1fr));gap:24px;">
+
+        <div class="code-block">
+          <div class="code-block-header">
+            <span class="code-block-title">Fabric Workspace Provisioner</span>
+            <span class="code-block-lang">Python · FastAPI</span>
+          </div>
+          <pre><code>from fastapi import FastAPI, Depends
+from app.auth import validate_token
+from app.fabric_client import FabricClient
+
+app = FastAPI()
+
+@app.post("/workspaces")
+async def provision_workspace(
+    spec: WorkspaceSpec,
+    token: str = Depends(validate_token)
+):
+    client = FabricClient()
+    # Idempotent: find or create by display name
+    workspace = client.get_or_create(
+        display_name=spec.display_name,
+        capacity_id=spec.capacity_id,
+        domain_id=spec.domain_id,
     )
-    return workspace</code></pre>
-                </div>
-                <div class="code-block">
-                    <h4>Iceberg Cross-Cloud Sync (Python)</h4>
-                    <pre><code>from pyiceberg.catalog import load_catalog
-from pyiceberg.table import Table
+    # Reconcile AD group role assignments
+    client.reconcile_roles(
+        workspace_id=workspace.id,
+        desired_roles=spec.role_assignments,
+    )
+    return {"workspace_id": workspace.id, "status": "reconciled"}</code></pre>
+        </div>
 
-def sync_iceberg_table(source_catalog, target_catalog, table_name):
-    source_table = load_catalog(source_catalog).load_table(table_name)
-    target_table = load_catalog(target_catalog).load_table(table_name)
-    
-    # Sync metadata and data
-    target_table.overwrite(source_table.to_pandas())
-    print(f"Synced {table_name} from {source_catalog} to {target_catalog}")</code></pre>
-                </div>
-            </div>
-        </section>
+        <div class="code-block">
+          <div class="code-block-header">
+            <span class="code-block-title">Iceberg Cross-Cloud Sync</span>
+            <span class="code-block-lang">Python · Iceberg</span>
+          </div>
+          <pre><code>from catalog_sync.rewriter import MetadataRewriter
+from catalog_sync.storage import StorageBackend
 
-        <section class="section">
-            <h2 class="section-title">Project showcase</h2>
-            <div class="cards">
-                <div class="card">
-                    <h4>Enterprise Platform Governance</h4>
-                    <p>Defined enterprise guardrails combining ADLS, Purview, Entra ID, and workspace policies.</p>
-                </div>
-                <div class="card">
-                    <h4>Risk Platform Modernization</h4>
-                    <p>Modernized legacy reporting systems into Spring Boot, Spark, and cloud-native microservices.</p>
-                </div>
-                <div class="card">
-                    <h4>High-scale Data Marketplaces</h4>
-                    <p>Designed data discovery and product exchange models for internal consumers, data teams, and SaaS ecosystems.</p>
-                </div>
-            </div>
-        </section>
-    </main>
+def sync_table(source: str, target: str, table: str):
+    # Read source metadata chain (manifest list → manifests)
+    rewriter = MetadataRewriter(
+        source_backend=StorageBackend.from_uri(source),
+        target_backend=StorageBackend.from_uri(target),
+    )
+    # Binary Avro rewrite — every URI repointed to target
+    new_metadata_location = rewriter.rewrite_and_copy(
+        table_name=table,
+        uri_mapping={source: target},
+    )
+    # Register in target catalog with JWT auth
+    catalog.register_table(
+        table, new_metadata_location, bearer_token=jwt
+    )</code></pre>
+        </div>
 
-    <footer class="footer">
-        © 2026 TechBitsVSK — Code and project patterns for modern data platforms
-    </footer>
+        <div class="code-block">
+          <div class="code-block-header">
+            <span class="code-block-title">DataHub Airflow Emitter</span>
+            <span class="code-block-lang">Python · Airflow</span>
+          </div>
+          <pre><code>from datahub_airflow_plugin.operators.datahub import (
+    DatahubEmitterOperator
+)
+
+emit_lineage = DatahubEmitterOperator(
+    task_id="emit_datahub_lineage",
+    datahub_conn_id="datahub_rest",
+    emit_templates=[
+        DatasetLineageTemplate(
+            source_datasets=["urn:li:dataset:(urn:li:dataPlatform:adls,raw.orders,PROD)"],
+            destination_dataset="urn:li:dataset:(urn:li:dataPlatform:fabric,silver.orders,PROD)",
+            transformation="bronze_to_silver_cleanse",
+        )
+    ],
+)</code></pre>
+        </div>
+
+        <div class="code-block">
+          <div class="code-block-header">
+            <span class="code-block-title">Multi-Cloud Iceberg Medallion</span>
+            <span class="code-block-lang">PySpark · Iceberg</span>
+          </div>
+          <pre><code>from pyspark.sql import SparkSession
+from config import get_catalog_config
+
+def run_bronze_to_silver(spark: SparkSession, env: str):
+    cfg = get_catalog_config(env)  # AWS / Azure / Local
+
+    bronze = spark.read.format("iceberg") \
+        .load(f"{cfg.catalog}.bronze.orders")
+
+    silver = bronze \
+        .filter("o_orderstatus != 'F'") \
+        .withColumn("ingest_ts", current_timestamp()) \
+        .dropDuplicates(["o_orderkey"])
+
+    silver.writeTo(f"{cfg.catalog}.silver.orders") \
+        .using("iceberg") \
+        .tableProperty("format-version", "2") \
+        .createOrReplace()</code></pre>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+  <footer>
+    <div class="footer-inner">
+      <div>
+        <p class="footer-brand">TechBitsVSK</p>
+        <p class="footer-tagline">Platform Architect · Data Engineering Leader · Glasgow, Scotland</p>
+      </div>
+      <div class="footer-links">
+        <a href="https://github.com/techbitsvsk" target="_blank" rel="noopener">GitHub</a>
+        <a href="https://linkedin.com/in/sravankumarvadaga" target="_blank" rel="noopener">LinkedIn</a>
+        <a href="mailto:sravankvadaga@gmail.com">Email</a>
+      </div>
+    </div>
+  </footer>
+
 </body>
 </html>
