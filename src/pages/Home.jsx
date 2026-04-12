@@ -231,12 +231,12 @@ export default function Home() {
               <div className="meta-block">
                 <p className="meta-label">Domains</p>
                 <div style={{ display: 'flex', flexWrap: 'wrap', gap: '6px', marginTop: '8px' }}>
-                  <span className="pill pill-blue">Azure Fabric</span>
-                  <span className="pill pill-blue">Apache Iceberg</span>
-                  <span className="pill pill-sage">DataHub</span>
-                  <span className="pill pill-sage">Kafka</span>
-                  <span className="pill pill-grey">GenAI Gateway</span>
-                  <span className="pill pill-grey">Terraform</span>
+                  <span className="pill pill-blue">Credit Risk</span>
+                  <span className="pill pill-blue">Telecom</span>
+                  <span className="pill pill-sage">Investment Banking</span>
+                  <span className="pill pill-sage">ECommerce</span>
+                  <span className="pill pill-grey">Core Banking</span>
+                  <span className="pill pill-grey">Enterprise Data Platform</span>
                 </div>
               </div>
             </div>

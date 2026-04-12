@@ -3,8 +3,8 @@ export default function Footer() {
     <footer>
       <div className="footer-inner">
         <div>
-          <p className="footer-brand">TechBitsVSK</p>
-          <p className="footer-tagline">Data Strategist · Data Engineering · Glasgow, Scotland</p>
+          <p className="footer-brand">Sravan Vadaga</p>
+          <p className="footer-tagline">Data Strategist & Platform Architect· Glasgow, Scotland</p>
         </div>
         <div className="footer-links">
           <a href="https://github.com/techbitsvsk" target="_blank" rel="noopener noreferrer">GitHub</a>
