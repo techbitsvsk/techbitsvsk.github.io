@@ -1,11 +1,11 @@
-import { useState, useEffect, useRef } from "react";
+import { useState, useEffect } from "react";
 
 const post = {
   series: "The Voronoi Platform Architecture",
   episode: "Part I",
   title: "The Equilibrium Principle for Enterprise Data",
   subtitle: "The mathematics of equal forces — and what it means for enterprise data",
-  author: "Sravan Kumar",
+  author: "Sravan Vadaga",
   readTime: "14 min read",
   date: "April 2026",
 };
@@ -347,12 +347,9 @@ function P({ children, style = {} }) {
 
 export default function VoronoiBlogPost() {
   const [activeDeformation, setActiveDeformation] = useState(0);
-  const [scrolled, setScrolled] = useState(false);
 
   useEffect(() => {
-    const handleScroll = () => setScrolled(window.scrollY > 80);
-    window.addEventListener("scroll", handleScroll);
-    return () => window.removeEventListener("scroll", handleScroll);
+    window.scrollTo(0, 0);
   }, []);
 
   return (
@@ -454,7 +451,7 @@ export default function VoronoiBlogPost() {
               color: "#0a0a0a", fontWeight: 700, fontSize: 14,
               fontFamily: "'JetBrains Mono', monospace",
             }}>
-              SK
+              SV
             </div>
             <div>
               <div style={{ color: "#c8bfb0", fontSize: "0.85rem", fontFamily: "'JetBrains Mono', monospace" }}>
@@ -792,6 +789,7 @@ export default function VoronoiBlogPost() {
             These patterns do not replace the equilibrium target. They are the engineering discipline
             for moving toward it when the organisational physics won't allow a direct path.
           </P>
+        </Section>
 
         {/* Deformations */}
         <Section title="The Deformation Catalogue">
