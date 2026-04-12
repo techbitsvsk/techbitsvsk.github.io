@@ -12,6 +12,12 @@ export default function Header() {
           >
             Writing
           </NavLink>
+          <NavLink
+            to="/projects"
+            className={({ isActive }) => isActive ? 'active' : ''}
+          >
+            Projects
+          </NavLink>
           <a
             href="https://linkedin.com/in/sravankumarvadaga"
             target="_blank"

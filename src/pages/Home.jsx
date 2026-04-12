@@ -1,5 +1,32 @@
 import { Link } from 'react-router-dom'
 
+const projects = [
+  {
+    url: 'https://github.com/techbitsvsk/data-product-platform',
+    cat: 'Java · Spring Boot',
+    title: 'Data Product Platform',
+    excerpt: 'Schema-driven marketplace for enterprise data products. JSON Schema as the single source of truth, auto-generating POJOs with three-layer validation and zero-code extensibility.',
+  },
+  {
+    url: 'https://github.com/techbitsvsk/twa-provisioner',
+    cat: 'Python · Terraform',
+    title: 'TWA Provisioner',
+    excerpt: 'Automated Fabric Trusted Workspace Access provisioning through ServiceNow change management, enforcing governance gates with full audit trails.',
+  },
+  {
+    url: 'https://github.com/techbitsvsk/catalog_sync',
+    cat: 'Apache Iceberg · OPA',
+    title: 'Catalog Sync',
+    excerpt: 'Platform-agnostic Iceberg catalog metadata replication with JWT auth, OPA policy enforcement, and row/column-level security across seven containerised services.',
+  },
+  {
+    url: 'https://github.com/techbitsvsk/multicloud_repo',
+    cat: 'PySpark · Multi-Cloud',
+    title: 'Multi-Cloud Data Pipeline',
+    excerpt: 'Medallion architecture (Bronze → Silver → Gold) running identically on AWS Glue, Microsoft Fabric, and local Spark with Terraform/Bicep IaC templates.',
+  },
+]
+
 const essays = [
   {
     path: '/writing/voronoi',
@@ -138,6 +165,34 @@ export default function Home() {
                 <span className="blog-card-link">Read Essay</span>
               </Link>
             ))}
+          </div>
+        </div>
+      </section>
+
+      {/* ── Open Source ──────────────────────────────────── */}
+      <section className="section">
+        <div className="container">
+          <p className="section-label">Open Source</p>
+          <h2 className="section-title">GitHub projects</h2>
+          <div className="blog-grid">
+            {projects.map(p => (
+              <a
+                key={p.url}
+                href={p.url}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="blog-card"
+                style={{ textDecoration: 'none' }}
+              >
+                <p className="blog-card-cat">{p.cat}</p>
+                <h3>{p.title}</h3>
+                <p>{p.excerpt}</p>
+                <span className="blog-card-link">View on GitHub</span>
+              </a>
+            ))}
+          </div>
+          <div style={{ marginTop: 32, textAlign: 'center' }}>
+            <Link to="/projects" className="btn btn-outline">All projects →</Link>
           </div>
         </div>
       </section>
