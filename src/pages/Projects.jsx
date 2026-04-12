@@ -34,8 +34,8 @@ const projects = [
     cat: 'Multi-Cloud · PySpark',
     title: 'Multi-Cloud Data Pipeline',
     description:
-      'Production-ready medallion architecture (Bronze → Silver → Gold) running identically on AWS Glue, Microsoft Fabric, and local Spark without code changes. Includes TPC-H dataset processing, 13 smoke tests, and comprehensive IaC templates (Terraform/Bicep) with 5-minute local Docker validation.',
-    stack: ['PySpark', 'Apache Iceberg', 'AWS Glue', 'Microsoft Fabric', 'Terraform', 'Bicep'],
+      'Production-ready medallion architecture (Bronze → Silver → Gold) running identically on AWS Glue, Microsoft Fabric, and local Spark without code changes. Azure validation in progress — extending the same Iceberg-native portability proof to Azure infrastructure. Includes TPC-H dataset processing, 13 smoke tests, and comprehensive IaC templates (Terraform/Bicep).',
+    stack: ['PySpark', 'Apache Iceberg', 'AWS Glue', 'Microsoft Fabric', 'Azure', 'Terraform', 'Bicep'],
   },
 ]
 

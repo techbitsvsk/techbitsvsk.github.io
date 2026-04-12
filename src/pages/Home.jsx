@@ -23,7 +23,7 @@ const projects = [
     url: 'https://github.com/techbitsvsk/multicloud_repo',
     cat: 'PySpark · Multi-Cloud',
     title: 'Multi-Cloud Data Pipeline',
-    excerpt: 'Medallion architecture (Bronze → Silver → Gold) running identically on AWS Glue, Microsoft Fabric, and local Spark with Terraform/Bicep IaC templates.',
+    excerpt: 'Medallion architecture (Bronze → Silver → Gold) running identically on AWS Glue, Microsoft Fabric, and local Spark. Azure validation in progress — same Iceberg portability proof, no rewrites.',
   },
 ]
 
@@ -200,45 +200,52 @@ export default function Home() {
               <p className="section-label">Background</p>
               <h2 className="section-title">Where the thinking comes from</h2>
               <p>
-                The projects here are not demos — they are distillations of problems I have solved
-                at scale. The <strong>Data Product Platform</strong> came from witnessing teams
-                duplicate schema definitions across dozens of pipelines; JSON Schema as the single
-                source of truth, auto-generating POJOs with three-layer validation, eliminated that class
-                of error entirely.
+                The work here is driven by a single architectural intent: build data infrastructure
+                that enterprises can trust, federate, and extend — without locking into any vendor,
+                platform, or team.
               </p>
               <p style={{ marginTop: '16px' }}>
-                The <strong>TWA Provisioner</strong> was born from the governance gap in Fabric deployments
-                — human admins creating workspace connections outside any approval workflow. Wiring
-                ServiceNow change management into the provisioning pipeline made governance structural,
-                not procedural.
+                That intent starts with the marketplace layer. Data products need to be discoverable,
+                contractually defined, and independently consumable — not buried in pipelines or
+                undocumented schemas. Schema-driven design, where a single contract auto-generates
+                the implementation, is what makes a marketplace governable at scale rather than just
+                a catalogue of hope.
               </p>
               <p style={{ marginTop: '16px' }}>
-                <strong>Catalog Sync</strong> tackled the hardest part of data mesh: keeping Iceberg
-                metadata consistent across platform boundaries without locking into any one catalog.
-                OPA policy enforcement and row/column-level security made it safe to federate without
-                losing control.
+                Below the marketplace sits the control plane — the layer that provisions, governs, and
+                secures without becoming a bottleneck. Separating the control plane from the data plane
+                means platform engineering enforces the guardrails structurally, while domain teams
+                retain full ownership of their data products. Governance flows from architecture,
+                not from approval queues.
               </p>
               <p style={{ marginTop: '16px' }}>
-                The <strong>Multi-Cloud Pipeline</strong> proved that medallion architecture can run
-                identically on AWS Glue, Microsoft Fabric, and local Spark — the same PySpark code,
-                the same Iceberg tables, validated by 13 smoke tests in under five minutes on Docker.
+                At the storage layer, Apache Iceberg is the answer to vendor lock-in. A polyglot
+                lakehouse built on open table formats runs the same logic on AWS Glue, Microsoft Fabric,
+                or local Spark — the catalog syncs across boundaries, the metadata travels with the data,
+                and the platform remains genuinely portable. Vendor-agnostic is not a procurement
+                position; it is an architectural proof.
+              </p>
+              <p style={{ marginTop: '16px' }}>
+                That proof is currently being extended into Azure — validating that the same
+                Iceberg-native medallion architecture holds on Azure infrastructure with the same
+                portability guarantees, no rewrites, no platform concessions.
               </p>
             </div>
             <div className="about-meta">
               <div className="meta-block">
-                <p className="meta-label">Core Disciplines</p>
-                <p className="meta-value">Platform Engineering · Data Governance</p>
-                <p className="meta-sub">Schema-driven design · Zero-trust provisioning · Policy-as-code · Multi-cloud lakehouse</p>
+                <p className="meta-label">Engineering Philosophy</p>
+                <p className="meta-value">Architect. Not Operator.</p>
+                <p className="meta-sub">Eliminate failure classes architecturally · Governance as structure, not process · Platform over product</p>
               </div>
               <div className="meta-block">
-                <p className="meta-label">Built With</p>
+                <p className="meta-label">Signature Patterns</p>
                 <div style={{ display: 'flex', flexWrap: 'wrap', gap: '6px', marginTop: '8px' }}>
-                  <span className="pill pill-blue">Apache Iceberg</span>
-                  <span className="pill pill-blue">Microsoft Fabric</span>
-                  <span className="pill pill-sage">OPA</span>
-                  <span className="pill pill-sage">Terraform</span>
-                  <span className="pill pill-grey">PySpark</span>
-                  <span className="pill pill-grey">Spring Boot</span>
+                  <span className="pill pill-blue">Schema-Driven Design</span>
+                  <span className="pill pill-blue">Zero-Trust Provisioning</span>
+                  <span className="pill pill-sage">Policy-as-Code</span>
+                  <span className="pill pill-sage">Multi-Cloud Portability</span>
+                  <span className="pill pill-grey">Federated Governance</span>
+                  <span className="pill pill-grey">ADR Standardisation</span>
                 </div>
               </div>
             </div>
