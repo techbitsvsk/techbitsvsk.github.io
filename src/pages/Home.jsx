@@ -101,12 +101,7 @@ export default function Home() {
             </div>
             <div className="hero-right fade-up-3">
               <div className="hero-avatar" title="Sravan Vadaga">
-                {/* Replace with: <img src="/assets/profile.jpg" alt="Sravan Vadaga" />
-                    once you've saved your LinkedIn photo to public/assets/profile.jpg */}
-                SV
-              </div>
-              <div className="hero-cert">
-                <span className="pill pill-sage">AWS SA – Professional</span>
+                <img src="/assets/profile.png" alt="Sravan Vadaga" />
               </div>
             </div>
           </div>
