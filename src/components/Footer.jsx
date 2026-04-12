@@ -4,7 +4,7 @@ export default function Footer() {
       <div className="footer-inner">
         <div>
           <p className="footer-brand">TechBitsVSK</p>
-          <p className="footer-tagline">Platform Architect · Data Engineering · Glasgow, Scotland</p>
+          <p className="footer-tagline">Data Strategist · Data Engineering · Glasgow, Scotland</p>
         </div>
         <div className="footer-links">
           <a href="https://github.com/techbitsvsk" target="_blank" rel="noopener noreferrer">GitHub</a>

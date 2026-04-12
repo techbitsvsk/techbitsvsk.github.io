@@ -60,7 +60,7 @@ export default function Home() {
           <div className="hero-grid">
             <div className="hero-left fade-up">
               <p className="hero-eyebrow">
-                Lead Platform Architect · VP · Barclays · Glasgow
+                Data Strategist · VP · Glasgow, Scotland
               </p>
               <h1 className="hero-name">Sravan Vadaga</h1>
               <p className="hero-title">
@@ -68,9 +68,9 @@ export default function Home() {
                 &nbsp;·&nbsp; AI/GenAI Platform Engineering
               </p>
               <p className="hero-desc">
-                18+ years building data platforms, leading engineering teams, and
-                turning architectural complexity into traceable, governed, and
-                intelligent systems at Barclays and JPMorgan Chase.
+                Techno-Functional Leader at the crossroads of Data Engineering, Cloud Transformation,
+                and Intelligent Automation — backed by 18+ years of global experience architecting
+                how enterprises redefine decision intelligence and achieve large-scale, sustainable growth.
               </p>
               <div className="hero-contact">
                 <a href="mailto:sravankvadaga@gmail.com">sravankvadaga@gmail.com</a>
@@ -205,25 +205,28 @@ export default function Home() {
               <p className="section-label">Background</p>
               <h2 className="section-title">Where the thinking comes from</h2>
               <p>
-                My career spans financial services infrastructure at scale — credit risk platforms
-                at JPMorgan Chase, regulatory transformation programmes, and the Enterprise Data
-                Platform at Barclays where GenAI, governance, and cloud architecture converge.
+                A Techno-Functional Leader at the strategic crossroads of Data Engineering, Cloud
+                Transformation, and Intelligent Automation, architecting how enterprises redefine
+                decision intelligence, accelerate digital innovation, and achieve large-scale,
+                sustainable growth.
               </p>
               <p style={{ marginTop: '16px' }}>
-                The writing here is a product of that work: real problems, real trade-offs, and
-                hard-won architectural patterns. Not vendor marketing. Not theory.
+                Backed by 18+ years of global experience, I have led mission-critical data
+                modernisation programmes, AI/GenAI enablement, and enterprise-grade platform
+                engineering across leading banks and digital-first organisations.
+              </p>
+              <p style={{ marginTop: '16px' }}>
+                My expertise extends to designing resilient, future-proof architectures — where
+                Architecture Decision Records are standardised across all platforms, including
+                GenAI, Data Lake, and enterprise integration ecosystems, ensuring consistency,
+                governance, and engineering discipline at scale.
               </p>
             </div>
             <div className="about-meta">
               <div className="meta-block">
-                <p className="meta-label">Current</p>
-                <p className="meta-value">Lead Platform Architect, VP</p>
-                <p className="meta-sub">Barclays · Glasgow · May 2023–present</p>
-              </div>
-              <div className="meta-block">
-                <p className="meta-label">Previous</p>
-                <p className="meta-value">VP Engineering Lead</p>
-                <p className="meta-sub">JPMorgan Chase · Feb 2016–May 2023</p>
+                <p className="meta-label">Industry</p>
+                <p className="meta-value">Banking & Financial Services</p>
+                <p className="meta-sub">18+ years across global banking — credit risk, regulatory transformation, enterprise data platforms</p>
               </div>
               <div className="meta-block">
                 <p className="meta-label">Domains</p>
