@@ -733,19 +733,31 @@ export default function VoronoiBlogPost() {
               {
                 number: "01",
                 title: "The Arbitration Board with Timeboxed Escalation",
-                body: "When two forces conflict — say, Security demanding network isolation that prevents the Data Marketplace from operating cross-cloud — establish a standing architecture forum with a fixed escalation window. The forum's mandate is not to pick a winner but to agree a minimum viable boundary: what is the least restrictive security posture that satisfies the threat model? What is the minimum marketplace capability that satisfies the domain's SLA? Timebox the resolution to two weeks. If unresolved, the platform default applies — which should always favour the more conservative force temporarily, with a documented review date. The key discipline is that the conflict is explicitly registered, owned, and time-limited. Unresolved force conflicts that drift without ownership are the most common cause of permanent deformation.",
+                paragraphs: [
+                  "Consider a conflict that appears in almost every enterprise cloud programme: the Chief Security Architect mandates that all PII must be tokenized in cloud storage, on top of data-at-rest encryption. The policy is architecturally correct. But the data engineering team has three billion records that need detokenizing for every ETL run. At that volume, the detokenize-process-retokenize cycle destroys pipeline performance and drives egress and compute costs to a level that makes the programme unviable. Security is not wrong. Engineering is not wrong. Neither team can resolve this unilaterally.",
+                  "This is the conflict that requires a standing architecture forum — not a one-off meeting, but a body with a fixed mandate and a fixed window. The mandate is not to pick a winner. It is to find the minimum security posture that satisfies the threat model without requiring per-record tokenization at ETL scale. In this case, the arbitrated resolution is a ring-fenced environment: a dedicated bucket with no public access, IAM scoped exclusively to the ETL pipeline, full audit logging on every access event, and a re-tokenization gate enforced before any data leaves the enclave. That is not a weaker control than tokenization — it is an equivalent control at a different layer.",
+                  "Timebox the resolution to two weeks. If unresolved, the conservative default applies — no raw PII in cloud storage — with a documented review date. The discipline is that the conflict is explicitly registered, owned, and time-limited. A tokenization debate that drifts for six months without ownership is how PII ends up in the wrong place with no paper trail. Unresolved force conflicts that drift are the most common cause of permanent deformation.",
+                ],
                 color: "#c87941",
               },
               {
                 number: "02",
                 title: "Temporary Bilateral SLAs as Guardrails",
-                body: "When a force cannot be brought to equilibrium globally, scope the imbalance explicitly. A Security Fortress deformation in the network layer does not have to infect the semantic layer. Define a bilateral SLA between the two forces in conflict — Security and Data Marketplace, for example — that specifies what the constrained force can do within the current constraints, and what the dominant force commits to relaxing over a defined timeline. This turns a structural imbalance into a managed transition. The bilateral SLA is reviewed quarterly. It prevents the temporary constraint from becoming permanent architecture by keeping the tension visible and contractually bounded.",
+                paragraphs: [
+                  "The instinct to centralise all firm logs is architecturally sound. One SIEM, one enforcement team, one audit trail — Security has a single control point and can enforce policy consistently. In a single-cloud environment, this is straightforward. In multi-cloud, it becomes a cost problem: moving all logs from every cloud provider into a central store means paying egress on every authentication event, every pipeline run, every debug trace. At enterprise log volumes, the majority of that data is operational noise the security team will never query. The centralisation mandate, applied uniformly, creates unnecessary cost without proportionate security benefit.",
+                  "The bilateral SLA resolves this by scoping the imbalance rather than eliminating it. Security and Platform Engineering agree in writing: security-critical logs — authentication events, privilege escalation, policy violations, anomaly detections — flow centrally. The SIEM has everything it needs to satisfy the threat model and the audit requirement. Operational and debug logs remain at cloud level, governed by locally deployed OPA policies that mirror the central ruleset. Security gets its enforcement capability where it matters. Platform Engineering avoids egress cost for logs that serve no security purpose.",
+                  "The SLA is reviewed quarterly. If the threat model changes and additional log categories are needed centrally, the agreement is updated explicitly — not silently expanded. This is what prevents a temporary constraint from hardening into permanent architecture: the tension stays visible, named, and contractually bounded. Neither force has quietly absorbed the other.",
+                ],
                 color: "#7b9eb8",
               },
               {
                 number: "03",
                 title: "Guardrail Automation Enforcing Minimums",
-                body: "The most durable pattern: encode the minimum acceptable posture for every force as automated policy, enforced in CI before any infrastructure change is applied. OPA policies asserting that no domain provisioning can proceed without observability agents configured. Terraform checks that reject workspace creation without a governance classification tag. Pipeline gates that block model registration without lineage metadata. These automation guardrails do not achieve equilibrium — but they prevent any force from being driven below its minimum viable contribution. A platform with enforced minimums across all six forces will deform under pressure but will not collapse. It preserves the geometry's skeleton even when the flesh is under stress.",
+                paragraphs: [
+                  "In most enterprises, three teams share responsibility for the data platform: Central Cloud Operations, which provisions infrastructure and enforces cloud-level controls — networking, IAM, cost tagging; the Data Platform team, which applies data governance baselines — classification tags, observability agents, policy gates; and Data Application teams, which build and consume data products. Each team's automation is solid within its own boundary. The problem is the seam between them.",
+                  "Cloud Ops provisions a workspace and raises a ticket to Data Platform. Data Platform configures governance baselines and raises a ticket to the product team. Each handoff is a queue. The automation exists — it just stops at the team boundary. Time to market collapses not within teams but between them, and the cause is invisible because no individual team is slow.",
+                  "The guardrail automation pattern makes the handoff structural rather than procedural. Cloud Ops Terraform completes workspace provisioning and automatically triggers the Data Platform module, which applies governance classification, deploys observability agents, and validates policy baselines. The workspace is handed to the data product team with a notification, fully configured. No ticket. No queue. Cloud Ops and Data Platform collaborate once — to design and agree the automation chain — and then it runs without coordination overhead on every subsequent provisioning event. A workspace that has not passed all six force minimums cannot be handed over. The geometry is enforced by the pipeline, not by process.",
+                ],
                 color: "#8aab7a",
               },
             ].map((p, i) => (
@@ -778,8 +790,13 @@ export default function VoronoiBlogPost() {
                   fontSize: "0.92rem",
                   color: "#8a7a65",
                   lineHeight: 1.8,
+                  display: "flex",
+                  flexDirection: "column",
+                  gap: "0.9rem",
                 }}>
-                  {p.body}
+                  {p.paragraphs.map((para, j) => (
+                    <p key={j} style={{ margin: 0 }}>{para}</p>
+                  ))}
                 </div>
               </div>
             ))}
@@ -787,7 +804,9 @@ export default function VoronoiBlogPost() {
 
           <P>
             These patterns do not replace the equilibrium target. They are the engineering discipline
-            for moving toward it when the organisational physics won't allow a direct path.
+            for moving toward it when the organisational physics won't allow a direct path. Each one
+            keeps the conflict visible, owned, and bounded — which is the minimum condition for
+            recovery. Hidden imbalances calcify. Named ones can be resolved.
           </P>
         </Section>
 
