@@ -490,7 +490,7 @@ export default function VoronoiBlogPost() {
             The mathematics of equal competing forces, drawn as boundaries of equidistance, solved a
             public health crisis. The same mathematics governs the hexagonal columns rising from the sea
             at the Giant's Causeway — cooling lava contracting under equal thermal stress, fracturing
-            always at 120°, always hexagonal, because that is the geometry of equilibrium. It governs
+            near 120° — approximately hexagonal, because that is the geometry closest to equilibrium under equal stress. It governs
             honeycomb, soap bubbles meeting in foam, the cell walls of living tissue, the territories of
             nesting animals.
           </P>
@@ -550,7 +550,7 @@ export default function VoronoiBlogPost() {
               color: "#4a4035",
               textAlign: "center",
             }}>
-              The Voronoi Platform Architecture — six sovereign forces at 120° equilibrium
+              The Voronoi Platform Architecture — six sovereign forces in approximate equilibrium
             </div>
           </div>
 
@@ -629,7 +629,7 @@ export default function VoronoiBlogPost() {
         </Section>
 
         {/* 120° Principle */}
-        <Section title="The 120° Principle">
+        <Section title="The 120° Principle (Approximate Equilibrium)">
           <P style={{ color: "#9a8a75" }}>
             <em>This section is for architects and platform leads making decisions about how forces
             are governed at their boundaries — not which tools to use, but how authority is
@@ -641,12 +641,12 @@ export default function VoronoiBlogPost() {
             million years of cooling lava to arrive at it.
           </P>
           <P>
-            In the basalt columns at the Giant's Causeway, adjacent fractures meet at 120°. Not because
-            a geologist calculated the optimal angle. Because at 120°, neither crack dominates the
-            other. The thermal stress is perfectly distributed across the boundary. The structure is
-            stable. Any other angle — any departure from 120° — creates an asymmetric stress field that
-            will eventually fracture further, or cause neighbouring cells to absorb the imbalance until
-            they too crack.
+            In the basalt columns at the Giant's Causeway, adjacent fractures meet at approximately 120°.
+            Not because a geologist calculated the optimal angle. Because near 120°, neither crack
+            dominates the other. The thermal stress is distributed as evenly as conditions allow across
+            the boundary. The structure is stable. Any significant departure from that angle — any
+            meaningful asymmetry — creates a stress field that will eventually fracture further, or
+            cause neighbouring cells to absorb the imbalance until they too crack.
           </P>
           <P>
             In the Voronoi diagram, the boundary between any two cells is the line of points exactly
@@ -699,9 +699,9 @@ export default function VoronoiBlogPost() {
           </div>
 
           <PullQuote>
-            When every adjacent boundary is at equilibrium — when no force dominates its neighbour —
-            the platform is hexagonal. Stable. Like the basalt column. Like the Voronoi cell. Like the
-            honeycomb.
+            When every adjacent boundary is near equilibrium — when no force meaningfully dominates
+            its neighbour — the platform stabilises. The exact angle matters less than the balance.
+            Like the basalt column. Like the Voronoi cell. Like the honeycomb.
           </PullQuote>
 
           <P>
@@ -713,7 +713,7 @@ export default function VoronoiBlogPost() {
         {/* When Equality Isn't Possible */}
         <Section title="When Equality Isn't Possible">
           <P>
-            The 120° principle is an architectural target, not an organisational given. Real enterprises
+            The 120° principle is an approximation and an architectural target, not an exact value or an organisational given. The actual angle at any boundary is determined by the interdependencies — regulatory constraints, ownership structures, budget realities, and the maturity of each force. Real enterprises
             have legacy systems that pre-date the mesh, budget cycles that fund one force at the expense
             of others, and CISOs who will not cede ground regardless of the geometric argument. Acknowledging
             this is not a concession — it is the starting point for practical progress.
@@ -1003,7 +1003,7 @@ export default function VoronoiBlogPost() {
             snapshot and domain data product version that produced the training set. The model output
             is published to the marketplace as a new data product — with its own domain owner, SLA,
             and quality contract. When the model drifts, the observability plane detects it and alerts
-            the domain owner. The intelligence force and the physical sovereignty force are at 120°.
+            the domain owner. The intelligence force and the physical sovereignty force are in balance — the angle between them shaped by the nature of the data, the regulatory context, and the governance model in play.
           </P>
           <P>
             A business analyst asking a natural language question via a GenAI interface receives a
@@ -1011,22 +1011,21 @@ export default function VoronoiBlogPost() {
             which snapshot. The response is auditable. The inference event is logged. If the analyst
             lacks clearance to access Confidential data, the AI layer does not surface it — not because
             a human checked, but because the classification from the governance plane flows through to
-            the AI serving layer automatically. The intelligence and security forces are at 120°.
+            the AI serving layer automatically. The intelligence and security forces are in approximate equilibrium — neither dominating, each constraining the other proportionally to the sensitivity of the data involved.
           </P>
           <P>
             A Salesforce account manager opens a customer record and finds a real-time risk score,
             a propensity model output, and a next-best-action recommendation — all computed by the
             lakehouse, published to the marketplace, and consumed by the CRM integration without a
             single bespoke pipeline. The data marketplace force and the physical sovereignty force
-            are at 120°. The operational system is intelligent because the analytical platform
-            treats it as a first-class consumer.
+            are near equilibrium — the exact balance shifting with the complexity of the integration. The operational system is intelligent because the analytical platform treats it as a first-class consumer.
           </P>
           <P>
             An auditor asking who approved the Snowflake instance serving the revenue report receives a
             complete answer: the ARB submission reference, the Terraform module version, the Git commit
             SHA, the pipeline run that applied it, the SPN that executed it, and the lineage from that
             infrastructure event to the current table state. Infrastructure lineage and data lineage
-            are the same graph. The governance and physical sovereignty forces are at 120°.
+            are the same graph. The governance and physical sovereignty forces are in equilibrium — the boundary between them drawn by the interdependencies of the organisation, not by a fixed geometric rule.
           </P>
 
           <PullQuote>
