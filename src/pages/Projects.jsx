@@ -11,13 +11,13 @@ const projects = [
     stack: ['Java', 'Spring Boot 3.2', 'JSON Schema', 'Swagger UI'],
   },
   {
-    slug: 'twa-provisioner',
-    url: 'https://github.com/techbitsvsk/twa-provisioner',
-    cat: 'Platform Automation · Python',
-    title: 'TWA Provisioner',
+    slug: 'fabric-automation',
+    url: 'https://github.com/techbitsvsk/fabric_automation',
+    cat: 'Platform Engineering · Python',
+    title: 'Fabric Control Plane',
     description:
-      'Automated provisioning system for Microsoft Fabric Trusted Workspace Access. Orchestrates workspace identity creation and Azure RBAC configuration through ServiceNow change management, enforcing governance gates with full audit trails via Git and ServiceNow workflows.',
-    stack: ['Python', 'Terraform', 'Microsoft Fabric', 'ServiceNow', 'Azure RBAC'],
+      'Idempotent, API-driven provisioning and governance for Microsoft Fabric workspaces. Accepts a workspace specification via REST API or YAML and drives the full lifecycle — capacity assignment, domain binding, and Azure AD role reconciliation. Deployable as a standalone FastAPI service or Azure Functions app with zero rewrites, Entra ID JWT auth, structured JSON logging, and full Bicep IaC.',
+    stack: ['Python', 'FastAPI', 'Azure Functions', 'Microsoft Fabric', 'Bicep', 'Entra ID'],
   },
   {
     slug: 'catalog_sync',
