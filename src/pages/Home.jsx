@@ -8,12 +8,6 @@ const projects = [
     excerpt: 'Schema-driven marketplace for enterprise data products. JSON Schema as the single source of truth, auto-generating POJOs with three-layer validation and zero-code extensibility.',
   },
   {
-    url: 'https://github.com/techbitsvsk/twa-provisioner',
-    cat: 'Python · Terraform',
-    title: 'TWA Provisioner',
-    excerpt: 'Automated Fabric Trusted Workspace Access provisioning through ServiceNow change management, enforcing governance gates with full audit trails.',
-  },
-  {
     url: 'https://github.com/techbitsvsk/catalog_sync',
     cat: 'Apache Iceberg · OPA',
     title: 'Catalog Sync',
@@ -114,7 +108,7 @@ export default function Home() {
             </div>
             <div className="hero-metric">
               <span className="metric-num">8<small>mo</small></span>
-              <span className="metric-label">MRIA Delivery<br />vs 3-year baseline</span>
+              <span className="metric-label">Regulatory Delivery<br />vs 3-year baseline</span>
             </div>
             <div className="hero-metric">
               <span className="metric-num">70%</span>
@@ -200,35 +194,46 @@ export default function Home() {
               <p className="section-label">Background</p>
               <h2 className="section-title">Where the thinking comes from</h2>
               <p>
-                The work here is driven by a single architectural intent: build data infrastructure
-                that enterprises can trust, federate, and extend — without locking into any vendor,
-                platform, or team.
+                The thinking here starts with a real constraint: regulatory requirements forcing a
+                hybrid architecture where 5% of data must remain on-premises while 95% runs in
+                the cloud. That boundary — not a preference, a compliance obligation — became the
+                forcing function for everything that followed.
               </p>
               <p style={{ marginTop: '16px' }}>
-                That intent starts with the marketplace layer. Data products need to be discoverable,
-                contractually defined, and independently consumable — not buried in pipelines or
-                undocumented schemas. Schema-driven design, where a single contract auto-generates
-                the implementation, is what makes a marketplace governable at scale rather than just
-                a catalogue of hope.
+                The first architectural response was a <em>Build Once, Run Anywhere</em> framework.
+                The same ETL logic, executing without modification on AWS Glue, Microsoft Fabric,
+                and local Spark. That portability demand led to a deep analysis of open table
+                formats, and Apache Iceberg emerged as the answer — ACID semantics, schema
+                evolution, time-travel, and a REST catalog interface (Nessie) that lets data
+                travel across platform boundaries or be accessed from a single point without
+                duplication. Vendor-agnostic is not a procurement position; it is a provable
+                architectural guarantee.
               </p>
               <p style={{ marginTop: '16px' }}>
-                Below the marketplace sits the control plane — the layer that provisions, governs, and
-                secures without becoming a bottleneck. Separating the control plane from the data plane
-                means platform engineering enforces the guardrails structurally, while domain teams
-                retain full ownership of their data products. Governance flows from architecture,
-                not from approval queues.
+                Portability alone is not enough. Data must also be discoverable, its lineage
+                traceable, and its quality observable. That is where a central platform layer
+                becomes load-bearing — not as a bottleneck, but as the entity that tracks
+                what exists, where it came from, and who can consume it. Data mesh fundamentals
+                gave the federated ownership model; the marketplace gave it a contractual interface.
+                Data products are discoverable, schema-defined, and independently consumable —
+                not buried in pipelines or undocumented schemas.
               </p>
               <p style={{ marginTop: '16px' }}>
-                At the storage layer, Apache Iceberg is the answer to vendor lock-in. A polyglot
-                lakehouse built on open table formats runs the same logic on AWS Glue, Microsoft Fabric,
-                or local Spark — the catalog syncs across boundaries, the metadata travels with the data,
-                and the platform remains genuinely portable. Vendor-agnostic is not a procurement
-                position; it is an architectural proof.
+                From the marketplace, a range of consumption patterns emerge: OLAP workloads
+                running analytical queries across the lakehouse, OLTP patterns requiring
+                low-latency access, and data product teams building interoperable applications
+                across cloud boundaries. Iceberg's ACID guarantees hold the consistency model
+                across all of them — the same table serving the same truth regardless of which
+                compute engine reads it.
               </p>
               <p style={{ marginTop: '16px' }}>
-                That proof is currently being extended into Azure — validating that the same
-                Iceberg-native medallion architecture holds on Azure infrastructure with the same
-                portability guarantees, no rewrites, no platform concessions.
+                Holding the entire stack together is platform governance — not a department, but
+                an architectural layer. Zero-trust security, cybersecurity controls, provisioning
+                gates, policy enforcement, marketplace contracts, and observability do not operate
+                in isolation. In the Voronoi stability model, these six forces balance each other:
+                when any one expands without the others, the structure deforms. The platform
+                engineering challenge is keeping them in equilibrium — at enterprise scale,
+                across jurisdictions, without manual intervention.
               </p>
             </div>
             <div className="about-meta">
@@ -240,9 +245,9 @@ export default function Home() {
               <div className="meta-block">
                 <p className="meta-label">Signature Patterns</p>
                 <div style={{ display: 'flex', flexWrap: 'wrap', gap: '6px', marginTop: '8px' }}>
-                  <span className="pill pill-blue">Schema-Driven Design</span>
+                  <span className="pill pill-blue">Project to Product Approach</span>
                   <span className="pill pill-blue">Zero-Trust Provisioning</span>
-                  <span className="pill pill-sage">Policy-as-Code</span>
+                  <span className="pill pill-sage">Build Once Run Any where</span>
                   <span className="pill pill-sage">Multi-Cloud Portability</span>
                   <span className="pill pill-grey">Federated Governance</span>
                   <span className="pill pill-grey">ADR Standardisation</span>
