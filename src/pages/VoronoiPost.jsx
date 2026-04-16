@@ -565,6 +565,71 @@ function PersonaSwitcher({ personas }) {
   );
 }
 
+function OrgStructureMap({ structures }) {
+  const [active, setActive] = useState(null);
+  const s = active !== null ? structures[active] : null;
+  return (
+    <div>
+      <div style={{ display: "grid", gridTemplateColumns: "repeat(3, 1fr)", gap: 1, background: "#1a1a1a", border: "1px solid #1e1e1e", marginBottom: 1 }}>
+        {structures.map((org, i) => (
+          <button key={i} onClick={() => setActive(active === i ? null : i)} style={{
+            background: active === i ? org.color + "18" : "#0d0d0d",
+            border: "none",
+            borderBottom: active === i ? `2px solid ${org.color}` : "2px solid transparent",
+            padding: "1rem 0.75rem",
+            cursor: "pointer",
+            display: "flex",
+            flexDirection: "column",
+            alignItems: "center",
+            gap: 8,
+            transition: "background 0.2s, border-color 0.2s",
+          }}>
+            <DeformationChart shape={org.shape} color={active === i ? org.color : "#4a4035"} size={88} />
+            <div style={{ fontFamily: "'JetBrains Mono', monospace", fontSize: "0.58rem", color: active === i ? org.color : "#3a3028", textAlign: "center", lineHeight: 1.5, transition: "color 0.2s" }}>
+              {org.name}
+            </div>
+          </button>
+        ))}
+      </div>
+      {s ? (
+        <div style={{ background: "#0d0d0d", border: `1px solid ${s.color}33`, borderLeft: `3px solid ${s.color}`, padding: "1.5rem" }}>
+          <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", flexWrap: "wrap", gap: 8, marginBottom: "1rem" }}>
+            <div>
+              <div style={{ fontFamily: "'Playfair Display', Georgia, serif", fontSize: "1.1rem", fontWeight: 700, color: s.color, marginBottom: 4 }}>{s.name}</div>
+              <div style={{ fontFamily: "'JetBrains Mono', monospace", fontSize: "0.6rem", color: "#4a4035" }}>{s.industry}</div>
+            </div>
+            <span style={{ background: s.color + "15", border: `1px solid ${s.color}33`, color: s.color, padding: "3px 10px", fontFamily: "'JetBrains Mono', monospace", fontSize: "0.58rem", whiteSpace: "nowrap" }}>
+              {s.dominant}
+            </span>
+          </div>
+          <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "1rem", marginBottom: "1.25rem" }}>
+            <div>
+              <div style={{ fontFamily: "'JetBrains Mono', monospace", fontSize: "0.56rem", color: "#4a4035", letterSpacing: "0.1em", textTransform: "uppercase", marginBottom: 6 }}>Governance model</div>
+              <p style={{ margin: 0, color: "#8a7a65", fontSize: "0.84rem", lineHeight: 1.72 }}>{s.governance}</p>
+            </div>
+            <div>
+              <div style={{ fontFamily: "'JetBrains Mono', monospace", fontSize: "0.56rem", color: "#4a4035", letterSpacing: "0.1em", textTransform: "uppercase", marginBottom: 6 }}>To move toward balance</div>
+              <p style={{ margin: 0, color: "#8a7a65", fontSize: "0.84rem", lineHeight: 1.72 }}>{s.gap}</p>
+            </div>
+          </div>
+          <div style={{ display: "flex", flexDirection: "column", gap: 7 }}>
+            {s.traits.map((t, i) => (
+              <div key={i} style={{ display: "flex", gap: 10 }}>
+                <span style={{ color: s.color, fontFamily: "'JetBrains Mono', monospace", fontSize: "0.6rem", paddingTop: 3, flexShrink: 0 }}>—</span>
+                <span style={{ color: "#6a5a4a", fontSize: "0.87rem", lineHeight: 1.72 }}>{t}</span>
+              </div>
+            ))}
+          </div>
+        </div>
+      ) : (
+        <div style={{ background: "#0d0d0d", border: "1px solid #1a1a1a", padding: "0.9rem", textAlign: "center" }}>
+          <span style={{ fontFamily: "'JetBrains Mono', monospace", fontSize: "0.6rem", color: "#2e2620" }}>click an archetype to see its governance model</span>
+        </div>
+      )}
+    </div>
+  );
+}
+
 // ── page ──────────────────────────────────────────────────────────────────────
 
 export default function VoronoiBlogPost() {
@@ -761,7 +826,26 @@ export default function VoronoiBlogPost() {
           </p>
         </section>
 
-        {/* 4. Three patterns */}
+        {/* 4. Org structure archetypes */}
+        <section style={{ marginBottom: "3rem" }}>
+          <h2 style={{ fontFamily: "'Playfair Display', Georgia, serif", fontSize: "1.5rem", fontWeight: 700, color: "#e8d5b0", marginBottom: "1rem", marginTop: 0, letterSpacing: "-0.02em" }}>
+            Six org archetypes — which is yours?
+          </h2>
+          <p style={prose}>
+            The deformation your platform shows is usually a direct reflection of how your organisation is
+            structured and what governance standard it inherited. Each archetype below has a characteristic
+            force signature. The dashed outline is the ideal hexagon; the filled shape is what the archetype
+            typically looks like in practice.
+          </p>
+          <OrgStructureMap structures={orgStructures} />
+          <p style={{ ...prose, marginTop: "1.5rem", color: "#6a5a4a" }}>
+            Most real organisations sit between two archetypes — the force distribution shifts as programmes
+            mature, as acquisitions land, and as regulatory pressure changes. The hexagon is a diagnostic,
+            not a verdict.
+          </p>
+        </section>
+
+        {/* 5. Three patterns */}
         <section style={{ marginBottom: "3rem" }}>
           <h2 style={{ fontFamily: "'Playfair Display', Georgia, serif", fontSize: "1.5rem", fontWeight: 700, color: "#e8d5b0", marginBottom: "1rem", marginTop: 0, letterSpacing: "-0.02em" }}>
             Three patterns that restore the balance
