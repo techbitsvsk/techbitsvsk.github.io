@@ -1,138 +1,352 @@
 import { useState, useEffect } from "react";
 
-const post = {
-  series: "The Voronoi Platform Architecture",
-  episode: "Part I",
-  title: "The Equilibrium Principle for Enterprise Data",
-  subtitle: "The mathematics of equal forces — and what it means for enterprise data",
-  author: "Sravan Vadaga",
-  readTime: "14 min read",
-  date: "April 2026",
+// ── shared style constants ────────────────────────────────────────────────────
+
+const prose = {
+  fontFamily: "'Lora', Georgia, serif",
+  fontSize: "1rem",
+  lineHeight: 1.85,
+  color: "#c8bfb0",
+  marginTop: 0,
+  marginBottom: "1.1rem",
 };
 
+// ── data ─────────────────────────────────────────────────────────────────────
+
 const forces = [
+  { id: 1, angle: 90,   label: "Physical Sovereignty", short: "Storage & Compute", color: "#c87941",
+    description: "Each domain owns its storage and compute end-to-end — not just the data, but the engine that processes it. Without this, teams are tenants in someone else's infrastructure, waiting in queues they don't control. This is what DAMA BOK's Data Architecture and Data Storage disciplines protect." },
+  { id: 2, angle: 30,   label: "Intelligence",          short: "AI & ML",           color: "#7b9eb8",
+    description: "The force that turns data into decisions — predictions, recommendations, generative answers. In data modernisation this is where AI sits. Powerful when governed. Dangerous when models train on unclassified data or produce outputs nobody can audit." },
+  { id: 3, angle: -30,  label: "Data Marketplace",      short: "Marketplace",       color: "#8aab7a",
+    description: "The exchange layer where data products are published, discovered, and consumed. Data Mesh calls this 'data as a product' — the principle that domain outputs are first-class, governed, contractual assets. Without this force, every data share is a bilateral agreement negotiated by hand." },
+  { id: 4, angle: -90,  label: "Observability",         short: "Health",            color: "#b8847b",
+    description: "The platform's ability to see itself — pipeline health, query latency, cost signals, AI model drift. DAMA BOK's Data Quality and Metadata Management disciplines live here. Problems that aren't visible aren't fixed until they're catastrophic." },
+  { id: 5, angle: -150, label: "Governance",            short: "Policy",            color: "#9b8ab8",
+    description: "Every dataset knows its owner, its classification, and its regulatory obligations — enforced as policy, not as a catalogue entry nobody reads. DAMA BOK's Data Governance framework and Data Mesh's federated computational governance both point here." },
+  { id: 6, angle: 150,  label: "Security",              short: "Zero Trust",        color: "#b8a87a",
+    description: "Identity, access, encryption, audit trail — the conditions under which all other forces operate. When this force dominates, nothing ships. When it's absent, everything is at risk. DAMA BOK's Data Security discipline is the foundation; zero-trust is the modern implementation." },
+];
+
+const frameworkAlignment = [
   {
-    id: 1,
-    angle: 90,
-    label: "Physical Sovereignty",
-    short: "Storage & Compute",
+    name: "DAMA BOK",
+    sub: "11 data management disciplines",
     color: "#c87941",
-    description:
-      "Domain-owned storage and compute as a single sovereign unit. Each domain owns its lakehouse, its engines, and its data products. The immutable ground truth no process, model, or engineer can quietly rewrite.",
+    rows: [
+      "Data Architecture + Storage → Physical Sovereignty",
+      "Data Governance → Governance force",
+      "Data Security → Security force",
+      "Data Quality + Metadata → Observability",
+      "Integration + Interoperability → Marketplace",
+      "Data Warehousing + BI → Intelligence",
+    ],
   },
   {
-    id: 2,
-    angle: 30,
-    label: "Intelligence",
-    short: "AI & ML",
+    name: "Data Mesh",
+    sub: "4 operating principles",
     color: "#7b9eb8",
-    description:
-      "Prediction, inference, generative response. Hungry and powerful — the force that turns data into decisions.",
+    rows: [
+      "Domain ownership → Physical Sovereignty",
+      "Data as a product → Marketplace",
+      "Self-serve platform → Automation / Platform Eng",
+      "Federated governance → Governance ↔ Security",
+    ],
   },
   {
-    id: 3,
-    angle: -30,
-    label: "Data Marketplace",
-    short: "Marketplace",
+    name: "AI Modernisation",
+    sub: "The accelerant that makes balance urgent",
     color: "#8aab7a",
-    description:
-      "The governed exchange layer where domain data products are published, discovered, and consumed — internally across domains and externally with SaaS and PaaS ecosystems. Not ingestion pipelines. A living marketplace of trusted data products.",
-  },
-  {
-    id: 4,
-    angle: -90,
-    label: "Observability",
-    short: "Health",
-    color: "#b8847b",
-    description:
-      "The platform's nervous system. Pipeline health, inference telemetry, cost signals. A platform that cannot see itself cannot be trusted.",
-  },
-  {
-    id: 5,
-    angle: -150,
-    label: "Governance",
-    short: "Policy",
-    color: "#9b8ab8",
-    description:
-      "Provenance, classification, lineage, accountability. The force that makes data trustworthy to regulators, auditors, and the organisation.",
-  },
-  {
-    id: 6,
-    angle: 150,
-    label: "Security",
-    short: "Zero Trust",
-    color: "#b8a87a",
-    description:
-      "Not a feature. Not a layer. A sovereign force asking of every other force: on what terms?",
+    rows: [
+      "Training data quality → stresses Governance",
+      "Model lineage → stresses Observability",
+      "Inference access control → stresses Security",
+      "Model outputs as products → stresses Marketplace",
+      "Cross-domain training → stresses Physical Sovereignty",
+    ],
   },
 ];
 
 const deformations = [
-  {
-    name: "The Security Fortress",
-    symptom: "Secure and unused",
-    shape: [0.5, 1.0, 0.5, 0.5, 0.5, 0.5],
-    description:
-      "Security consumes the geometry. Provisioning takes months. AI is blocked. Marketplace connectivity is strangled by gateway controls. Domain teams cannot publish or consume data products without six approval layers. The platform is a fortress nobody enters voluntarily.",
-    industry: "Banking · Insurance · Defence",
-    color: "#b8847b",
-  },
-  {
-    name: "The Data Swamp",
-    symptom: "Petabytes, no answers",
+  { name: "The Security Fortress", symptom: "Secure and unused",
+    shape: [0.5, 0.4, 0.4, 0.5, 0.5, 1.0],
+    description: "Provisioning takes months. Every connection needs six approval layers. Teams route around the platform — shadow IT, local extracts, email attachments. Technically secure. Nobody uses it.",
+    industry: "Banking · Insurance · Defence", color: "#b8847b" },
+  { name: "The Data Swamp", symptom: "Petabytes, no answers",
     shape: [1.0, 0.3, 0.3, 0.2, 0.3, 0.4],
-    description:
-      "The physical layer grew unchecked. Storage is vast and compute is abundant. Ingestion pipelines multiply. But no domain owns anything — a central team owns everything and nobody is accountable. Data products don't exist. Consumers queue for access to raw tables nobody trusts. Governance is aspirational. The marketplace is empty.",
-    industry: "Enterprise · Data Lake Era 2015–2020",
-    color: "#c87941",
-  },
-  {
-    name: "The AI Gold Rush",
-    symptom: "Exciting until the regulator arrives",
+    description: "Central team owns everything, so no domain is accountable. Data products don't exist. Consumers queue for raw tables nobody trusts. Vast storage. No answers.",
+    industry: "Enterprise · Data Lake Era 2015–2020", color: "#c87941" },
+  { name: "The AI Gold Rush", symptom: "Exciting until the regulator arrives",
     shape: [0.5, 1.0, 0.6, 0.4, 0.2, 0.3],
-    description:
-      "Post-2023. GenAI use cases explode faster than governance responds. Models train on unclassified data. Inference is ungoverned. The hexagon collapses inward.",
-    industry: "Tech · Financial Services · Healthcare",
-    color: "#7b9eb8",
-  },
-  {
-    name: "The Vendor Republic",
-    symptom: "Locally rational, globally chaotic",
+    description: "GenAI use cases shipped faster than governance responded. Models trained on unclassified data. When the auditor asked who approved the training set, nobody could answer.",
+    industry: "Tech · Financial Services · Healthcare", color: "#7b9eb8" },
+  { name: "The Vendor Republic", symptom: "Locally rational, globally chaotic",
     shape: [0.6, 0.5, 0.7, 0.4, 0.3, 0.5],
-    description:
-      "Finance chose Snowflake. Marketing chose Databricks. Operations chose Fabric. Each domain owns its compute — which is correct data mesh thinking — but nobody owns the interoperability. No federated catalog. No shared data product contracts. No marketplace where domains can discover each other's products. Domain sovereignty without platform coherence.",
-    industry: "Large Enterprise · Post-Merger",
-    color: "#8aab7a",
+    description: "Finance chose Snowflake. Marketing chose Databricks. Correct in principle — but no shared catalog, no data product contracts, no marketplace. Domain autonomy without platform coherence.",
+    industry: "Large Enterprise · Post-Merger", color: "#8aab7a" },
+  { name: "The Compliance Theatre", symptom: "Looks governed, isn't",
+    shape: [0.5, 0.4, 0.4, 0.4, 0.9, 0.5],
+    description: "A catalogue from three years ago. Classification tags that exist in Purview but don't drive access decisions. Governance as decoration, not enforcement.",
+    industry: "Regulated Industries · Post-Audit", color: "#9b8ab8" },
+];
+
+const orgStructures = [
+  {
+    name: "Regulated Institution",
+    tagline: "Secure. Slow. Shadow IT everywhere.",
+    industry: "Banking · Insurance · Defence · Government",
+    dominant: "Security dominant",
+    shape: [0.5, 0.3, 0.35, 0.65, 0.85, 1.0],
+    color: "#b8847b",
+    governance: "Formal approval chains, risk-rated change control, BCBS 239 and DORA compliance mandates. Every data movement requires written sign-off before it executes.",
+    gap: "Automate policy enforcement at the pipeline layer. Shift approvals from human sign-offs to machine policy checks. The control posture doesn't change — the delivery mechanism does.",
+    traits: [
+      "Provisioning takes months. Each approval layer is individually fast; in sequence they are lethal.",
+      "Shadow IT is rampant — teams build local extracts because the platform is too slow to serve them.",
+      "Security is structurally sound. The problem is that nothing can move through it at speed.",
+    ],
   },
   {
-    name: "The Compliance Theatre",
-    symptom: "Looks governed, isn't",
-    shape: [0.5, 0.4, 0.4, 0.4, 0.9, 0.5],
-    description:
-      "A data catalogue populated three years ago. Lineage covering ETL but not AI inference. Classification tags that exist in Purview but don't drive access decisions. Governance as decoration.",
-    industry: "Regulated Industries · Post-Audit",
+    name: "Domain-Led Platform",
+    tagline: "Autonomy without a shared policy spine.",
+    industry: "Tech · Mature Scale-Ups · Post-Data Mesh Adoption",
+    dominant: "Physical Sovereignty dominant",
+    shape: [0.9, 0.65, 0.85, 0.65, 0.55, 0.5],
+    color: "#8aab7a",
+    governance: "Federated computational governance — each domain enforces its own policy. Data contracts defined per product. Central catalogue exists but enforcement quality varies by domain maturity.",
+    gap: "Federated governance needs a shared policy spine. Individual domain contracts must resolve against a common classification hierarchy or cross-domain audit queries become impossible.",
+    traits: [
+      "Domains ship fast. Autonomy is real. Policy enforcement quality varies by team maturity.",
+      "The marketplace works — but discovering cross-domain lineage requires knowing which domain to ask.",
+      "AI use cases emerging without a clear answer to: whose training data classification governs the model?",
+    ],
+  },
+  {
+    name: "Centralised Data Team",
+    tagline: "Accurate catalogue. Single queue.",
+    industry: "Enterprise · Pre-Mesh Era 2015–2022 · Regulated Scale",
+    dominant: "Governance dominant",
+    shape: [0.3, 0.45, 0.3, 0.85, 0.9, 0.65],
     color: "#9b8ab8",
+    governance: "Central stewardship team owns the catalogue, classification, and all domain access decisions. Manual lineage captured after the fact. SLAs defined centrally, enforced manually.",
+    gap: "Automate what stewards are doing by hand. Move catalogue registration into the provisioning pipeline. Let stewards set policy — not execute it for every request.",
+    traits: [
+      "The catalogue is accurate. Every dataset has an owner. Nothing moves without central sign-off.",
+      "Time to first data product: 3–6 weeks. Not because anyone is slow — the central team is a single queue.",
+      "Productivity scales with headcount in the central team, not with the number of domains.",
+    ],
+  },
+  {
+    name: "AI Innovation Lab",
+    tagline: "Impressive models. Training data is a spreadsheet.",
+    industry: "Tech Startups · AI Product Companies · Internal Innovation Units",
+    dominant: "Intelligence dominant",
+    shape: [0.7, 1.0, 0.65, 0.45, 0.2, 0.25],
+    color: "#7b9eb8",
+    governance: "Informal. Model cards may exist; ethics guidelines referenced but not enforced at the pipeline level. Training data provenance not tracked. Classification applied manually post-deployment, if at all.",
+    gap: "Introduce governance as a platform primitive before the regulator forces it. Model lineage, training data classification, and inference access control need to be wired into CI/CD — not added retrospectively.",
+    traits: [
+      "Ships weekly. Models are genuinely impressive. Training data provenance is a Slack thread from 14 months ago.",
+      "When the auditor asks who approved the training dataset, nobody can give a structured answer.",
+      "The platform can't yet answer: what version of what data was this model trained on, and who classified it?",
+    ],
+  },
+  {
+    name: "Post-Merger Conglomerate",
+    tagline: "Five catalogues. No shared marketplace.",
+    industry: "Large Enterprise · Private Equity Portfolio · Post-M&A Integration",
+    dominant: "No dominant force — all fragmented",
+    shape: [0.35, 0.35, 0.3, 0.35, 0.4, 0.45],
+    color: "#c87941",
+    governance: "Competing frameworks coexist — each acquired entity retained its own toolchain. No shared catalogue. Policy interpretation varies by business unit. Audit evidence requires aggregation across five platforms.",
+    gap: "Don't start with tools — start with a shared classification hierarchy and a common policy layer. Platform consolidation follows governance alignment, not the other way round.",
+    traits: [
+      "Five data catalogues. Six security toolchains. Each acquisition was rational. The sum is not.",
+      "Cross-entity data products require bilateral agreements — no common contract registry exists.",
+      "Intelligence force is nearly zero: not for lack of data, but because the data isn't findable or trustable across entities.",
+    ],
+  },
+  {
+    name: "Platform Engineering Maturity",
+    tagline: "Hours, not weeks. Governance is the pipeline.",
+    industry: "Target State · Platform-Led Enterprise · Tech-Forward Regulated Firms",
+    dominant: "Near-balanced — all forces 0.82–0.92",
+    shape: [0.88, 0.82, 0.85, 0.88, 0.9, 0.87],
+    color: "#6aab8a",
+    governance: "Policy-as-code (OPA). Classification defined once, applied automatically at asset registration. Federated enforcement at domain level, centrally auditable. ARB handles novel patterns only.",
+    gap: "Sustain balance under load. As AI use cases scale, the Intelligence force stresses Governance and Security asymmetrically — monitor for deformation before it compounds.",
+    traits: [
+      "Change request to working workspace: hours. Governance, observability, and security are baked into the provisioning pipeline.",
+      "Audit evidence generated at provisioning time — not reconstructed under deadline pressure.",
+      "ARB reviews novel patterns. Standard patterns never reach a human reviewer. The bottleneck was eliminated structurally.",
+    ],
   },
 ];
 
-function HexagonDiagram({ forces, size = 200, animated = false }) {
-  const [hovered, setHovered] = useState(null);
-  const cx = size / 2;
-  const cy = size / 2;
-  const r = size * 0.36;
-  const innerR = size * 0.22;
+const patterns = [
+  {
+    number: "01", color: "#8aab7a",
+    title: "Embed governance into the pipeline, not after it",
+    tagline: "Stop asking teams to request a governed workspace. Make it the only kind that gets provisioned.",
+    scenario: "Cloud Ops provisions a workspace and raises a ticket to Data Platform. Data Platform configures baselines and raises a ticket to the product team. No individual team is slow — the seam between them kills velocity.",
+    steps: [
+      { label: "Before", text: "Cloud Ops → ticket → Data Platform → ticket → product team. Three queues. Time to first data product: 3–6 weeks." },
+      { label: "After",  text: "Cloud Ops Terraform completes and automatically triggers the Data Platform module: governance classification applied, observability agents deployed, policy baseline validated. Workspace handed over fully configured — no ticket, no queue." },
+      { label: "The rule", text: "A workspace that has not passed all six force minimums cannot be handed over. Governance is baked into the pipeline that creates the environment, not added at the end." },
+    ],
+  },
+  {
+    number: "02", color: "#c87941",
+    title: "When security and engineering conflict, timebox the resolution",
+    tagline: "Unresolved conflicts don't age well. Name them, own them, resolve them in two weeks.",
+    scenario: "Security mandates all PII is tokenized in cloud storage. Engineering has three billion records that need detokenizing on every ETL run. At that volume the process is unviable. Neither team is wrong. Neither can resolve it unilaterally.",
+    steps: [
+      { label: "The pattern",     text: "A standing architecture forum with a fixed two-week window. Not to pick a winner — to find the minimum security posture that satisfies the threat model at ETL scale." },
+      { label: "The resolution",  text: "A ring-fenced environment: dedicated bucket, no public access, IAM scoped exclusively to the ETL pipeline, full audit logging, re-tokenization gate before data leaves the enclave. Equivalent control at a different layer." },
+      { label: "The discipline",  text: "If unresolved in two weeks, the conservative default applies — documented, with a review date. Conflicts that drift without ownership are the most common cause of permanent deformation." },
+    ],
+  },
+  {
+    number: "03", color: "#7b9eb8",
+    title: "Scope the compromise explicitly — don't let it go unnamed",
+    tagline: "Hidden imbalances calcify. Named ones can be resolved.",
+    scenario: "Centralising all logs into one SIEM is architecturally correct. In multi-cloud at enterprise scale it also means paying egress on every pipeline run and debug trace. The majority of that data is noise the security team will never query.",
+    steps: [
+      { label: "The SLA",     text: "Security and Platform Engineering agree in writing: security-critical logs (auth events, privilege escalation, policy violations) flow centrally. Operational logs stay at cloud level, governed by OPA policies that mirror the central ruleset." },
+      { label: "The outcome", text: "Security gets enforcement capability where it matters. Engineering avoids egress cost for logs that serve no security purpose. Reviewed quarterly — updated explicitly, not silently expanded." },
+      { label: "Why it works", text: "The tension stays visible, named, and contractually bounded. Neither force has quietly absorbed the other. That's what prevents a temporary constraint from hardening into permanent architecture." },
+    ],
+  },
+];
 
-  const hexPoints = forces.map((f, i) => {
-    const angle = (Math.PI / 180) * (f.angle - 90);
-    return {
-      x: cx + r * Math.cos(angle),
-      y: cy + r * Math.sin(angle),
-      ix: cx + innerR * Math.cos(angle),
-      iy: cy + innerR * Math.sin(angle),
-    };
+const realizationSteps = [
+  { id: 1, label: "Change Request", actor: "Domain Team",
+    forces: ["Governance", "Security"],
+    what: "Domain team submits a data product intent: name, classification tier, domain owner, intended consumers, regulatory scope. This is the last human step before automation takes over.",
+    note: "The intent spec is structured — not a free-text ticket. Classification tier determines which automated checks run downstream.",
+    artifact: "Structured intent spec + change record" },
+  { id: 2, label: "Policy Check", actor: "Pipeline (automated)",
+    forces: ["Governance", "Security"],
+    what: "Network boundary validation, IAM scope assessment, regulatory flag check, classification verified against the data contract registry. Fails fast with a structured error, not a rejection email.",
+    note: "No ticket raised to a security team. No waiting. Standard requests clear in under 2 minutes. Novel patterns flag for ARB.",
+    artifact: "Policy check report — pass / fail + remediation steps" },
+  { id: 3, label: "Architecture Gate", actor: "Data ARB (novel patterns only)",
+    forces: ["Physical Sovereignty", "Marketplace"],
+    what: "Standard patterns skip this step entirely — the pipeline approves them. Novel patterns (new catalog integrations, cross-domain flows, new AI use cases) go to the ARB. The ARB reviews the intent spec, not a slide deck.",
+    note: "ARB approval is linked to a Terraform module version and Git SHA — not a Word document. Evidence is structural, not conversational.",
+    artifact: "ARB decision record — approve / conditional / reject" },
+  { id: 4, label: "Asset Registration", actor: "Data Platform pipeline (automated)",
+    forces: ["All six forces"],
+    what: "Iceberg namespace created. Catalog entry registered. Classification tag applied. Lineage graph initialised. Observability agent deployed. Quality SLA baseline set. This is where governance becomes structural.",
+    note: "Not a catalogue entry made by a human after the fact — an immutable record created by the pipeline at provisioning time. Retroactive data mapping is eliminated.",
+    artifact: "Catalog entry + lineage graph root + observability baseline" },
+  { id: 5, label: "Workspace Provisioned", actor: "Cloud Ops → Data Platform (automated chain)",
+    forces: ["Physical Sovereignty", "Security"],
+    what: "Storage provisioned, compute configured, IAM roles applied, network boundary validated. All six force minimums confirmed. The workspace cannot be handed over until validation passes — this is structural, not procedural.",
+    note: "Time from change request to working workspace: hours, not weeks. The bottleneck was always the handoff queue. The queue is gone.",
+    artifact: "Workspace + force validation report + domain onboarding pack" },
+  { id: 6, label: "Published to Marketplace", actor: "Domain Team",
+    forces: ["Marketplace", "Observability"],
+    what: "Data product published with SLA, quality score, classification, lineage, and consumer subscription model. Discoverable immediately by other domains and by external consumers (Salesforce, SAP, ServiceNow).",
+    note: "From this point, observability monitors SLA compliance and surfaces drift. The domain team owns the product. The platform owns the visibility.",
+    artifact: "Marketplace listing + SLA contract + consumer subscription API" },
+];
+
+const personas = [
+  { role: "Domain Team", group: "consumer",
+    headline: "A governed workspace in hours, not weeks",
+    steps: [
+      "Submit a domain intent — workspace name, classification tier, domain owner, intended consumers",
+      "Automated pipeline provisions storage, compute, and IAM in one pass",
+      "Governance classification applied, observability agents deployed, policy baseline validated — automatically",
+      "Workspace handed over, fully configured. Other domains can discover and subscribe to your data products immediately.",
+    ],
+    note: "No ticket to Data Platform. No approval queue. Security and governance were enforced by the pipeline, not a human reviewer sitting on a backlog." },
+  { role: "Data Scientist", group: "consumer",
+    headline: "Access by identity, not by ticket",
+    steps: [
+      "Query Gold-tier Iceberg tables through the unified catalog",
+      "Access determined by your identity and the table's classification — enforced automatically, no gatekeeper",
+      "Register your model — lineage traces back to the exact snapshot and data product version used for training",
+      "Model output published as a new data product with its own SLA. Observability detects drift and alerts you.",
+    ],
+    note: "No central data team to ask. No manual lineage. Intelligence and governance in balance — each constraining the other proportionally to the sensitivity of the data." },
+  { role: "Business Analyst", group: "consumer",
+    headline: "An auditable answer, not a caveat",
+    steps: [
+      "Ask a natural language question via the GenAI interface",
+      "Response cites its source — which domain, which classification tier, which snapshot",
+      "If you lack clearance for Confidential data, it isn't surfaced — classification flows automatically from governance to the AI serving layer",
+    ],
+    note: "Intelligence and security in equilibrium. Fast to use. Safe by design. No 'please check with the data team before using this output.'" },
+  { role: "Auditor", group: "consumer",
+    headline: "A complete answer on the first ask",
+    steps: [
+      "Who approved this Snowflake instance? ARB submission reference, Terraform module version, Git SHA.",
+      "Which pipeline applied it? Which SPN executed it? When?",
+      "What does the current table state trace back to? Infrastructure lineage and data lineage are the same graph.",
+    ],
+    note: "The audit trail exists because it was built into the provisioning process — not reconstructed at midnight before a regulatory deadline." },
+  { role: "Data ARB", group: "builder",
+    headline: "Decisions that leave evidence",
+    steps: [
+      "Standard patterns never reach you — the pipeline approves them automatically against established templates",
+      "Novel patterns arrive as a structured intent spec linked to a Terraform module — not a slide deck",
+      "You review architectural impact: catalog integration, cross-domain contract implications, force boundary compliance",
+      "Your decision is recorded against a Git SHA and module version. Tech debt surfaces as a platform metric, not in post-incident reviews.",
+    ],
+    note: "The ARB operates on data, not intuition. Pattern libraries reduce toil. Novel decisions strengthen the library for the next team." },
+  { role: "Governance", group: "builder",
+    headline: "Classification that actually enforces",
+    steps: [
+      "Data classification policies defined once, applied automatically at asset registration — not by a steward on a ticket",
+      "Lineage captured by the pipeline; you curate it, not build it by hand",
+      "Quality SLAs monitored continuously; breaches trigger automated governance reviews, not manual checks",
+      "GDPR, BCBS 239, and internal data contracts enforced at the query layer — not checked after the fact",
+    ],
+    note: "Governance is a force, not a function. Your team sets the policy. The platform enforces it everywhere, automatically. Your job becomes policy design, not policy policing." },
+  { role: "Cyber Security", group: "builder",
+    headline: "Audit evidence that exists before you ask for it",
+    steps: [
+      "Every provisioning event generates a policy check report — pass / fail with remediation steps, stored immutably",
+      "IAM roles scoped by the pipeline to the minimum required — no manual review of overly broad permissions",
+      "Authentication events, privilege escalation, and policy violations flow centrally; operational noise stays local under OPA",
+      "Threat model changes update the bilateral SLA explicitly — Platform Engineering is notified, not surprised",
+    ],
+    note: "Security is a sovereign force, not an approval queue. You set the conditions. The pipeline enforces them. You audit the evidence — which already exists." },
+  { role: "Enterprise Architect", group: "builder",
+    headline: "A target operating model that's measurable",
+    steps: [
+      "Business capabilities map to domain ownership boundaries, not to vendor contracts",
+      "The six-force hexagon is your diagnostic: which force is dominant in your current state? That is the bottleneck.",
+      "DAMA BOK provides the management disciplines; Data Mesh provides the operating model; the forces show where they're in tension",
+      "AI modernisation is tracked as Intelligence force maturity — not as a separate AI strategy document disconnected from the platform",
+    ],
+    note: "The Voronoi architecture is your target operating model for data. Deformations are your current-state gaps. The realization patterns are your roadmap." },
+  { role: "Platform Engineering", group: "builder",
+    headline: "Build the pipeline once. It governs every workspace after.",
+    steps: [
+      "Cloud Ops Terraform triggers the Data Platform module on workspace completion — no ticket, no handoff queue",
+      "Governance classification, observability agents, and policy baseline applied in one automated chain",
+      "A workspace that fails any of the six force minimums cannot be handed over — the gate is structural, not process",
+      "OPA policies deployed locally where centralisation creates cost or latency without proportionate security benefit",
+    ],
+    note: "You build the system that embeds governance. Once running, teams ship fast not because the rules relaxed — because the rules are baked into the only path available." },
+];
+
+// ── interactive components ────────────────────────────────────────────────────
+
+function HexagonDiagram({ forces, size = 200 }) {
+  const [hovered, setHovered] = useState(null);
+  const cx = size / 2, cy = size / 2;
+  const r = size * 0.36;
+
+  const pts = forces.map(f => {
+    const a = (Math.PI / 180) * (f.angle - 90);
+    return { x: cx + r * Math.cos(a), y: cy + r * Math.sin(a) };
   });
 
-  const outerPath = hexPoints.map((p, i) => `${i === 0 ? "M" : "L"}${p.x},${p.y}`).join(" ") + " Z";
+  const outerPath = pts.map((p, i) => `${i === 0 ? "M" : "L"}${p.x},${p.y}`).join(" ") + " Z";
 
   return (
     <div style={{ position: "relative", width: size, height: size }}>
@@ -142,222 +356,224 @@ function HexagonDiagram({ forces, size = 200, animated = false }) {
             <stop offset="0%" stopColor="#c87941" stopOpacity="0.15" />
             <stop offset="100%" stopColor="#c87941" stopOpacity="0" />
           </radialGradient>
-          {forces.map((f) => (
-            <radialGradient key={f.id} id={`fg${f.id}`} cx="50%" cy="50%" r="50%">
-              <stop offset="0%" stopColor={f.color} stopOpacity="0.3" />
-              <stop offset="100%" stopColor={f.color} stopOpacity="0" />
-            </radialGradient>
-          ))}
         </defs>
-
-        {/* Outer hex fill */}
         <path d={outerPath} fill="url(#hexGlow)" stroke="#c87941" strokeWidth="1" strokeOpacity="0.4" />
-
-        {/* Inner spokes */}
-        {hexPoints.map((p, i) => (
-          <line
-            key={i}
-            x1={cx} y1={cy}
-            x2={p.x} y2={p.y}
-            stroke={forces[i].color}
-            strokeWidth={hovered === i ? 1.5 : 0.5}
-            strokeOpacity={hovered === i ? 0.8 : 0.25}
-            style={{ transition: "all 0.3s" }}
-          />
+        {pts.map((p, i) => (
+          <line key={i} x1={cx} y1={cy} x2={p.x} y2={p.y}
+            stroke={forces[i].color} strokeWidth={hovered === i ? 1.5 : 0.5}
+            strokeOpacity={hovered === i ? 0.8 : 0.25} style={{ transition: "all 0.3s" }} />
         ))}
-
-        {/* 120° angle indicators */}
-        {hexPoints.map((p, i) => {
-          const next = hexPoints[(i + 1) % 6];
-          const mx = (p.x + next.x) / 2;
-          const my = (p.y + next.y) / 2;
-          const dx = mx - cx;
-          const dy = my - cy;
-          const len = Math.sqrt(dx * dx + dy * dy);
-          const lx = cx + (dx / len) * (innerR * 0.6);
-          const ly = cy + (dy / len) * (innerR * 0.6);
-          return (
-            <text key={i} x={lx} y={ly} fill="#666" fontSize="6" textAnchor="middle" dominantBaseline="middle" opacity="0.5">
-              120°
-            </text>
-          );
+        {pts.map((p, i) => {
+          const n = pts[(i + 1) % 6];
+          return <line key={i} x1={p.x} y1={p.y} x2={n.x} y2={n.y} stroke="#555" strokeWidth="0.5" strokeOpacity="0.4" strokeDasharray="3,3" />;
         })}
-
-        {/* Hex boundary lines */}
-        {hexPoints.map((p, i) => {
-          const next = hexPoints[(i + 1) % 6];
-          return (
-            <line
-              key={i}
-              x1={p.x} y1={p.y}
-              x2={next.x} y2={next.y}
-              stroke="#555"
-              strokeWidth="0.5"
-              strokeOpacity="0.4"
-              strokeDasharray="3,3"
-            />
-          );
-        })}
-
-        {/* Force nodes */}
-        {hexPoints.map((p, i) => (
-          <g key={i}
-            style={{ cursor: "pointer" }}
-            onMouseEnter={() => setHovered(i)}
-            onMouseLeave={() => setHovered(null)}>
-            <circle
-              cx={p.x} cy={p.y} r={hovered === i ? 14 : 10}
-              fill="#0d0d0d"
-              stroke={forces[i].color}
-              strokeWidth={hovered === i ? 2 : 1}
-              style={{ transition: "all 0.3s" }}
-            />
-            <text
-              x={p.x} y={p.y}
-              fill={forces[i].color}
-              fontSize="5.5"
-              textAnchor="middle"
-              dominantBaseline="middle"
-              fontWeight="600"
-            >
+        {pts.map((p, i) => (
+          <g key={i} style={{ cursor: "pointer" }} onMouseEnter={() => setHovered(i)} onMouseLeave={() => setHovered(null)}>
+            <circle cx={p.x} cy={p.y} r={hovered === i ? 14 : 10}
+              fill="#0d0d0d" stroke={forces[i].color} strokeWidth={hovered === i ? 2 : 1} style={{ transition: "all 0.3s" }} />
+            <text x={p.x} y={p.y} fill={forces[i].color} fontSize="5.5" textAnchor="middle" dominantBaseline="middle" fontWeight="600">
               {forces[i].short}
             </text>
           </g>
         ))}
-
-        {/* Centre */}
         <circle cx={cx} cy={cy} r="3" fill="#c87941" opacity="0.6" />
       </svg>
+    </div>
+  );
+}
 
-      {/* Tooltip */}
-      {hovered !== null && (
-        <div style={{
-          position: "absolute",
-          bottom: "calc(100% + 8px)",
-          left: "50%",
-          transform: "translateX(-50%)",
-          background: "#1a1a1a",
-          border: `1px solid ${forces[hovered].color}44`,
-          borderLeft: `2px solid ${forces[hovered].color}`,
-          padding: "8px 12px",
-          width: 200,
-          zIndex: 10,
-          pointerEvents: "none",
-        }}>
-          <div style={{ color: forces[hovered].color, fontSize: 11, fontWeight: 700, marginBottom: 4, fontFamily: "monospace" }}>
-            {forces[hovered].label}
+function DeformationChart({ shape, color, size = 120 }) {
+  const cx = size / 2, cy = size / 2, maxR = size * 0.38;
+  const angles = [90, 30, -30, -90, -150, 150].map(a => (Math.PI / 180) * (a - 90));
+  const ideal = angles.map(a => ({ x: cx + maxR * Math.cos(a), y: cy + maxR * Math.sin(a) }));
+  const def   = angles.map((a, i) => ({ x: cx + maxR * shape[i] * Math.cos(a), y: cy + maxR * shape[i] * Math.sin(a) }));
+  const ip = ideal.map((p, i) => `${i === 0 ? "M" : "L"}${p.x},${p.y}`).join(" ") + " Z";
+  const dp = def.map((p, i)   => `${i === 0 ? "M" : "L"}${p.x},${p.y}`).join(" ") + " Z";
+  return (
+    <svg width={size} height={size} viewBox={`0 0 ${size} ${size}`}>
+      <path d={ip} fill="none" stroke="#333" strokeWidth="1" strokeDasharray="2,2" />
+      <path d={dp} fill={color} fillOpacity="0.2" stroke={color} strokeWidth="1.5" />
+      {def.map((p, i) => <circle key={i} cx={p.x} cy={p.y} r="2.5" fill={color} opacity="0.7" />)}
+      <circle cx={cx} cy={cy} r="2" fill={color} opacity="0.5" />
+    </svg>
+  );
+}
+
+function ForceCards({ forces }) {
+  const [active, setActive] = useState(null);
+  return (
+    <div>
+      <div style={{ display: "flex", flexWrap: "wrap", gap: 8, justifyContent: "center", marginBottom: 12 }}>
+        {forces.map((f, i) => (
+          <button key={f.id} onClick={() => setActive(active === i ? null : i)} style={{
+            background: active === i ? f.color + "18" : "transparent",
+            border: `1px solid ${active === i ? f.color : "#2a2a2a"}`,
+            color: active === i ? f.color : "#4a4035",
+            padding: "5px 14px", cursor: "pointer",
+            fontFamily: "'JetBrains Mono', monospace", fontSize: "0.68rem",
+            letterSpacing: "0.06em", transition: "all 0.2s", borderRadius: 2,
+          }}>
+            {f.label}
+          </button>
+        ))}
+      </div>
+      {active !== null && (
+        <div style={{ background: "#0d0d0d", border: `1px solid ${forces[active].color}33`, borderLeft: `2px solid ${forces[active].color}`, padding: "12px 16px" }}>
+          <div style={{ color: forces[active].color, fontSize: "0.72rem", fontFamily: "'JetBrains Mono', monospace", fontWeight: 700, marginBottom: 6 }}>
+            {forces[active].label}
           </div>
-          <div style={{ color: "#999", fontSize: 10, lineHeight: 1.5 }}>
-            {forces[hovered].description}
-          </div>
+          <div style={{ color: "#8a7a65", fontSize: "0.9rem", lineHeight: 1.72 }}>{forces[active].description}</div>
         </div>
       )}
     </div>
   );
 }
 
-function DeformationChart({ shape, color, size = 120 }) {
-  const cx = size / 2;
-  const cy = size / 2;
-  const maxR = size * 0.38;
-
-  const angles = [90, 30, -30, -90, -150, 150].map(a => (Math.PI / 180) * (a - 90));
-
-  const idealPoints = angles.map(a => ({
-    x: cx + maxR * Math.cos(a),
-    y: cy + maxR * Math.sin(a),
-  }));
-
-  const deformedPoints = angles.map((a, i) => ({
-    x: cx + maxR * shape[i] * Math.cos(a),
-    y: cy + maxR * shape[i] * Math.sin(a),
-  }));
-
-  const idealPath = idealPoints.map((p, i) => `${i === 0 ? "M" : "L"}${p.x},${p.y}`).join(" ") + " Z";
-  const deformedPath = deformedPoints.map((p, i) => `${i === 0 ? "M" : "L"}${p.x},${p.y}`).join(" ") + " Z";
-
+function Accordion({ items }) {
+  const [open, setOpen] = useState(null);
   return (
-    <svg width={size} height={size} viewBox={`0 0 ${size} ${size}`}>
-      <path d={idealPath} fill="none" stroke="#333" strokeWidth="1" strokeDasharray="2,2" />
-      <path d={deformedPath} fill={color} fillOpacity="0.2" stroke={color} strokeWidth="1.5" />
-      {deformedPoints.map((p, i) => (
-        <circle key={i} cx={p.x} cy={p.y} r="2.5" fill={color} opacity="0.7" />
+    <div style={{ border: "1px solid #1e1e1e" }}>
+      {items.map((item, i) => (
+        <div key={i} style={{ borderBottom: i < items.length - 1 ? "1px solid #1a1a1a" : "none", borderLeft: `3px solid ${item.color}` }}>
+          <button onClick={() => setOpen(open === i ? null : i)} style={{
+            width: "100%", background: "transparent", border: "none",
+            padding: "1.25rem 1.5rem", cursor: "pointer", textAlign: "left",
+            display: "flex", justifyContent: "space-between", alignItems: "flex-start", gap: 12,
+          }}>
+            <div style={{ flex: 1 }}>
+              <div style={{ fontFamily: "'JetBrains Mono', monospace", fontSize: "0.62rem", color: item.color, opacity: 0.8, marginBottom: 5 }}>{item.number}</div>
+              <div style={{ fontFamily: "'Playfair Display', Georgia, serif", fontSize: "1rem", fontWeight: 700, color: "#e8d5b0", marginBottom: 5 }}>{item.title}</div>
+              <div style={{ fontFamily: "'Lora', Georgia, serif", fontSize: "0.84rem", fontStyle: "italic", color: "#4a4035" }}>{item.tagline}</div>
+            </div>
+            <span style={{ color: item.color, fontSize: 20, lineHeight: 1, flexShrink: 0, marginTop: 2 }}>{open === i ? "−" : "+"}</span>
+          </button>
+          {open === i && (
+            <div style={{ padding: "0 1.5rem 1.5rem" }}>
+              <div style={{ background: "#111", borderLeft: `2px solid ${item.color}55`, padding: "10px 14px", marginBottom: "1.25rem" }}>
+                <p style={{ margin: 0, color: "#8a7a65", fontSize: "0.88rem", fontStyle: "italic", lineHeight: 1.7 }}>{item.scenario}</p>
+              </div>
+              {item.steps.map((step, j) => (
+                <div key={j} style={{ display: "flex", gap: 14, marginBottom: j < item.steps.length - 1 ? "0.9rem" : 0 }}>
+                  <div style={{ fontFamily: "'JetBrains Mono', monospace", fontSize: "0.6rem", color: item.color, whiteSpace: "nowrap", paddingTop: 4, minWidth: 72 }}>{step.label}</div>
+                  <p style={{ margin: 0, color: "#8a7a65", fontSize: "0.9rem", lineHeight: 1.75 }}>{step.text}</p>
+                </div>
+              ))}
+            </div>
+          )}
+        </div>
       ))}
-      <circle cx={cx} cy={cy} r="2" fill={color} opacity="0.5" />
-    </svg>
-  );
-}
-
-function PullQuote({ children }) {
-  return (
-    <div style={{
-      borderLeft: "3px solid #c87941",
-      margin: "2.5rem 0",
-      padding: "1rem 1.5rem",
-      background: "linear-gradient(90deg, #c8794108 0%, transparent 100%)",
-    }}>
-      <p style={{
-        fontFamily: "'Playfair Display', Georgia, serif",
-        fontSize: "1.25rem",
-        fontStyle: "italic",
-        color: "#e8d5b0",
-        lineHeight: 1.6,
-        margin: 0,
-      }}>
-        {children}
-      </p>
     </div>
   );
 }
 
-function Section({ title, children }) {
+function RealizationFlow({ steps }) {
+  const [active, setActive] = useState(0);
+  const s = steps[active];
   return (
-    <section style={{ marginBottom: "3rem" }}>
-      <h2 style={{
-        fontFamily: "'Playfair Display', Georgia, serif",
-        fontSize: "1.6rem",
-        fontWeight: 700,
-        color: "#e8d5b0",
-        marginBottom: "1.25rem",
-        marginTop: 0,
-        letterSpacing: "-0.02em",
-      }}>
-        {title}
-      </h2>
-      {children}
-    </section>
+    <div>
+      <div style={{ display: "flex", overflowX: "auto", borderBottom: "1px solid #1e1e1e" }}>
+        {steps.map((step, i) => (
+          <button key={i} onClick={() => setActive(i)} style={{
+            background: "transparent", border: "none",
+            borderBottom: active === i ? "2px solid #c87941" : "2px solid transparent",
+            color: active === i ? "#c87941" : "#4a4035",
+            padding: "9px 14px", cursor: "pointer",
+            fontFamily: "'JetBrains Mono', monospace", fontSize: "0.62rem",
+            letterSpacing: "0.05em", whiteSpace: "nowrap", transition: "all 0.2s",
+          }}>
+            {step.id}. {step.label}
+          </button>
+        ))}
+      </div>
+      <div style={{ background: "#0d0d0d", border: "1px solid #1e1e1e", borderTop: "none", padding: "1.5rem" }}>
+        <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", flexWrap: "wrap", gap: 10, marginBottom: "1rem" }}>
+          <div>
+            <div style={{ fontFamily: "'JetBrains Mono', monospace", fontSize: "0.6rem", color: "#4a4035", marginBottom: 4 }}>Actor</div>
+            <div style={{ fontFamily: "'JetBrains Mono', monospace", fontSize: "0.82rem", color: "#e8d5b0" }}>{s.actor}</div>
+          </div>
+          <div style={{ display: "flex", gap: 6, flexWrap: "wrap" }}>
+            {s.forces.map((f, i) => (
+              <span key={i} style={{ background: "#111", border: "1px solid #2a2a2a", color: "#8a7a65", padding: "3px 9px", fontFamily: "'JetBrains Mono', monospace", fontSize: "0.6rem" }}>{f}</span>
+            ))}
+          </div>
+        </div>
+        <p style={{ color: "#8a7a65", fontSize: "0.92rem", lineHeight: 1.78, marginBottom: "1rem" }}>{s.what}</p>
+        <div style={{ background: "#111", borderLeft: "2px solid #c87941", padding: "8px 14px", marginBottom: "1rem" }}>
+          <p style={{ margin: 0, color: "#6a5a4a", fontSize: "0.82rem", fontStyle: "italic", lineHeight: 1.65 }}>{s.note}</p>
+        </div>
+        <div style={{ fontFamily: "'JetBrains Mono', monospace", fontSize: "0.6rem", color: "#3a3028" }}>
+          artifact — <span style={{ color: "#5a4a3a" }}>{s.artifact}</span>
+        </div>
+      </div>
+      <div style={{ display: "flex", justifyContent: "space-between", marginTop: 8 }}>
+        <button onClick={() => setActive(Math.max(0, active - 1))} disabled={active === 0} style={{ background: "transparent", border: "1px solid #2a2a2a", color: active === 0 ? "#2a2a2a" : "#4a4035", padding: "6px 14px", cursor: active === 0 ? "default" : "pointer", fontFamily: "'JetBrains Mono', monospace", fontSize: "0.65rem" }}>
+          ← prev
+        </button>
+        <span style={{ color: "#2a2a2a", fontFamily: "'JetBrains Mono', monospace", fontSize: "0.65rem", alignSelf: "center" }}>{active + 1} / {steps.length}</span>
+        <button onClick={() => setActive(Math.min(steps.length - 1, active + 1))} disabled={active === steps.length - 1} style={{ background: "transparent", border: "1px solid #2a2a2a", color: active === steps.length - 1 ? "#2a2a2a" : "#4a4035", padding: "6px 14px", cursor: active === steps.length - 1 ? "default" : "pointer", fontFamily: "'JetBrains Mono', monospace", fontSize: "0.65rem" }}>
+          next →
+        </button>
+      </div>
+    </div>
   );
 }
 
-function P({ children, style = {} }) {
+function PersonaSwitcher({ personas }) {
+  const [group, setGroup] = useState("consumer");
+  const [active, setActive] = useState(0);
+  const filtered = personas.filter(p => p.group === group);
+  const p = filtered[Math.min(active, filtered.length - 1)];
   return (
-    <p style={{
-      fontFamily: "'Lora', Georgia, serif",
-      fontSize: "1.05rem",
-      lineHeight: 1.85,
-      color: "#c8bfb0",
-      marginTop: 0,
-      marginBottom: "1.25rem",
-      ...style,
-    }}>
-      {children}
-    </p>
+    <div>
+      <div style={{ display: "flex", gap: 8, marginBottom: 12 }}>
+        {[["consumer", "Using the platform"], ["builder", "Building & governing"]].map(([g, label]) => (
+          <button key={g} onClick={() => { setGroup(g); setActive(0); }} style={{
+            background: group === g ? "#c8794120" : "transparent",
+            border: `1px solid ${group === g ? "#c87941" : "#2a2a2a"}`,
+            color: group === g ? "#c87941" : "#4a4035",
+            padding: "5px 14px", cursor: "pointer",
+            fontFamily: "'JetBrains Mono', monospace", fontSize: "0.65rem", letterSpacing: "0.06em",
+          }}>
+            {label}
+          </button>
+        ))}
+      </div>
+      <div style={{ display: "flex", overflowX: "auto", borderBottom: "1px solid #1e1e1e" }}>
+        {filtered.map((persona, i) => (
+          <button key={i} onClick={() => setActive(i)} style={{
+            background: "transparent", border: "none",
+            borderBottom: active === i ? "2px solid #c87941" : "2px solid transparent",
+            color: active === i ? "#c87941" : "#4a4035",
+            padding: "9px 16px", cursor: "pointer",
+            fontFamily: "'JetBrains Mono', monospace", fontSize: "0.66rem",
+            letterSpacing: "0.07em", whiteSpace: "nowrap", transition: "all 0.2s",
+          }}>
+            {persona.role}
+          </button>
+        ))}
+      </div>
+      <div style={{ background: "#0d0d0d", border: "1px solid #1e1e1e", borderTop: "none", padding: "1.5rem" }}>
+        <div style={{ fontFamily: "'Playfair Display', Georgia, serif", fontSize: "1.05rem", fontWeight: 700, color: "#e8d5b0", marginBottom: "1rem" }}>{p.headline}</div>
+        <ol style={{ margin: "0 0 1.25rem", paddingLeft: 22, display: "flex", flexDirection: "column", gap: 10 }}>
+          {p.steps.map((step, i) => <li key={i} style={{ color: "#8a7a65", fontSize: "0.9rem", lineHeight: 1.75 }}>{step}</li>)}
+        </ol>
+        <div style={{ background: "#111", borderLeft: "2px solid #c87941", padding: "8px 14px" }}>
+          <p style={{ margin: 0, color: "#6a5a4a", fontSize: "0.82rem", fontStyle: "italic", lineHeight: 1.65 }}>{p.note}</p>
+        </div>
+      </div>
+    </div>
   );
 }
+
+// ── page ──────────────────────────────────────────────────────────────────────
 
 export default function VoronoiBlogPost() {
   const [activeDeformation, setActiveDeformation] = useState(0);
 
-  useEffect(() => {
-    window.scrollTo(0, 0);
-  }, []);
+  useEffect(() => { window.scrollTo(0, 0); }, []);
 
   return (
-    <div style={{
-      background: "#0a0a0a",
-      minHeight: "100vh",
-      fontFamily: "'Lora', Georgia, serif",
-    }}>
+    <div style={{ background: "#0a0a0a", minHeight: "100vh", fontFamily: "'Lora', Georgia, serif" }}>
       <style>{`
         @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;0,900;1,400;1,700&family=Lora:ital,wght@0,400;0,500;1,400&family=JetBrains+Mono:wght@400;500&display=swap');
         * { box-sizing: border-box; }
@@ -365,557 +581,170 @@ export default function VoronoiBlogPost() {
         ::-webkit-scrollbar-track { background: #0a0a0a; }
         ::-webkit-scrollbar-thumb { background: #c87941; }
         a { color: #c87941; }
+        button:focus { outline: 1px solid #c8794155; }
       `}</style>
 
-      {/* Hero */}
-      <div style={{
-        position: "relative",
-        padding: "5rem 2rem 4rem",
-        borderBottom: "1px solid #1e1e1e",
-        overflow: "hidden",
-      }}>
-        {/* Voronoi background pattern */}
+      {/* ── Hero ─────────────────────────────────────────────────────────── */}
+      <div style={{ position: "relative", padding: "5rem 2rem 4rem", borderBottom: "1px solid #1e1e1e", overflow: "hidden" }}>
         <svg style={{ position: "absolute", top: 0, left: 0, width: "100%", height: "100%", opacity: 0.04, pointerEvents: "none" }}
           viewBox="0 0 800 400" preserveAspectRatio="xMidYMid slice">
-          {[
-            "M120,80 L280,60 L320,180 L200,220 Z",
-            "M280,60 L460,40 L480,160 L320,180 Z",
-            "M460,40 L620,80 L600,200 L480,160 Z",
-            "M620,80 L760,120 L720,240 L600,200 Z",
-            "M200,220 L320,180 L360,320 L240,360 Z",
-            "M320,180 L480,160 L500,300 L360,320 Z",
-            "M480,160 L600,200 L620,320 L500,300 Z",
-            "M600,200 L720,240 L700,360 L620,320 Z",
-          ].map((d, i) => (
-            <path key={i} d={d} fill="none" stroke="#c87941" strokeWidth="1" />
-          ))}
+          {["M120,80 L280,60 L320,180 L200,220 Z","M280,60 L460,40 L480,160 L320,180 Z","M460,40 L620,80 L600,200 L480,160 Z",
+            "M620,80 L760,120 L720,240 L600,200 Z","M200,220 L320,180 L360,320 L240,360 Z","M320,180 L480,160 L500,300 L360,320 Z",
+            "M480,160 L600,200 L620,320 L500,300 Z","M600,200 L720,240 L700,360 L620,320 Z"]
+            .map((d, i) => <path key={i} d={d} fill="none" stroke="#c87941" strokeWidth="1" />)}
         </svg>
-
         <div style={{ maxWidth: 720, margin: "0 auto", position: "relative" }}>
-          {/* Series label */}
-          <div style={{
-            display: "inline-flex",
-            alignItems: "center",
-            gap: 10,
-            marginBottom: "1.5rem",
-          }}>
-            <div style={{
-              width: 28, height: 1, background: "#c87941",
-            }} />
-            <span style={{
-              fontFamily: "'JetBrains Mono', monospace",
-              fontSize: "0.7rem",
-              color: "#c87941",
-              letterSpacing: "0.15em",
-              textTransform: "uppercase",
-            }}>
-              {post.series} · {post.episode}
+          <div style={{ display: "inline-flex", alignItems: "center", gap: 10, marginBottom: "1.5rem" }}>
+            <div style={{ width: 28, height: 1, background: "#c87941" }} />
+            <span style={{ fontFamily: "'JetBrains Mono', monospace", fontSize: "0.7rem", color: "#c87941", letterSpacing: "0.15em", textTransform: "uppercase" }}>
+              The Voronoi Platform Architecture · Part I
             </span>
           </div>
-
-          <h1 style={{
-            fontFamily: "'Playfair Display', Georgia, serif",
-            fontSize: "clamp(2rem, 5vw, 3.2rem)",
-            fontWeight: 900,
-            color: "#f0e6d0",
-            lineHeight: 1.15,
-            marginBottom: "1rem",
-            marginTop: 0,
-            letterSpacing: "-0.03em",
-          }}>
-            {post.title}
+          <h1 style={{ fontFamily: "'Playfair Display', Georgia, serif", fontSize: "clamp(2rem, 5vw, 3.2rem)", fontWeight: 900, color: "#f0e6d0", lineHeight: 1.15, marginBottom: "1rem", marginTop: 0, letterSpacing: "-0.03em" }}>
+            Ship Fast. Stay Governed.
           </h1>
-
-          <p style={{
-            fontFamily: "'Lora', Georgia, serif",
-            fontSize: "1.15rem",
-            fontStyle: "italic",
-            color: "#8a7a65",
-            marginBottom: "2rem",
-            lineHeight: 1.5,
-          }}>
-            {post.subtitle}
+          <p style={{ fontFamily: "'Lora', Georgia, serif", fontSize: "1.1rem", fontStyle: "italic", color: "#8a7a65", marginBottom: "2rem", lineHeight: 1.5 }}>
+            Why data application teams wait weeks to ship — and how to fix it without trading away security or governance
           </p>
-
-          <div style={{
-            display: "flex",
-            alignItems: "center",
-            gap: 16,
-            paddingTop: "1.5rem",
-            borderTop: "1px solid #1e1e1e",
-          }}>
-            <div style={{
-              width: 36, height: 36, borderRadius: "50%",
-              background: "linear-gradient(135deg, #c87941, #7b5a2a)",
-              display: "flex", alignItems: "center", justifyContent: "center",
-              color: "#0a0a0a", fontWeight: 700, fontSize: 14,
-              fontFamily: "'JetBrains Mono', monospace",
-            }}>
-              SV
-            </div>
+          <div style={{ display: "flex", alignItems: "center", gap: 16, paddingTop: "1.5rem", borderTop: "1px solid #1e1e1e" }}>
+            <div style={{ width: 36, height: 36, borderRadius: "50%", background: "linear-gradient(135deg, #c87941, #7b5a2a)", display: "flex", alignItems: "center", justifyContent: "center", color: "#0a0a0a", fontWeight: 700, fontSize: 14, fontFamily: "'JetBrains Mono', monospace" }}>SV</div>
             <div>
-              <div style={{ color: "#c8bfb0", fontSize: "0.85rem", fontFamily: "'JetBrains Mono', monospace" }}>
-                {post.author}
-              </div>
-              <div style={{ color: "#4a4035", fontSize: "0.75rem", fontFamily: "'JetBrains Mono', monospace", marginTop: 2 }}>
-                {post.date} · {post.readTime}
-              </div>
+              <div style={{ color: "#c8bfb0", fontSize: "0.85rem", fontFamily: "'JetBrains Mono', monospace" }}>Sravan Vadaga</div>
+              <div style={{ color: "#4a4035", fontSize: "0.75rem", fontFamily: "'JetBrains Mono', monospace", marginTop: 2 }}>April 2026 · 6 min read</div>
             </div>
           </div>
         </div>
       </div>
 
-      {/* Body */}
+      {/* ── Body ─────────────────────────────────────────────────────────── */}
       <div style={{ maxWidth: 720, margin: "0 auto", padding: "3rem 2rem 6rem" }}>
 
-        {/* Opening */}
-        <Section title="">
-          <P>
-            In September 1854, physician John Snow stood over a map of Soho, London, plotting cholera deaths
-            street by street. Five hundred people had died in ten days. The accepted theory was miasma —
-            bad air from the Thames. Snow didn't believe it.
-          </P>
-          <P>
-            He drew a different kind of map. Around each water pump in the neighbourhood, he traced a
-            boundary — the line of points exactly equidistant between that pump and every other. Each
-            boundary point was precisely as far from one pump as the next. The diagram that emerged — we
-            now call it a Voronoi diagram — partitioned Soho into cells of proximity, each cell belonging
-            to its nearest pump.
-          </P>
-          <P>
-            Every death clustered inside a single cell. The pump on Broad Street. Snow had the handle
-            removed. The outbreak ended within days.
-          </P>
-          <P>
-            The mathematics of equal competing forces, drawn as boundaries of equidistance, solved a
-            public health crisis. The same mathematics governs the hexagonal columns rising from the sea
-            at the Giant's Causeway — cooling lava contracting under equal thermal stress, fracturing
-            near 120° — approximately hexagonal, because that is the geometry closest to equilibrium under equal stress. It governs
-            honeycomb, soap bubbles meeting in foam, the cell walls of living tissue, the territories of
-            nesting animals.
-          </P>
+        {/* 1. The Problem */}
+        <section style={{ marginBottom: "3rem" }}>
+          <h2 style={{ fontFamily: "'Playfair Display', Georgia, serif", fontSize: "1.5rem", fontWeight: 700, color: "#e8d5b0", marginBottom: "1rem", marginTop: 0, letterSpacing: "-0.02em" }}>
+            The real reason data teams are slow
+          </h2>
+          <p style={prose}>
+            Your data engineering team finished building the product last Tuesday. It ships next month.
+            Not because the code isn't ready — because it's sitting in a queue waiting for an infosec
+            sign-off, a governance catalogue entry, and a Cloud Ops ticket to provision the right network
+            boundary. Three separate teams. Three separate processes. None of them slow individually.
+            Lethal in sequence.
+          </p>
+          <p style={prose}>
+            The instinct is to ask for a lighter process. Fewer gates, faster approvals. That's the wrong
+            question. DAMA BOK identifies eleven data management disciplines — governance, security,
+            architecture, quality, lineage, and more — that every platform must satisfy. Data Mesh gives
+            you the operating model: domain ownership, data as a product, federated governance. Neither
+            framework says to skip the rules. Both say to <em>embed them earlier</em>. When governance
+            and security are checkpoints placed after the work is done, they slow everything down. When
+            they're baked into the pipeline that creates the environment, they're invisible to the team
+            shipping the product.
+          </p>
 
-          <PullQuote>
-            The hexagon is not a design choice. It is what equilibrium looks like when you draw it.
-          </PullQuote>
+          {/* Pull quote */}
+          <div style={{ borderLeft: "3px solid #c87941", margin: "2.5rem 0", padding: "1rem 1.5rem", background: "linear-gradient(90deg, #c8794108 0%, transparent 100%)" }}>
+            <p style={{ fontFamily: "'Playfair Display', Georgia, serif", fontSize: "1.2rem", fontStyle: "italic", color: "#e8d5b0", lineHeight: 1.6, margin: 0 }}>
+              Governance shouldn't be a gate at the end. It should be baked into the pipeline that creates the environment.
+            </p>
+          </div>
 
-          <P>
-            Your enterprise data platform has the same problem cooling lava has. Six competing forces.
-            Equal pressure from every direction simultaneously. No natural dominant axis. And in many
-            cases — perhaps most at scale — it isn't hexagonal. It's deformed. And that deformation
-            is a recurring pattern beneath many of the adoption failures, governance gaps, and
-            operational crises that data platform teams encounter most frequently.
-          </P>
-          <P>
-            This is the first essay in a series about the architecture that emerges when those forces
-            reach genuine equilibrium. We call it the <em>Voronoi Platform Architecture</em>.
-          </P>
-        </Section>
+          <p style={prose}>
+            The way to think about this is as a balance problem. Every enterprise data platform is pulled
+            by six forces simultaneously. When any one dominates — security locks everything down, or AI
+            ships without governance, or physical storage grows with no domain ownership — the whole
+            platform suffers. The geometry of a healthy platform is a hexagon. We call this the{" "}
+            <em>Voronoi Platform Architecture</em>.
+          </p>
+        </section>
 
-        {/* Six Forces */}
-        <Section title="The Six Forces">
-          <P>
-            Before we name the deformations, we have to name the forces. Not the tools. Not the
-            vendors. Not the product categories. The fundamental, irreducible forces that every
-            enterprise data platform at scale must simultaneously satisfy — and that will pull the
-            architecture apart if any one of them is allowed to dominate.
-          </P>
+        {/* 2. The Six Forces */}
+        <section style={{ marginBottom: "3rem" }}>
+          <h2 style={{ fontFamily: "'Playfair Display', Georgia, serif", fontSize: "1.5rem", fontWeight: 700, color: "#e8d5b0", marginBottom: "1rem", marginTop: 0, letterSpacing: "-0.02em" }}>
+            The six forces — and where the frameworks fit
+          </h2>
+          <p style={prose}>
+            DAMA BOK, Data Mesh, and AI modernisation each illuminate part of the same problem. The six
+            forces are the equilibrium model that holds them together. Click any force below to see how it maps.
+          </p>
 
-          {/* Hexagon diagram */}
-          <div style={{
-            display: "flex",
-            flexDirection: "column",
-            alignItems: "center",
-            gap: 16,
-            margin: "2.5rem 0",
-            padding: "2rem",
-            background: "#0d0d0d",
-            border: "1px solid #1e1e1e",
-          }}>
-            <div style={{
-              fontFamily: "'JetBrains Mono', monospace",
-              fontSize: "0.65rem",
-              color: "#4a4035",
-              letterSpacing: "0.1em",
-              textTransform: "uppercase",
-              marginBottom: 8,
-            }}>
-              Hover to explore each force
+          <div style={{ display: "flex", flexDirection: "column", alignItems: "center", gap: 20, margin: "2rem 0", padding: "2rem", background: "#0d0d0d", border: "1px solid #1e1e1e" }}>
+            <div style={{ fontFamily: "'JetBrains Mono', monospace", fontSize: "0.6rem", color: "#4a4035", letterSpacing: "0.1em", textTransform: "uppercase" }}>
+              Hover nodes · Click labels below
             </div>
-            <HexagonDiagram forces={forces} size={260} />
-            <div style={{
-              fontFamily: "'Lora', Georgia, serif",
-              fontSize: "0.8rem",
-              fontStyle: "italic",
-              color: "#4a4035",
-              textAlign: "center",
-            }}>
-              The Voronoi Platform Architecture — six sovereign forces in approximate equilibrium
+            <HexagonDiagram forces={forces} size={240} />
+            <div style={{ fontFamily: "'Lora', Georgia, serif", fontSize: "0.78rem", fontStyle: "italic", color: "#4a4035", textAlign: "center" }}>
+              The Voronoi Platform Architecture — six forces in approximate equilibrium
+            </div>
+            <div style={{ width: "100%", maxWidth: 500 }}>
+              <ForceCards forces={forces} />
             </div>
           </div>
 
-          <P>
-            <strong style={{ color: "#e8d5b0" }}>Physical Sovereignty.</strong>{" "}
-            In a data mesh, a domain owns its data products end to end — and that means owning both
-            the storage substrate and the compute engines that process it. These are not separable
-            concerns. A domain that owns its Gold Iceberg tables in S3 but shares a central Spark
-            cluster with fifteen other domains does not truly own its data product — it owns a file.
-            Physical Sovereignty is the force that pulls toward complete domain autonomy over the
-            full storage-and-compute stack: the lakehouse partition, the processing engine, the table
-            format, the commit protocol.
-          </P>
-          <P style={{ color: "#9a8a75" }}>
-            <em>This force is most relevant to platform architects and domain leads defining ownership
-            boundaries and provisioning models.</em>
-          </P>
-          <P>
-            Raw events are the immutable ground truth. The domain's compute transforms that truth into
-            data products. Both are sovereign. Neither can be commandeered by a central team, a
-            downstream pipeline, or a model output without the domain's explicit contract. When this
-            force is weak — when compute is centralised, when storage is shared without formal
-            ownership — the data mesh collapses into a data lake with a new name.
-          </P>
-          <P>
-            <strong style={{ color: "#e8d5b0" }}>Intelligence.</strong>{" "}
-            Data without inference is archive. This force pulls toward prediction, pattern recognition,
-            generative response, autonomous decision. It is hungry — it consumes the physical layer and
-            produces something new. A credit risk model. A customer churn prediction. A natural
-            language answer to a CFO's question at eleven on a Wednesday night. It is also dangerous
-            unconstrained. Without boundaries, it consumes governance, it consumes compliance, it
-            consumes trust.
-          </P>
-          <P>
-            <strong style={{ color: "#e8d5b0" }}>Data Marketplace.</strong>{" "}
-            The data mesh principle of data as a product is meaningless without a place to discover,
-            evaluate, and consume those products. The Data Marketplace force pulls the architecture
-            toward a governed exchange layer — internal and external simultaneously. Internally, domain
-            data products are published with SLAs, quality scores, lineage, and classification, and
-            consumed by other domains without bilateral agreements or central mediation. Externally,
-            the marketplace extends to the SaaS and PaaS ecosystem — Salesforce, SAP, ServiceNow —
-            not as ingestion sources but as bidirectional participants. Analytical intelligence computed
-            in the lakehouse flows back into operational systems as enriched data products. A customer
-            risk score computed by the risk domain becomes a field in Salesforce. A demand forecast
-            from the supply chain domain updates an SAP planning record. The marketplace is not a
-            portal. It is the force that makes the mesh economically alive.
-          </P>
-          <P>
-            <strong style={{ color: "#e8d5b0" }}>Observability.</strong>{" "}
-            A platform that cannot see itself cannot be trusted. This force pulls toward comprehensive
-            self-awareness — pipeline latency, query performance, AI inference telemetry, storage cost
-            signals, security events, capacity utilisation across every engine in a polyglot
-            architecture. It is the platform's nervous system. Without it, problems are invisible until
-            they are catastrophic, and catastrophic problems in regulated industries have names attached
-            to them.
-          </P>
-          <P>
-            <strong style={{ color: "#e8d5b0" }}>Governance.</strong>{" "}
-            Data without provenance is noise. Data without classification is a liability. Data without
-            lineage cannot be audited, cannot satisfy GDPR, cannot support a credit decision challenged
-            in court. This force pulls toward policy, contract, and accountability. It demands that
-            every dataset knows its origin, its owner, its classification tier, its consumers, and its
-            regulatory obligations. It resists velocity and resists informality. It is the force that
-            makes data trustworthy — not just to engineers, but to auditors, regulators, and the
-            organisation's legal counsel.
-          </P>
-          <P>
-            <strong style={{ color: "#e8d5b0" }}>Security.</strong>{" "}
-            Not a feature. Not a perimeter. Not a JIRA ticket assigned to the infosec team. A sovereign
-            force that asks a single question of every other force: <em>on what terms?</em> Identity
-            federation, network topology, zero-trust policy, encryption at every boundary, admin
-            activity monitoring across every engine. This force sets the conditions under which all
-            other forces are permitted to operate. It is not the wall around the platform. It is the
-            physics the platform operates within.
-          </P>
-        </Section>
-
-        {/* 120° Principle */}
-        <Section title="The 120° Principle (Approximate Equilibrium)">
-          <P style={{ color: "#9a8a75" }}>
-            <em>This section is for architects and platform leads making decisions about how forces
-            are governed at their boundaries — not which tools to use, but how authority is
-            distributed between them.</em>
-          </P>
-          <P>
-            Here is the architectural insight that changes how you think about platform design — and
-            why it took a mathematician named Georgy Voronoi, a physician named John Snow, and sixty
-            million years of cooling lava to arrive at it.
-          </P>
-          <P>
-            In the basalt columns at the Giant's Causeway, adjacent fractures meet at approximately 120°.
-            Not because a geologist calculated the optimal angle. Because near 120°, neither crack
-            dominates the other. The thermal stress is distributed as evenly as conditions allow across
-            the boundary. The structure is stable. Any significant departure from that angle — any
-            meaningful asymmetry — creates a stress field that will eventually fracture further, or
-            cause neighbouring cells to absorb the imbalance until they too crack.
-          </P>
-          <P>
-            In the Voronoi diagram, the boundary between any two cells is the line of points exactly
-            equidistant from both seeds. Neither cell has claim over the boundary. It belongs equally
-            to both. The tessellation is complete — no gaps, no overlaps — precisely because every
-            boundary is governed by this principle of equal claim.
-          </P>
-          <P>
-            In your data platform, adjacent forces meet at boundaries. The question at every boundary
-            is the same question the cooling lava answered: does either force dominate?
-          </P>
-
-          <div style={{
-            background: "#0d0d0d",
-            border: "1px solid #1e1e1e",
-            padding: "1.5rem",
-            margin: "2rem 0",
-          }}>
-            {[
-              ["Physical Sovereignty ↔ Intelligence", "Domain-owned compute powers AI feature engineering and model training. But intelligence does not commandeer domain storage or rewrite domain data products. Model outputs are new data products in their own right — with their own domain owner, lineage, and SLA. Neither force absorbs the other."],
-              ["Intelligence ↔ Data Marketplace", "AI-generated predictions and insights are published to the marketplace as first-class data products — discoverable, versioned, and governed like any other domain output. But marketplace demand signals do not directly retrain production models without governance gates and domain owner approval. Neither dominates."],
-              ["Data Marketplace ↔ Observability", "Every data product published to the marketplace — internal or external — is subject to the same observability standards as internal pipelines. SLA compliance, freshness, quality scores, and consumer telemetry are visible to the platform. But observability does not control what is published or how products are priced and contracted. Neither dominates."],
-              ["Observability ↔ Governance", "Health signals feed governance decisions — a data product consistently breaching its quality SLA triggers a governance review and potential deprecation. But compliance and classification rules govern what observability telemetry can be retained, for how long, and who can query it. Neither dominates."],
-              ["Governance ↔ Security", "Data classification propagates automatically from the governance plane into access control enforcement across every engine — Databricks, Snowflake, Fabric, Lake Formation — without human mediation. But security cannot override governance lineage, suppress audit records, or redact provenance when inconvenient. Neither dominates."],
-              ["Security ↔ Physical Sovereignty", "Zero-trust identity and network policy protect the domain storage and compute boundary absolutely. But even the highest privilege security principal cannot alter a domain's immutable data product or bypass its schema contract. The domain's physical integrity is not a security configuration. Neither dominates."],
-            ].map(([boundary, description], i) => (
-              <div key={i} style={{
-                borderBottom: i < 5 ? "1px solid #1a1a1a" : "none",
-                padding: "1rem 0",
-              }}>
-                <div style={{
-                  fontFamily: "'JetBrains Mono', monospace",
-                  fontSize: "0.7rem",
-                  color: "#c87941",
-                  marginBottom: 6,
-                  letterSpacing: "0.05em",
-                }}>
-                  {boundary}
-                </div>
-                <div style={{
-                  fontFamily: "'Lora', Georgia, serif",
-                  fontSize: "0.9rem",
-                  color: "#8a7a65",
-                  lineHeight: 1.7,
-                }}>
-                  {description}
-                </div>
+          {/* Framework alignment panel */}
+          <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(180px, 1fr))", gap: 1, background: "#1a1a1a", border: "1px solid #1e1e1e", margin: "0 0 1.5rem" }}>
+            {frameworkAlignment.map((col, i) => (
+              <div key={i} style={{ background: "#0d0d0d", padding: "1.25rem" }}>
+                <div style={{ fontFamily: "'JetBrains Mono', monospace", fontSize: "0.68rem", fontWeight: 700, color: col.color, marginBottom: 4 }}>{col.name}</div>
+                <div style={{ fontFamily: "'JetBrains Mono', monospace", fontSize: "0.58rem", color: "#4a4035", marginBottom: 12 }}>{col.sub}</div>
+                {col.rows.map((row, j) => (
+                  <div key={j} style={{ color: "#6a5a4a", fontSize: "0.8rem", lineHeight: 1.65, marginBottom: 6, paddingLeft: 10, borderLeft: "1px solid #2a2a2a" }}>
+                    {row}
+                  </div>
+                ))}
               </div>
             ))}
           </div>
 
-          <PullQuote>
-            When every adjacent boundary is near equilibrium — when no force meaningfully dominates
-            its neighbour — the platform stabilises. The exact angle matters less than the balance.
-            Like the basalt column. Like the Voronoi cell. Like the honeycomb.
-          </PullQuote>
+          <p style={prose}>
+            At every boundary where two forces meet, neither should dominate. Security and Physical
+            Sovereignty share a boundary — the domain's storage is absolutely protected, but even the
+            highest-privilege security principal can't alter an immutable data product without the domain's
+            contract. Governance and Intelligence share a boundary — model lineage traces back to the exact
+            training snapshot automatically, and classification flows to the AI serving layer without a
+            human check. When the balance holds, teams ship fast and the platform is trustworthy at the same time.
+          </p>
+        </section>
 
-          <P>
-            When any force dominates — the geometry deforms. And deformed platforms fail in ways that
-            are predictable, diagnosable, and — with the right patterns — recoverable.
-          </P>
-        </Section>
+        {/* 3. Recognise your platform */}
+        <section style={{ marginBottom: "3rem" }}>
+          <h2 style={{ fontFamily: "'Playfair Display', Georgia, serif", fontSize: "1.5rem", fontWeight: 700, color: "#e8d5b0", marginBottom: "1rem", marginTop: 0, letterSpacing: "-0.02em" }}>
+            Does your platform look like one of these?
+          </h2>
+          <p style={prose}>
+            Most platforms aren't hexagonal — they're deformed by whichever force had the most budget,
+            the worst recent incident, or the strongest organisational voice. The deformation tells you
+            where the time-to-market bottleneck actually lives.
+          </p>
 
-        {/* When Equality Isn't Possible */}
-        <Section title="When Equality Isn't Possible">
-          <P>
-            The 120° principle is an approximation and an architectural target, not an exact value or an organisational given. The actual angle at any boundary is determined by the interdependencies — regulatory constraints, ownership structures, budget realities, and the maturity of each force. Real enterprises
-            have legacy systems that pre-date the mesh, budget cycles that fund one force at the expense
-            of others, and CISOs who will not cede ground regardless of the geometric argument. Acknowledging
-            this is not a concession — it is the starting point for practical progress.
-          </P>
-          <P>
-            Three patterns have proven durable when genuine equilibrium is temporarily out of reach:
-          </P>
-
-          <div style={{
-            display: "flex",
-            flexDirection: "column",
-            gap: 0,
-            margin: "1.5rem 0",
-            border: "1px solid #1e1e1e",
-          }}>
-            {[
-              {
-                number: "01",
-                title: "The Arbitration Board with Timeboxed Escalation",
-                paragraphs: [
-                  "Consider a conflict that appears in almost every enterprise cloud programme: the Chief Security Architect mandates that all PII must be tokenized in cloud storage, on top of data-at-rest encryption. The policy is architecturally correct. But the data engineering team has three billion records that need detokenizing for every ETL run. At that volume, the detokenize-process-retokenize cycle destroys pipeline performance and drives egress and compute costs to a level that makes the programme unviable. Security is not wrong. Engineering is not wrong. Neither team can resolve this unilaterally.",
-                  "This is the conflict that requires a standing architecture forum — not a one-off meeting, but a body with a fixed mandate and a fixed window. The mandate is not to pick a winner. It is to find the minimum security posture that satisfies the threat model without requiring per-record tokenization at ETL scale. In this case, the arbitrated resolution is a ring-fenced environment: a dedicated bucket with no public access, IAM scoped exclusively to the ETL pipeline, full audit logging on every access event, and a re-tokenization gate enforced before any data leaves the enclave. That is not a weaker control than tokenization — it is an equivalent control at a different layer.",
-                  "Timebox the resolution to two weeks. If unresolved, the conservative default applies — no raw PII in cloud storage — with a documented review date. The discipline is that the conflict is explicitly registered, owned, and time-limited. A tokenization debate that drifts for six months without ownership is how PII ends up in the wrong place with no paper trail. Unresolved force conflicts that drift are the most common cause of permanent deformation.",
-                ],
-                color: "#c87941",
-              },
-              {
-                number: "02",
-                title: "Temporary Bilateral SLAs as Guardrails",
-                paragraphs: [
-                  "The instinct to centralise all firm logs is architecturally sound. One SIEM, one enforcement team, one audit trail — Security has a single control point and can enforce policy consistently. In a single-cloud environment, this is straightforward. In multi-cloud, it becomes a cost problem: moving all logs from every cloud provider into a central store means paying egress on every authentication event, every pipeline run, every debug trace. At enterprise log volumes, the majority of that data is operational noise the security team will never query. The centralisation mandate, applied uniformly, creates unnecessary cost without proportionate security benefit.",
-                  "The bilateral SLA resolves this by scoping the imbalance rather than eliminating it. Security and Platform Engineering agree in writing: security-critical logs — authentication events, privilege escalation, policy violations, anomaly detections — flow centrally. The SIEM has everything it needs to satisfy the threat model and the audit requirement. Operational and debug logs remain at cloud level, governed by locally deployed OPA policies that mirror the central ruleset. Security gets its enforcement capability where it matters. Platform Engineering avoids egress cost for logs that serve no security purpose.",
-                  "The SLA is reviewed quarterly. If the threat model changes and additional log categories are needed centrally, the agreement is updated explicitly — not silently expanded. This is what prevents a temporary constraint from hardening into permanent architecture: the tension stays visible, named, and contractually bounded. Neither force has quietly absorbed the other.",
-                ],
-                color: "#7b9eb8",
-              },
-              {
-                number: "03",
-                title: "Guardrail Automation Enforcing Minimums",
-                paragraphs: [
-                  "In most enterprises, three teams share responsibility for the data platform: Central Cloud Operations, which provisions infrastructure and enforces cloud-level controls — networking, IAM, cost tagging; the Data Platform team, which applies data governance baselines — classification tags, observability agents, policy gates; and Data Application teams, which build and consume data products. Each team's automation is solid within its own boundary. The problem is the seam between them.",
-                  "Cloud Ops provisions a workspace and raises a ticket to Data Platform. Data Platform configures governance baselines and raises a ticket to the product team. Each handoff is a queue. The automation exists — it just stops at the team boundary. Time to market collapses not within teams but between them, and the cause is invisible because no individual team is slow.",
-                  "The guardrail automation pattern makes the handoff structural rather than procedural. Cloud Ops Terraform completes workspace provisioning and automatically triggers the Data Platform module, which applies governance classification, deploys observability agents, and validates policy baselines. The workspace is handed to the data product team with a notification, fully configured. No ticket. No queue. Cloud Ops and Data Platform collaborate once — to design and agree the automation chain — and then it runs without coordination overhead on every subsequent provisioning event. A workspace that has not passed all six force minimums cannot be handed over. The geometry is enforced by the pipeline, not by process.",
-                ],
-                color: "#8aab7a",
-              },
-            ].map((p, i) => (
-              <div key={i} style={{
-                padding: "1.5rem",
-                borderBottom: i < 2 ? "1px solid #1a1a1a" : "none",
-                borderLeft: `3px solid ${p.color}`,
-              }}>
-                <div style={{
-                  display: "flex",
-                  alignItems: "baseline",
-                  gap: 12,
-                  marginBottom: "0.75rem",
-                }}>
-                  <span style={{
-                    fontFamily: "'JetBrains Mono', monospace",
-                    fontSize: "0.65rem",
-                    color: p.color,
-                    opacity: 0.7,
-                  }}>{p.number}</span>
-                  <span style={{
-                    fontFamily: "'Playfair Display', Georgia, serif",
-                    fontSize: "1rem",
-                    fontWeight: 700,
-                    color: "#e8d5b0",
-                  }}>{p.title}</span>
-                </div>
-                <div style={{
-                  fontFamily: "'Lora', Georgia, serif",
-                  fontSize: "0.92rem",
-                  color: "#8a7a65",
-                  lineHeight: 1.8,
-                  display: "flex",
-                  flexDirection: "column",
-                  gap: "0.9rem",
-                }}>
-                  {p.paragraphs.map((para, j) => (
-                    <p key={j} style={{ margin: 0 }}>{para}</p>
-                  ))}
-                </div>
-              </div>
-            ))}
-          </div>
-
-          <P>
-            These patterns do not replace the equilibrium target. They are the engineering discipline
-            for moving toward it when the organisational physics won't allow a direct path. Each one
-            keeps the conflict visible, owned, and bounded — which is the minimum condition for
-            recovery. Hidden imbalances calcify. Named ones can be resolved.
-          </P>
-        </Section>
-
-        {/* Deformations */}
-        <Section title="The Deformation Catalogue">
-          <P style={{ color: "#9a8a75" }}>
-            <em>For CDOs, platform leads, and architects diagnosing why a platform investment
-            hasn't delivered the expected returns.</em>
-          </P>
-          <P>
-            Walk into many large enterprises and you will find one of five recognisable shapes. The
-            deformation tells you a great deal about the platform's history — which team had the most
-            budget, which incident drove the last major investment, which vendor won the last RFP.
-            None of these patterns are hypothetical. Each maps to documented failure modes that have
-            appeared repeatedly across the industry.
-          </P>
-
-          {/* Deformation selector */}
-          <div style={{ margin: "2rem 0" }}>
-            <div style={{
-              display: "flex",
-              gap: 8,
-              flexWrap: "wrap",
-              marginBottom: "1.5rem",
-            }}>
+          <div style={{ margin: "1.5rem 0" }}>
+            <div style={{ display: "flex", gap: 8, flexWrap: "wrap", marginBottom: "1.25rem" }}>
               {deformations.map((d, i) => (
-                <button
-                  key={i}
-                  onClick={() => setActiveDeformation(i)}
-                  style={{
-                    background: activeDeformation === i ? d.color + "22" : "transparent",
-                    border: `1px solid ${activeDeformation === i ? d.color : "#2a2a2a"}`,
-                    color: activeDeformation === i ? d.color : "#4a4035",
-                    padding: "6px 12px",
-                    cursor: "pointer",
-                    fontFamily: "'JetBrains Mono', monospace",
-                    fontSize: "0.65rem",
-                    letterSpacing: "0.08em",
-                    transition: "all 0.2s",
-                  }}
-                >
+                <button key={i} onClick={() => setActiveDeformation(i)} style={{
+                  background: activeDeformation === i ? d.color + "22" : "transparent",
+                  border: `1px solid ${activeDeformation === i ? d.color : "#2a2a2a"}`,
+                  color: activeDeformation === i ? d.color : "#4a4035",
+                  padding: "6px 12px", cursor: "pointer",
+                  fontFamily: "'JetBrains Mono', monospace", fontSize: "0.65rem",
+                  letterSpacing: "0.08em", transition: "all 0.2s",
+                }}>
                   {d.name.replace("The ", "")}
                 </button>
               ))}
             </div>
-
-            {/* Active deformation detail */}
             {(() => {
               const d = deformations[activeDeformation];
               return (
-                <div style={{
-                  display: "grid",
-                  gridTemplateColumns: "auto 1fr",
-                  gap: "1.5rem",
-                  background: "#0d0d0d",
-                  border: `1px solid ${d.color}33`,
-                  borderLeft: `3px solid ${d.color}`,
-                  padding: "1.5rem",
-                  alignItems: "start",
-                }}>
+                <div style={{ display: "grid", gridTemplateColumns: "auto 1fr", gap: "1.5rem", background: "#0d0d0d", border: `1px solid ${d.color}33`, borderLeft: `3px solid ${d.color}`, padding: "1.5rem", alignItems: "start" }}>
                   <div style={{ display: "flex", flexDirection: "column", alignItems: "center", gap: 8 }}>
-                    <DeformationChart shape={d.shape} color={d.color} size={130} />
-                    <div style={{
-                      fontFamily: "'JetBrains Mono', monospace",
-                      fontSize: "0.6rem",
-                      color: "#4a4035",
-                      textAlign: "center",
-                      maxWidth: 110,
-                    }}>
-                      dashed = ideal hexagon
-                    </div>
+                    <DeformationChart shape={d.shape} color={d.color} size={120} />
+                    <div style={{ fontFamily: "'JetBrains Mono', monospace", fontSize: "0.58rem", color: "#4a4035", textAlign: "center", maxWidth: 100 }}>dashed = ideal</div>
                   </div>
                   <div>
-                    <div style={{
-                      fontFamily: "'Playfair Display', Georgia, serif",
-                      fontSize: "1.2rem",
-                      fontWeight: 700,
-                      color: d.color,
-                      marginBottom: 4,
-                    }}>
-                      {d.name}
-                    </div>
-                    <div style={{
-                      fontFamily: "'JetBrains Mono', monospace",
-                      fontSize: "0.65rem",
-                      color: "#4a4035",
-                      marginBottom: "0.75rem",
-                      letterSpacing: "0.08em",
-                    }}>
-                      {d.industry}
-                    </div>
-                    <div style={{
-                      fontFamily: "'Lora', Georgia, serif",
-                      fontSize: "0.95rem",
-                      color: "#8a7a65",
-                      lineHeight: 1.75,
-                      marginBottom: "0.75rem",
-                    }}>
-                      {d.description}
-                    </div>
-                    <div style={{
-                      display: "inline-block",
-                      background: d.color + "15",
-                      border: `1px solid ${d.color}33`,
-                      padding: "4px 10px",
-                      fontFamily: "'JetBrains Mono', monospace",
-                      fontSize: "0.65rem",
-                      color: d.color,
-                    }}>
+                    <div style={{ fontFamily: "'Playfair Display', Georgia, serif", fontSize: "1.15rem", fontWeight: 700, color: d.color, marginBottom: 4 }}>{d.name}</div>
+                    <div style={{ fontFamily: "'JetBrains Mono', monospace", fontSize: "0.62rem", color: "#4a4035", marginBottom: "0.75rem", letterSpacing: "0.08em" }}>{d.industry}</div>
+                    <p style={{ fontFamily: "'Lora', Georgia, serif", fontSize: "0.92rem", color: "#8a7a65", lineHeight: 1.75, marginBottom: "0.75rem" }}>{d.description}</p>
+                    <div style={{ display: "inline-block", background: d.color + "15", border: `1px solid ${d.color}33`, padding: "4px 10px", fontFamily: "'JetBrains Mono', monospace", fontSize: "0.62rem", color: d.color }}>
                       Symptom: {d.symptom}
                     </div>
                   </div>
@@ -924,265 +753,94 @@ export default function VoronoiBlogPost() {
             })()}
           </div>
 
-          <P>
-            None of these deformations emerged from malice or incompetence. Every one is the result
-            of a rational local decision — the security team doing their job, the storage team scaling
-            to meet demand, the AI team responding to board-level pressure to ship GenAI use cases.
-            The pattern repeats across industries and geographies because the forces are universal.
-            What varies is which force the organisation's history and incentives allow to dominate.
-          </P>
+          <p style={{ ...prose, color: "#6a5a4a" }}>
+            None of these emerged from incompetence. Each is the result of a rational local decision — the
+            security team doing their job, the AI team responding to board pressure, the storage team
+            scaling to meet demand. What varies is which force the organisation's history allowed to dominate,
+            and whether the imbalance was recognised before it calcified.
+          </p>
+        </section>
 
-          {/* Real-world references */}
-          <div style={{
-            background: "#0d0d0d",
-            border: "1px solid #1e1e1e",
-            borderLeft: "3px solid #4a4035",
-            padding: "1.25rem 1.5rem",
-            margin: "1.5rem 0",
-          }}>
-            <div style={{
-              fontFamily: "'JetBrains Mono', monospace",
-              fontSize: "0.6rem",
-              color: "#4a4035",
-              letterSpacing: "0.12em",
-              textTransform: "uppercase",
-              marginBottom: "1rem",
-            }}>
-              Documented Patterns in the Industry
-            </div>
-            {[
-              {
-                ref: "NHS Data Programme (2003–2011)",
-                note: "A £12.7bn centralised data infrastructure programme that became one of the most studied examples of the Data Swamp deformation at national scale — vast central storage investment, negligible domain ownership, and governance that existed on paper but not in practice. The National Audit Office's 2011 report remains a canonical reference for how physical force dominance without mesh principles produces unusable platforms.",
-              },
-              {
-                ref: "Knight Capital Group (2012)",
-                note: "Not a data platform failure in the traditional sense — but a definitive case of Observability force collapse. A deployment error in a trading system went undetected for 45 minutes because monitoring was insufficient to surface it. $440m was lost. The incident is now a standard reference for what happens when the observability force is treated as optional infrastructure rather than a sovereign architectural concern.",
-              },
-              {
-                ref: "Gartner's 2019 Data & Analytics Summit findings",
-                note: "Gartner reported that through 2022, only 20% of analytic insights would deliver business outcomes. The primary causes cited — poor data quality, lack of trust, centralised bottlenecks, and governance theatre — map precisely to the Governance and Physical Sovereignty deformations. The statistic has since been widely cited as evidence that data lake investments routinely underperform not for technical reasons, but architectural ones.",
-              },
-            ].map((item, i) => (
-              <div key={i} style={{
-                marginBottom: i < 2 ? "1rem" : 0,
-                paddingBottom: i < 2 ? "1rem" : 0,
-                borderBottom: i < 2 ? "1px solid #1a1a1a" : "none",
-              }}>
-                <div style={{
-                  fontFamily: "'JetBrains Mono', monospace",
-                  fontSize: "0.68rem",
-                  color: "#c87941",
-                  marginBottom: "0.4rem",
-                }}>
-                  {item.ref}
-                </div>
-                <div style={{
-                  fontFamily: "'Lora', Georgia, serif",
-                  fontSize: "0.88rem",
-                  color: "#6a5a4a",
-                  lineHeight: 1.7,
-                }}>
-                  {item.note}
-                </div>
-              </div>
-            ))}
+        {/* 4. Three patterns */}
+        <section style={{ marginBottom: "3rem" }}>
+          <h2 style={{ fontFamily: "'Playfair Display', Georgia, serif", fontSize: "1.5rem", fontWeight: 700, color: "#e8d5b0", marginBottom: "1rem", marginTop: 0, letterSpacing: "-0.02em" }}>
+            Three patterns that restore the balance
+          </h2>
+          <p style={prose}>
+            These patterns are drawn from real enterprise programmes. The first — embedding governance into
+            the provisioning pipeline — is the most direct fix for time-to-market. The other two handle
+            the conflicts that arise when organisational physics won't allow an immediate fix.
+          </p>
+          <Accordion items={patterns} />
+        </section>
+
+        {/* 5. Realization Patterns */}
+        <section style={{ marginBottom: "3rem" }}>
+          <h2 style={{ fontFamily: "'Playfair Display', Georgia, serif", fontSize: "1.5rem", fontWeight: 700, color: "#e8d5b0", marginBottom: "1rem", marginTop: 0, letterSpacing: "-0.02em" }}>
+            How it works in practice — the realization pattern
+          </h2>
+          <p style={prose}>
+            Abstract principles need a concrete path. This is how a change request becomes a governed,
+            published data product — showing which forces activate at each step, who is involved, and what
+            artifact is produced. Step through it to see where the bottlenecks used to live and where the
+            automation now takes over.
+          </p>
+          <RealizationFlow steps={realizationSteps} />
+          <p style={{ ...prose, marginTop: "1.5rem" }}>
+            The key shift: data asset registration at step 4 is no longer a manual catalogue entry made
+            weeks after the product ships. It is an immutable record created by the pipeline at provisioning
+            time — lineage graph root, classification tag, observability baseline, and all. Retroactive
+            data mapping is eliminated because the mapping <em>is</em> the provisioning.
+          </p>
+        </section>
+
+        {/* 6. What it looks like */}
+        <section style={{ marginBottom: "3rem" }}>
+          <h2 style={{ fontFamily: "'Playfair Display', Georgia, serif", fontSize: "1.5rem", fontWeight: 700, color: "#e8d5b0", marginBottom: "1rem", marginTop: 0, letterSpacing: "-0.02em" }}>
+            What balance feels like — pick your role
+          </h2>
+          <p style={prose}>
+            A platform in genuine equilibrium looks different depending on where you sit. Select your role
+            to see what day-to-day working looks like when the six forces are balanced.
+          </p>
+          <PersonaSwitcher personas={personas} />
+        </section>
+
+        {/* TL;DR */}
+        <div style={{ background: "#0d0d0d", border: "1px solid #1e1e1e", borderLeft: "3px solid #c87941", padding: "1.75rem", margin: "3rem 0 2rem" }}>
+          <div style={{ fontFamily: "'JetBrains Mono', monospace", fontSize: "0.6rem", color: "#4a4035", letterSpacing: "0.12em", textTransform: "uppercase", marginBottom: "1rem" }}>
+            The point — in one paragraph
           </div>
-
-          <P>
-            The Voronoi Platform Architecture is not a prescription for which tools to use or how
-            much to invest in each capability. It is a principle for how forces should relate to
-            their neighbours — and a diagnostic for detecting when that relationship has broken down
-            before the platform fractures.
-          </P>
-        </Section>
-
-        {/* What equilibrium feels like */}
-        <Section title="What Equilibrium Actually Feels Like">
-          <P>
-            Before the engineering — before Iceberg and Bedrock and Terraform modules and federated
-            identity — it is worth describing what a platform in genuine equilibrium actually produces
-            for the people who use and build it. Not as aspiration. As specification.
-          </P>
-          <P>
-            A domain team provisioning a new data product submits a domain intent. An automated
-            pipeline validates the network boundaries, registers the identity principals, creates the
-            Iceberg namespace in the federated catalog, configures observability agents, applies
-            governance classification, and provisions the domain's compute workspace. The security force
-            is enforced by the pipeline — not by a human approver reviewing a ticket three weeks later.
-            The domain team has a working, governed, monitored data product published to the marketplace
-            in hours. Other domains can discover it, evaluate its quality score and SLA, and subscribe
-            to it — without raising a ticket to a central data team.
-          </P>
-          <P>
-            A data scientist building a predictive model queries Gold-tier Iceberg tables through a
-            unified catalog. The data they can access is determined by their identity, the
-            classification of the tables, and the governance policies — enforced automatically, not by
-            a gatekeeper. When they register their model, its lineage traces back to the exact Iceberg
-            snapshot and domain data product version that produced the training set. The model output
-            is published to the marketplace as a new data product — with its own domain owner, SLA,
-            and quality contract. When the model drifts, the observability plane detects it and alerts
-            the domain owner. The intelligence force and the physical sovereignty force are in balance — the angle between them shaped by the nature of the data, the regulatory context, and the governance model in play.
-          </P>
-          <P>
-            A business analyst asking a natural language question via a GenAI interface receives a
-            response that cites its source — which domain data product, which classification tier,
-            which snapshot. The response is auditable. The inference event is logged. If the analyst
-            lacks clearance to access Confidential data, the AI layer does not surface it — not because
-            a human checked, but because the classification from the governance plane flows through to
-            the AI serving layer automatically. The intelligence and security forces are in approximate equilibrium — neither dominating, each constraining the other proportionally to the sensitivity of the data involved.
-          </P>
-          <P>
-            A Salesforce account manager opens a customer record and finds a real-time risk score,
-            a propensity model output, and a next-best-action recommendation — all computed by the
-            lakehouse, published to the marketplace, and consumed by the CRM integration without a
-            single bespoke pipeline. The data marketplace force and the physical sovereignty force
-            are near equilibrium — the exact balance shifting with the complexity of the integration. The operational system is intelligent because the analytical platform treats it as a first-class consumer.
-          </P>
-          <P>
-            An auditor asking who approved the Snowflake instance serving the revenue report receives a
-            complete answer: the ARB submission reference, the Terraform module version, the Git commit
-            SHA, the pipeline run that applied it, the SPN that executed it, and the lineage from that
-            infrastructure event to the current table state. Infrastructure lineage and data lineage
-            are the same graph. The governance and physical sovereignty forces are in equilibrium — the boundary between them drawn by the interdependencies of the organisation, not by a fixed geometric rule.
-          </P>
-
-          <PullQuote>
-            The hexagon holds its shape not because someone holds it. Because the physics is right.
-          </PullQuote>
-
-          <P>
-            This is not a technology problem. Every component of this platform exists today — Iceberg,
-            Databricks, Snowflake, Bedrock, AI Foundry, Purview, Terraform, Sentinel. The question is
-            never capability. The question is always architecture. Specifically: have you designed the
-            forces into equilibrium, or have you assembled tools and hoped equilibrium would emerge?
-          </P>
-          <P>
-            Lava doesn't hope to become hexagonal. The physics makes any other shape unstable.
-          </P>
-        </Section>
-
-        {/* Closing */}
-        <Section title="The Name">
-          <P>
-            We call this the <strong style={{ color: "#e8d5b0" }}>Voronoi Platform Architecture</strong> —
-            named for the mathematician Georgy Voronoi, who formalised in 1908 what John Snow had drawn
-            intuitively in 1854 and what cooling lava had been demonstrating for sixty million years
-            before either of them.
-          </P>
-          <P>
-            The Voronoi tessellation partitions space such that every point belongs to exactly one cell,
-            every cell is governed by proximity to its seed, and every boundary is jointly owned by the
-            two cells it separates. No gaps. No overlaps. Complete, stable, efficient coverage of the
-            entire plane.
-          </P>
-          <P>
-            An enterprise data platform should have the same properties. Every data asset belongs to
-            exactly one sovereign domain. Every domain is governed by the forces closest to it. Every
-            architectural boundary is jointly governed by the two forces it separates — neither
-            dominant, both respected. No ungoverned space. No capability overlap. Complete, stable,
-            efficient coverage of the platform's operational surface.
-          </P>
-          <P>
-            The Voronoi diagram doesn't tell you where to place the seeds. That is the engineering
-            question — and it is a concrete one. In the next essay, we begin with the physical and
-            catalog planes: how domain-owned storage and compute are structured on Apache Iceberg,
-            why the catalog layer is the most dangerous plane in a polyglot architecture, and what
-            a federated catalog federation model looks like in practice across Databricks, Snowflake,
-            AWS Glue, and Microsoft Fabric. The geometry gives you the principle. The engineering
-            gives you the platform.
-          </P>
-        </Section>
-
-        {/* The Principle — TL;DR for sharing */}
-        <div style={{
-          background: "#0d0d0d",
-          border: "1px solid #1e1e1e",
-          borderLeft: "3px solid #c87941",
-          padding: "1.75rem",
-          margin: "3rem 0 2rem",
-        }}>
-          <div style={{
-            fontFamily: "'JetBrains Mono', monospace",
-            fontSize: "0.6rem",
-            color: "#4a4035",
-            letterSpacing: "0.12em",
-            textTransform: "uppercase",
-            marginBottom: "1rem",
-          }}>
-            The Principle — in one paragraph
-          </div>
-          <p style={{
-            fontFamily: "'Playfair Display', Georgia, serif",
-            fontSize: "1.05rem",
-            fontStyle: "italic",
-            color: "#c8bfb0",
-            lineHeight: 1.8,
-            margin: 0,
-          }}>
-            A data platform achieves stable, scalable architecture not by optimising any single
-            capability, but by bringing six sovereign forces — Physical Sovereignty, Intelligence,
-            Data Marketplace, Observability, Governance, and Security — into genuine equilibrium
-            at their shared boundaries. When no adjacent force dominates its neighbour, the platform
-            tessellates completely: no ungoverned space, no capability gaps, no structural failure
-            points. This is the geometry that nature uses to partition space efficiently. It is called
-            the Voronoi tessellation. And it is the target shape for every enterprise data platform
-            operating at scale.
+          <p style={{ fontFamily: "'Playfair Display', Georgia, serif", fontSize: "1.05rem", fontStyle: "italic", color: "#c8bfb0", lineHeight: 1.8, margin: 0 }}>
+            Data application teams are slow not because governance and security are too strict, but because
+            they arrive too late. DAMA BOK defines the disciplines; Data Mesh provides the operating model;
+            the six-force equilibrium shows where they're in tension. The fix is to embed all six forces
+            into the pipeline that creates the environment — so that governance classification, security
+            validation, observability wiring, and catalog registration happen at provisioning time, not as
+            a separate process weeks later. When the pipeline enforces the rules, there's nothing left to approve.
           </p>
         </div>
 
-        {/* Next */}
-        <div style={{
-          borderTop: "1px solid #1e1e1e",
-          paddingTop: "2rem",
-          marginTop: "3rem",
-        }}>
-          <div style={{
-            fontFamily: "'JetBrains Mono', monospace",
-            fontSize: "0.65rem",
-            color: "#4a4035",
-            letterSpacing: "0.1em",
-            textTransform: "uppercase",
-            marginBottom: "0.75rem",
-          }}>
+        {/* Coming next */}
+        <div style={{ borderTop: "1px solid #1e1e1e", paddingTop: "2rem", marginTop: "3rem" }}>
+          <div style={{ fontFamily: "'JetBrains Mono', monospace", fontSize: "0.62rem", color: "#4a4035", letterSpacing: "0.1em", textTransform: "uppercase", marginBottom: "0.75rem" }}>
             Coming Next · Part II
           </div>
-          <div style={{
-            fontFamily: "'Playfair Display', Georgia, serif",
-            fontSize: "1.3rem",
-            color: "#c87941",
-            marginBottom: "0.75rem",
-          }}>
+          <div style={{ fontFamily: "'Playfair Display', Georgia, serif", fontSize: "1.25rem", color: "#c87941", marginBottom: "0.75rem" }}>
             The Physical and Catalog Planes: The Gravitational Mass
           </div>
-          <P style={{ color: "#4a4035", marginBottom: 0 }}>
+          <p style={{ ...prose, color: "#4a4035", marginBottom: 0 }}>
             Before you can build intelligence, governance, or observability on a polyglot multi-cloud
             platform, you have to answer one deceptively simple question: where is the truth, and can
             every engine in your architecture find it? The answer involves Apache Iceberg, federated
-            catalogs, a dialect compatibility matrix, and the most dangerous plane in the architecture
-            — the one nobody draws, and the one most likely to kill you silently.
-          </P>
+            catalogs, and the plane nobody draws — the one most likely to fail silently.
+          </p>
         </div>
 
         {/* Tags */}
-        <div style={{
-          display: "flex",
-          gap: 8,
-          flexWrap: "wrap",
-          marginTop: "3rem",
-          paddingTop: "2rem",
-          borderTop: "1px solid #1a1a1a",
-        }}>
-          {["Data Architecture", "Data Mesh", "Platform Engineering", "Apache Iceberg", "Enterprise Architecture", "Voronoi"].map(tag => (
-            <span key={tag} style={{
-              background: "#111",
-              border: "1px solid #222",
-              color: "#4a4035",
-              padding: "4px 10px",
-              fontFamily: "'JetBrains Mono', monospace",
-              fontSize: "0.65rem",
-              letterSpacing: "0.06em",
-            }}>
+        <div style={{ display: "flex", gap: 8, flexWrap: "wrap", marginTop: "3rem", paddingTop: "2rem", borderTop: "1px solid #1a1a1a" }}>
+          {["Data Architecture", "DAMA BOK", "Data Mesh", "Platform Engineering", "Time to Market", "Data Governance", "AI Modernisation"].map(tag => (
+            <span key={tag} style={{ background: "#111", border: "1px solid #222", color: "#4a4035", padding: "4px 10px", fontFamily: "'JetBrains Mono', monospace", fontSize: "0.65rem", letterSpacing: "0.06em" }}>
               {tag}
             </span>
           ))}
