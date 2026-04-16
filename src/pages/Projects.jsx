@@ -2,40 +2,72 @@ import { Link } from 'react-router-dom'
 
 const projects = [
   {
+    slug: 'catalog-sync',
+    url: 'https://github.com/techbitsvsk/catalog_sync',
+    cat: 'Iceberg · Governance',
+    title: 'Iceberg Catalog Sync',
+    problem:
+      'Iceberg metadata embeds absolute storage URIs at every level. Copying Parquet files across clouds without rewriting those URIs leaves every table pointing back at the source — queries fail silently.',
+    summary:
+      'Enterprise-grade, platform-agnostic Apache Iceberg catalog replication with full metadata-chain URI rewrite, OAuth 2.0 authentication, and fine-grained data-contract policy enforcement.',
+    capabilities: [
+      'Manifest-based diff → parallel Parquet/Avro transfer → full URI rewrite → idempotent Nessie commit',
+      'Cold-storage archival and partition-level restore with dry-run safety gate',
+      'OAuth 2.0 RS256 JWT issuer + OPA policy engine: allow/deny, row-level security, column exclusion & masking',
+      '7-service Docker stack (Nessie, MinIO, OPA, Postgres, Airflow) — zero-touch `docker compose up`',
+    ],
+    stack: ['Python', 'Apache Iceberg', 'Nessie', 'OPA', 'OAuth 2.0', 'FastAPI', 'Docker', 'Airflow'],
+  },
+  {
     slug: 'data-product-platform',
     url: 'https://github.com/techbitsvsk/data-product-platform',
     cat: 'Data Platform · Java',
     title: 'Data Product Platform',
-    description:
-      'Schema-driven marketplace for enterprise data products. JSON Schema is the single source of truth — auto-generating Java POJOs with three-layer validation (headers, schema, bean validation). Zero-code extensibility for new product types, interactive API browsing via Swagger UI.',
-    stack: ['Java', 'Spring Boot 3.2', 'JSON Schema', 'Swagger UI'],
+    problem:
+      'Every new data product type requires handwritten POJOs, duplicated validation logic, and bespoke API wiring — making the platform brittle and expensive to extend.',
+    summary:
+      'Schema-driven marketplace where JSON Schema files are the single source of truth: POJOs are auto-generated at build time and every request passes a three-layer validation pipeline before reaching business logic.',
+    capabilities: [
+      'jsonschema2pojo Maven plugin generates fully-annotated Java classes and enums at build time',
+      'Three sequential runtime gates: header validation → JSON Schema pre-filter → Bean Validation annotations',
+      'Zero-code extensibility — add a `.json` schema file, rebuild, and the new product type is live',
+      'Interactive Swagger UI + dry-run `POST /validate` endpoint for safe schema testing',
+    ],
+    stack: ['Java 17', 'Spring Boot 3.2', 'JSON Schema', 'Bean Validation', 'Swagger UI', 'Maven'],
   },
   {
     slug: 'fabric-automation',
     url: 'https://github.com/techbitsvsk/fabric_automation',
     cat: 'Platform Engineering · Python',
     title: 'Fabric Control Plane',
-    description:
-      'Idempotent, API-driven provisioning and governance for Microsoft Fabric workspaces. Accepts a workspace specification via REST API or YAML and drives the full lifecycle — capacity assignment, domain binding, and Azure AD role reconciliation. Deployable as a standalone FastAPI service or Azure Functions app with zero rewrites, Entra ID JWT auth, structured JSON logging, and full Bicep IaC.',
-    stack: ['Python', 'FastAPI', 'Azure Functions', 'Microsoft Fabric', 'Bicep', 'Entra ID'],
+    problem:
+      'Provisioning Microsoft Fabric workspaces manually is error-prone, non-repeatable, and leaves role assignments drifting from their declared state over time.',
+    summary:
+      'Idempotent, API-driven provisioning and governance for Microsoft Fabric workspaces — accepts a workspace spec via REST or YAML and drives the full lifecycle, deployable as FastAPI or Azure Functions with zero rewrites.',
+    capabilities: [
+      'Full lifecycle: create workspace → assign capacity & domain → reconcile Azure AD group roles',
+      'Dual deployment target: standalone FastAPI service or Azure Functions v4 via ASGI adapter — same codebase, no rewrites',
+      'Entra ID JWT validation via JWKS; Managed Identity in production — no stored secrets',
+      'Structured JSON logs with per-request correlation IDs; full Bicep IaC for zero-touch infra',
+    ],
+    stack: ['Python', 'FastAPI', 'Azure Functions', 'Microsoft Fabric', 'Entra ID', 'Bicep', 'structlog'],
   },
   {
-    slug: 'catalog_sync',
-    url: 'https://github.com/techbitsvsk/catalog_sync',
-    cat: 'Iceberg · Governance',
-    title: 'Catalog Sync',
-    description:
-      'Platform-agnostic tool for replicating Apache Iceberg catalog metadata across storage systems while rewriting absolute URIs. Includes archive/restore for cold storage, JWT authentication, OPA policy enforcement, row/column-level security, and seven containerised services with zero-touch setup.',
-    stack: ['Python', 'Apache Iceberg', 'OPA', 'JWT', 'Docker'],
-  },
-  {
-    slug: 'multicloud_repo',
+    slug: 'multicloud-pipeline',
     url: 'https://github.com/techbitsvsk/multicloud_repo',
     cat: 'Multi-Cloud · PySpark',
     title: 'Multi-Cloud Data Pipeline',
-    description:
-      'Production-ready medallion architecture (Bronze → Silver → Gold) running identically on AWS Glue, Microsoft Fabric, and local Spark without code changes. Azure validation in progress — extending the same Iceberg-native portability proof to Azure infrastructure. Includes TPC-H dataset processing, 13 smoke tests, and comprehensive IaC templates (Terraform/Bicep).',
-    stack: ['PySpark', 'Apache Iceberg', 'AWS Glue', 'Microsoft Fabric', 'Azure', 'Terraform', 'Bicep'],
+    problem:
+      'Data pipelines become cloud-locked because platform-specific session setup and storage paths are tangled through business logic — migrating means a near-complete rewrite.',
+    summary:
+      'Production-ready medallion architecture (Bronze → Silver → Gold) on Apache Iceberg that runs identically on AWS Glue, Microsoft Fabric, and local Spark without any code changes — platform isolation via a factory pattern.',
+    capabilities: [
+      'Factory pattern builds platform-specific SparkSession; only the `ICEBERG_WAREHOUSE` env var changes across clouds',
+      'Bronze (raw ingest) → Silver (type-cast, null-filter, partition) → Gold (joins & business metrics) on TPC-H data',
+      '13 smoke tests validate end-to-end portability across all three runtimes',
+      'Terraform (AWS Glue + S3) and Bicep (Azure) IaC templates included',
+    ],
+    stack: ['PySpark', 'Apache Iceberg', 'AWS Glue', 'Microsoft Fabric', 'Azure', 'Terraform', 'Bicep', 'MinIO'],
   },
 ]
 
@@ -78,20 +110,97 @@ export default function Projects() {
       {/* ── Main projects ──────────────────────────────────── */}
       <section className="section">
         <div className="container">
-          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))', gap: 24 }}>
+          <div style={{ display: 'flex', flexDirection: 'column', gap: 40 }}>
             {projects.map(p => (
-              <a
+              <div
                 key={p.slug}
-                href={p.url}
-                target="_blank"
-                rel="noopener noreferrer"
                 className="achievement-card"
-                style={{ display: 'flex', flexDirection: 'column', textDecoration: 'none' }}
+                style={{ display: 'flex', flexDirection: 'column', gap: 0 }}
               >
-                <p className="blog-card-cat" style={{ marginBottom: 14 }}>{p.cat}</p>
-                <h3 style={{ marginBottom: 12 }}>{p.title}</h3>
-                <p style={{ fontSize: '0.875rem', lineHeight: 1.78, flex: 1 }}>{p.description}</p>
-                <div className="achievement-stat">
+                {/* ─ Header row ─ */}
+                <div style={{ display: 'flex', alignItems: 'flex-start', justifyContent: 'space-between', flexWrap: 'wrap', gap: 12, marginBottom: 16 }}>
+                  <div>
+                    <p className="blog-card-cat" style={{ marginBottom: 8 }}>{p.cat}</p>
+                    <h3 style={{ margin: 0 }}>{p.title}</h3>
+                  </div>
+                  <a
+                    href={p.url}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    style={{
+                      fontSize: '0.85rem',
+                      fontWeight: 600,
+                      color: 'var(--primary)',
+                      textDecoration: 'none',
+                      whiteSpace: 'nowrap',
+                      marginTop: 4,
+                    }}
+                  >
+                    View on GitHub ↗
+                  </a>
+                </div>
+
+                {/* ─ Divider ─ */}
+                <div style={{ height: 1, background: 'var(--border)', marginBottom: 20 }} />
+
+                {/* ─ Problem ─ */}
+                <div style={{ marginBottom: 16 }}>
+                  <p style={{
+                    fontSize: '0.7rem',
+                    fontFamily: "'JetBrains Mono', monospace",
+                    fontWeight: 600,
+                    letterSpacing: '0.12em',
+                    textTransform: 'uppercase',
+                    color: 'var(--copper)',
+                    marginBottom: 6,
+                  }}>
+                    The Problem
+                  </p>
+                  <p style={{ fontSize: '0.9rem', lineHeight: 1.7, fontStyle: 'italic', color: 'var(--text-muted)', margin: 0 }}>
+                    {p.problem}
+                  </p>
+                </div>
+
+                {/* ─ Summary ─ */}
+                <div style={{ marginBottom: 20 }}>
+                  <p style={{
+                    fontSize: '0.7rem',
+                    fontFamily: "'JetBrains Mono', monospace",
+                    fontWeight: 600,
+                    letterSpacing: '0.12em',
+                    textTransform: 'uppercase',
+                    color: 'var(--primary)',
+                    marginBottom: 6,
+                  }}>
+                    What It Does
+                  </p>
+                  <p style={{ fontSize: '0.9rem', lineHeight: 1.75, margin: 0 }}>
+                    {p.summary}
+                  </p>
+                </div>
+
+                {/* ─ Key capabilities ─ */}
+                <div style={{ marginBottom: 24 }}>
+                  <p style={{
+                    fontSize: '0.7rem',
+                    fontFamily: "'JetBrains Mono', monospace",
+                    fontWeight: 600,
+                    letterSpacing: '0.12em',
+                    textTransform: 'uppercase',
+                    color: 'var(--primary)',
+                    marginBottom: 10,
+                  }}>
+                    Key Capabilities
+                  </p>
+                  <ul style={{ margin: 0, paddingLeft: 20, display: 'flex', flexDirection: 'column', gap: 8 }}>
+                    {p.capabilities.map((c, i) => (
+                      <li key={i} style={{ fontSize: '0.875rem', lineHeight: 1.7 }}>{c}</li>
+                    ))}
+                  </ul>
+                </div>
+
+                {/* ─ Stack tags ─ */}
+                <div className="achievement-stat" style={{ flexWrap: 'wrap' }}>
                   {p.stack.map(t => (
                     <span key={t} style={{
                       background: 'var(--primary-soft)',
@@ -106,18 +215,7 @@ export default function Projects() {
                     </span>
                   ))}
                 </div>
-                <div style={{
-                  marginTop: 20,
-                  fontSize: '0.85rem',
-                  fontWeight: 600,
-                  color: 'var(--primary)',
-                  display: 'flex',
-                  alignItems: 'center',
-                  gap: 4,
-                }}>
-                  View on GitHub ↗
-                </div>
-              </a>
+              </div>
             ))}
           </div>
         </div>
@@ -127,7 +225,7 @@ export default function Projects() {
       <section className="section section-alt">
         <div className="container">
           <p className="section-label">Also on GitHub</p>
-          <h2 className="section-title">Notes & utilities</h2>
+          <h2 className="section-title">Notes &amp; utilities</h2>
           <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(240px, 1fr))', gap: 16 }}>
             {others.map(r => (
               <a
