@@ -227,6 +227,18 @@ export default function Home() {
                 compute engine reads it.
               </p>
               <p style={{ marginTop: '16px' }}>
+                But a marketplace without provenance is a catalogue of unverified assertions. DAMA
+                distinguishes between data availability and data trustworthiness — a published data
+                product satisfies the former; certified lineage satisfies the latter. Consumers need
+                more than a schema contract: they need traceability from critical data elements back
+                through every transformation, business rule, and authoritative source system.
+                Without that chain, fitness-for-purpose cannot be assessed, data stewardship
+                accountability cannot be assigned, and regulatory attestation cannot be signed.
+                When provenance is declared at pipeline runtime — not reconstructed under audit
+                pressure — each data product carries a verifiable metadata lineage from ingestion
+                to publication. The product is not just discoverable; it is certifiably trustworthy.
+              </p>
+              <p style={{ marginTop: '16px' }}>
                 Holding the entire stack together is platform governance — not a department, but
                 an architectural layer. Zero-trust security, cybersecurity controls, provisioning
                 gates, policy enforcement, marketplace contracts, and observability do not operate
@@ -234,6 +246,15 @@ export default function Home() {
                 when any one expands without the others, the structure deforms. The platform
                 engineering challenge is keeping them in equilibrium — at enterprise scale,
                 across jurisdictions, without manual intervention.
+              </p>
+              <p style={{ marginTop: '16px' }}>
+                Lineage is the load-bearing primitive that makes governance real. Stratum makes it
+                structural: every pipeline emits explicit column-level provenance via OpenLineage,
+                fanning out simultaneously to a Neo4j knowledge graph and a Marquez visual UI. A
+                five-hop Cypher traversal answers "what breaks if I change this column?" in
+                milliseconds. A Text2Cypher NLP layer means a CFO can ask that question in plain
+                English — no Cypher required, no three-week audit spreadsheet. The marketplace
+                publishes the product; lineage proves it.
               </p>
             </div>
             <div className="about-meta">

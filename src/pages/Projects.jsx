@@ -89,26 +89,6 @@ const projects = [
   },
 ]
 
-const others = [
-  {
-    url: 'https://github.com/techbitsvsk/iceberg',
-    title: 'Iceberg Insights',
-    description: 'Notes and explorations on Apache Iceberg table format internals.',
-    lang: 'Notes',
-  },
-  {
-    url: 'https://github.com/techbitsvsk/data-architecture-notes',
-    title: 'Data Architecture Notes',
-    description: 'Running notes on enterprise data architecture patterns and trade-offs.',
-    lang: 'Notes',
-  },
-  {
-    url: 'https://github.com/techbitsvsk/testdata-generator',
-    title: 'Test Data Generator',
-    description: 'Lightweight C utility for generating synthetic test datasets.',
-    lang: 'C',
-  },
-]
 
 export default function Projects() {
   return (
@@ -132,6 +112,7 @@ export default function Projects() {
             {projects.map(p => (
               <div
                 key={p.slug}
+                id={p.slug}
                 className="achievement-card"
                 style={{ display: 'flex', flexDirection: 'column', gap: 0 }}
               >
@@ -139,23 +120,17 @@ export default function Projects() {
                 <div style={{ display: 'flex', alignItems: 'flex-start', justifyContent: 'space-between', flexWrap: 'wrap', gap: 12, marginBottom: 16 }}>
                   <div>
                     <p className="blog-card-cat" style={{ marginBottom: 8 }}>{p.cat}</p>
-                    <h3 style={{ margin: 0 }}>{p.title}</h3>
+                    <h3 style={{ margin: 0 }}>
+                      <a
+                        href={p.url}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        style={{ color: 'inherit', textDecoration: 'none' }}
+                      >
+                        {p.title} ↗
+                      </a>
+                    </h3>
                   </div>
-                  <a
-                    href={p.url}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    style={{
-                      fontSize: '0.85rem',
-                      fontWeight: 600,
-                      color: 'var(--primary)',
-                      textDecoration: 'none',
-                      whiteSpace: 'nowrap',
-                      marginTop: 4,
-                    }}
-                  >
-                    View on GitHub ↗
-                  </a>
                 </div>
 
                 {/* ─ Divider ─ */}
@@ -234,39 +209,6 @@ export default function Projects() {
                   ))}
                 </div>
               </div>
-            ))}
-          </div>
-        </div>
-      </section>
-
-      {/* ── Other repos ────────────────────────────────────── */}
-      <section className="section section-alt">
-        <div className="container">
-          <p className="section-label">Also on GitHub</p>
-          <h2 className="section-title">Notes &amp; utilities</h2>
-          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(240px, 1fr))', gap: 16 }}>
-            {others.map(r => (
-              <a
-                key={r.url}
-                href={r.url}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="card"
-                style={{ textDecoration: 'none' }}
-              >
-                <div style={{
-                  fontFamily: "'JetBrains Mono', monospace",
-                  fontSize: '0.65rem',
-                  color: 'var(--copper)',
-                  letterSpacing: '0.14em',
-                  textTransform: 'uppercase',
-                  marginBottom: 10,
-                }}>
-                  {r.lang}
-                </div>
-                <h4 style={{ marginBottom: 8 }}>{r.title}</h4>
-                <p style={{ fontSize: '0.84rem' }}>{r.description}</p>
-              </a>
             ))}
           </div>
         </div>
