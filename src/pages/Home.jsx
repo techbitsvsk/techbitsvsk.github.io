@@ -1,5 +1,12 @@
 import { Link } from 'react-router-dom'
 
+const linkStyle = {
+  color: 'var(--primary)',
+  textDecoration: 'underline',
+  textUnderlineOffset: '3px',
+  textDecorationThickness: '1px',
+}
+
 const projects = [
   {
     url: 'https://github.com/techbitsvsk/data-product-platform',
@@ -202,13 +209,13 @@ export default function Home() {
               <p style={{ marginTop: '16px' }}>
                 The first architectural response was a <em>Build Once, Run Anywhere</em> framework.{' '}
                 The{' '}
-                <a href="https://github.com/techbitsvsk/multicloud_repo" target="_blank" rel="noopener noreferrer">
+                <a href="https://github.com/techbitsvsk/multicloud_repo" target="_blank" rel="noopener noreferrer" style={linkStyle}>
                   same ETL logic executing without modification on AWS Glue, Microsoft Fabric, and local Spark
                 </a>{' '}
                 — platform isolation via a factory pattern, no rewrites across clouds. That portability
                 demand led to a deep analysis of open table formats, and Apache Iceberg emerged as the
                 answer — ACID semantics, schema evolution, time-travel, and a{' '}
-                <a href="https://github.com/techbitsvsk/catalog_sync" target="_blank" rel="noopener noreferrer">
+                <a href="https://github.com/techbitsvsk/catalog_sync" target="_blank" rel="noopener noreferrer" style={linkStyle}>
                   REST catalog interface (Nessie) that lets data travel across platform boundaries
                 </a>{' '}
                 or be accessed from a single point without duplication. Vendor-agnostic is not a
@@ -220,7 +227,7 @@ export default function Home() {
                 becomes load-bearing — not as a bottleneck, but as the entity that tracks
                 what exists, where it came from, and who can consume it. Data mesh fundamentals
                 gave the federated ownership model; the{' '}
-                <a href="https://github.com/techbitsvsk/data-product-platform" target="_blank" rel="noopener noreferrer">
+                <a href="https://github.com/techbitsvsk/data-product-platform" target="_blank" rel="noopener noreferrer" style={linkStyle}>
                   marketplace gave it a contractual interface
                 </a>
                 . Data products are discoverable, schema-defined, and independently consumable —
@@ -249,7 +256,7 @@ export default function Home() {
               <p style={{ marginTop: '16px' }}>
                 Holding the entire stack together is platform governance — not a department, but
                 an architectural layer.{' '}
-                <a href="https://github.com/techbitsvsk/fabric_automation" target="_blank" rel="noopener noreferrer">
+                <a href="https://github.com/techbitsvsk/fabric_automation" target="_blank" rel="noopener noreferrer" style={linkStyle}>
                   Zero-trust provisioning, role reconciliation, and policy enforcement
                 </a>{' '}
                 do not operate in isolation. In the Voronoi stability model, these six forces
@@ -259,7 +266,7 @@ export default function Home() {
               </p>
               <p style={{ marginTop: '16px' }}>
                 Lineage is the load-bearing primitive that makes governance real.{' '}
-                <a href="https://github.com/techbitsvsk/stratum_tpch" target="_blank" rel="noopener noreferrer">
+                <a href="https://github.com/techbitsvsk/stratum_tpch" target="_blank" rel="noopener noreferrer" style={linkStyle}>
                   Stratum makes it structural
                 </a>
                 : every pipeline emits explicit column-level provenance via OpenLineage,
