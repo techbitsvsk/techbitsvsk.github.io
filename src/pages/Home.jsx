@@ -257,7 +257,11 @@ export default function Home() {
                 Holding the entire stack together is platform governance — not a department, but
                 an architectural layer.{' '}
                 <a href="https://github.com/techbitsvsk/fabric_automation" target="_blank" rel="noopener noreferrer" style={linkStyle}>
-                  Zero-trust provisioning, role reconciliation, and policy enforcement
+                  Zero-trust provisioning and role reconciliation
+                </a>{' '}
+                and{' '}
+                <a href="https://github.com/techbitsvsk/catalog_sync/blob/main/docs/opa-policies.md" target="_blank" rel="noopener noreferrer" style={linkStyle}>
+                  OPA policy enforcement
                 </a>{' '}
                 do not operate in isolation. In the Voronoi stability model, these six forces
                 balance each other: when any one expands without the others, the structure deforms.

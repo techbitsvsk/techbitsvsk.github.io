@@ -1020,7 +1020,7 @@ export default function LineagePost() {
             recursive CTE works. A ten-hop CTE across tens of thousands of columns, joining on foreign keys
             at each level, does not perform — and does not compose cleanly with LLM-generated queries. In
             Neo4j, the same traversal is a single Cypher pattern:{" "}
-            <code style={{ fontFamily: "'JetBrains Mono', monospace", fontSize: "0.85em", color: ACCENT }}>MATCH path = (c)-[:DERIVED_FROM*1..10]->(src)</code>.
+            <code style={{ fontFamily: "'JetBrains Mono', monospace", fontSize: "0.85em", color: ACCENT }}>MATCH path = (c)-[:DERIVED_FROM*1..10]-(src)</code>.
             The graph engine executes this as a native adjacency walk — no joins, no CTEs.
           </P>
           <P>
