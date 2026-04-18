@@ -53,6 +53,24 @@ const projects = [
     stack: ['Python', 'FastAPI', 'Azure Functions', 'Microsoft Fabric', 'Entra ID', 'Bicep', 'structlog'],
   },
   {
+    slug: 'stratum-tpch',
+    url: 'https://github.com/techbitsvsk/stratum_tpch',
+    cat: 'Data Lineage · Knowledge Graph',
+    title: 'Stratum — Lineage-First Data Platform',
+    problem:
+      'A regulatory audit on a single revenue figure took three weeks, four teams, and a 47-page spreadsheet — because lineage was produced after the fact, manually, under pressure, not built into the platform.',
+    summary:
+      'End-to-end column lineage infrastructure on TPC-H: OpenLineage events fan-out to a Neo4j knowledge graph and Marquez simultaneously, enabling 5-hop provenance traversal in milliseconds and natural-language queries via a Text2Cypher NLP API.',
+    capabilities: [
+      'Explicit ColumnLineageDatasetFacet declared in every Airflow job — accurate, version-controlled, never inferred',
+      'Composite OpenLineage transport fans events to Neo4j (deep graph) and Marquez (visual UI) in a single pipeline run',
+      'Cypher MATCH path traversal answers "where does this column come from?" and "what breaks if I change this?" in one hop',
+      'NLP API (Groq LLM → validated Cypher → plain English) lets business users query lineage without learning Cypher',
+      'Streamlit graph explorer + namespace-scoped data product registration card for governance teams',
+    ],
+    stack: ['Python', 'Neo4j', 'OpenLineage', 'Apache Airflow', 'Marquez', 'Groq', 'Streamlit', 'Apache Iceberg', 'Docker'],
+  },
+  {
     slug: 'multicloud-pipeline',
     url: 'https://github.com/techbitsvsk/multicloud_repo',
     cat: 'Multi-Cloud · PySpark',
