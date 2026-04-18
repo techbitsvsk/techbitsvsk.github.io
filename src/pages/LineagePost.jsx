@@ -755,6 +755,8 @@ function ThreatBlock() {
   );
 }
 
+
+
 // ── Post ─────────────────────────────────────────────────────────────────────
 
 export default function LineagePost() {
@@ -1147,8 +1149,9 @@ export default function LineagePost() {
               OpenLineage events are sent over HTTP. If the consumer is unavailable at the moment a task
               completes, the event is lost. The composite transport mitigates this partially — Marquez and
               the Neo4j consumer are independent, so a failure in one does not affect the other. For
-              production, configure the Airflow transport with retry logic and a dead-letter queue. The
-              graph is designed for idempotent replays: every Cypher statement is a MERGE, so re-processing
+              production, configure the Kafka topic provides durable, replayable, at least once delivery 
+              so consumers can resume and missed events can be reprocessed. The graph is designed for 
+              idempotent replays: every Cypher statement is a MERGE, so re-processing
               an event produces the same result as processing it once.
             </P>
           </SubSection>
