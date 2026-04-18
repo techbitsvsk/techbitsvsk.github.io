@@ -7,6 +7,7 @@ import Writing from './pages/Writing'
 import VoronoiPost from './pages/VoronoiPost'
 import ArchitectsPost from './pages/ArchitectsPost'
 import FabricPost from './pages/FabricPost'
+import LineagePost from './pages/LineagePost'
 import Projects from './pages/Projects'
 
 function ScrollToTop() {
@@ -27,6 +28,7 @@ export default function App() {
           <Route path="/writing/voronoi"       element={<VoronoiPost />} />
           <Route path="/writing/architects"    element={<ArchitectsPost />} />
           <Route path="/writing/fabric"        element={<FabricPost />} />
+          <Route path="/writing/lineage"       element={<LineagePost />} />
           <Route path="/projects"              element={<Projects />} />
         </Routes>
       </main>

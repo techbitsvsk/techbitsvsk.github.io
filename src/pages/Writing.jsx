@@ -25,6 +25,14 @@ const essays = [
     excerpt:
       'Many organisations treat Fabric as a UI layer. The result is workspaces without policy, data products that are hard to discover, and compliance that satisfies no one. Here is how to do it right — before the first workspace is created.',
   },
+  {
+    path: '/writing/lineage',
+    cat: 'Data Platform · Knowledge Graph',
+    title: 'The Lineage-First Data Platform',
+    subtitle: 'Column provenance, semantic search, and graph traversal at enterprise scale',
+    excerpt:
+      'Hundreds of data products. Dozens of Lines of Business. One audit question that takes three weeks to answer. Here is the architecture — OpenLineage, Neo4j, and Text2Cypher — that makes it take three seconds, and why treating lineage as a graph problem changes everything for business users, auditors, and platform engineers.',
+  },
 ]
 
 export default function Writing() {
