@@ -975,7 +975,7 @@ export default function VoronoiPost2() {
             The Physical and Catalog Planes
           </h1>
           <p style={{ fontFamily: "'Lora', Georgia, serif", fontSize: "1.1rem", fontStyle: "italic", color: "#8a7a65", marginBottom: "2rem", lineHeight: 1.5 }}>
-            Firms under regulatory pressure — or carrying the concentration risk of a single cloud dependency — need a data ecosystem that moves with their governance. This is how to build a central Data Lakehouse across AWS, Azure, and GCP, with cost as a first-class constraint.
+            For firms navigating regulatory pressure or single-cloud concentration risk, a federated data architecture across AWS, Azure, and GCP where your data moves with your governance, not your vendor.
           </p>
           <div style={{ display: "flex", alignItems: "center", gap: 16, paddingTop: "1.5rem", borderTop: "1px solid #1e1e1e" }}>
             <div style={{ width: 36, height: 36, borderRadius: "50%", background: `linear-gradient(135deg, ${ACCENT}, #2a5a6a)`, display: "flex", alignItems: "center", justifyContent: "center", color: "#0a0a0a", fontWeight: 700, fontSize: 14, fontFamily: "'JetBrains Mono', monospace" }}>SV</div>
