@@ -18,9 +18,9 @@ const clouds = [
   {
     id: "aws", name: "AWS", color: "#c8a050",
     tagline: "S3 as the canonical object store. Deepest Iceberg ecosystem.",
-    services: ["S3 · object storage", "Glue Catalog · Hive-compatible", "Athena · serverless SQL", "EMR · managed Spark", "Lake Formation · access control"],
-    workloads: ["Primary Iceberg table storage", "Heavy Spark batch transforms", "Ad-hoc Athena queries at S3 cost", "Cross-region replication source"],
-    why: "S3's durability, pricing depth, and ecosystem breadth make it the default Iceberg storage layer. Athena makes ad-hoc SQL zero-cluster-management. EMR handles heavy Spark without paying Databricks DBU pricing.",
+    services: ["S3 · object storage", "Glue Catalog · Iceberg REST Catalog", "Athena · serverless SQL", "EMR · managed Spark", "Lake Formation · access control", "SageMaker Lakehouse · unified analytics + ML"],
+    workloads: ["Primary Iceberg table storage", "Heavy Spark batch transforms", "Ad-hoc Athena queries at S3 cost", "ML training via SageMaker Lakehouse (Glue Iceberg REST + fine-grained permissions)", "Cross-region replication source"],
+    why: "S3's durability, pricing depth, and ecosystem breadth make it the default Iceberg storage layer. Athena makes ad-hoc SQL zero-cluster-management. EMR handles heavy Spark without Databricks DBU pricing. SageMaker Lakehouse unifies the analytics and ML surface on the same Glue Iceberg REST Catalog — Iceberg tables are queryable by both analytical engines and ML training jobs with one permission model.",
     avoid: "Glue Catalog as the *only* catalog surface. Glue APIs are AWS-native — non-AWS engines can't resolve them without SDK dependencies. Wrap with the Iceberg REST Catalog spec (Polaris) to stay portable.",
     egress: "$0.09 / GB after 1 GB/month. At petabyte scale this is your primary billing lever — and the vendor knows it.",
   },
@@ -65,21 +65,21 @@ const catalogs = [
   },
   {
     name: "Unity Catalog", short: "Unity", color: "#b8847b",
-    standard: "Proprietary + Delta Sharing protocol",
+    standard: "Iceberg REST Catalog (Public Preview) + Delta Sharing",
     open: false, branching: false, multiCloud: false,
     governance: "Built-in (Databricks-native)",
-    summary: "The most capable catalog inside the Databricks universe. Column-level access, audit logs, row filters, and attribute-based policies — all without a separate policy engine. The constraint: Unity requires a Databricks-hosted metastore. Standalone Trino, Flink, or Athena have partial or no support. Delta Sharing is open, but the governance layer is Databricks-native.",
-    engines: ["Spark (Databricks)", "Databricks SQL", "Power BI (via connector)", "Snowflake (via Delta Sharing)"],
-    tradeoff: "Best-in-class if Databricks is your primary compute. Problematic if you need engine diversity or want to avoid Databricks DBU pricing for every query. Consider a Polaris sidecar for non-Databricks engines.",
+    summary: "The most capable catalog inside the Databricks universe — now with a standard REST endpoint. Column-level access, row filters, attribute-based policies, and audit logs are built in. Iceberg REST Catalog support (Public Preview) opens Unity to any REST-compatible engine: Spark, Trino, Flink, Fivetran, Kafka Connect — without a Databricks license for the catalog call. Delta Sharing remains the governed sharing protocol for cross-platform consumers.",
+    engines: ["Spark (any — via REST Catalog)", "Trino", "Flink", "Databricks SQL", "Snowflake (Delta Sharing)", "Fivetran · Kafka Connect (REST)", "Power BI (connector)"],
+    tradeoff: "Catalog remains Databricks-hosted — the REST endpoint is the exit valve, not catalog portability. Non-Databricks engines calling the REST Catalog need network access to Databricks and an OAuth2 service principal. DBU charges apply when Databricks compute runs the query, not when external engines read metadata. Consider Polaris if catalog portability independent of the Databricks control plane is a requirement.",
   },
   {
     name: "AWS Glue Catalog", short: "Glue", color: AMBER,
     standard: "Hive Metastore + Glue extensions + Catalog Federation",
     open: false, branching: false, multiCloud: false,
     governance: "Lake Formation (AWS-native)",
-    summary: "Deeply integrated with the AWS ecosystem. Fast to provision if you're AWS-native. AWS Glue Catalog Federation now allows Databricks Unity Catalog to register a Glue database as a foreign catalog — Databricks shows Glue-registered tables as Unity-native without ETL. Reverse direction: Glue can access Databricks tables via Lake Formation credential delegation. The direct portability constraint remains: Glue APIs require the AWS SDK. A Trino cluster on GCP cannot resolve Glue entries directly — but Polaris fronting Glue via federation closes that gap.",
-    engines: ["Spark (EMR)", "Athena", "Glue ETL", "Redshift Spectrum", "Databricks (foreign catalog)"],
-    tradeoff: "Glue as backend, Polaris as the open front door. Polaris federates over Glue and surfaces tables via the open REST API — non-AWS engines see a standard catalog. The Glue↔Databricks foreign catalog link is the strongest case for Glue in hybrid AWS+Databricks architectures: Unity shows Glue tables as native, eliminating per-table ETL replication.",
+    summary: "Deeply integrated with the AWS ecosystem. Glue now exposes a standard Iceberg REST Catalog API — the same spec as Polaris and OneLake. SageMaker Lakehouse sits above it: a unified analytics + ML layer that adds fine-grained permissions, table optimizers, and NDV statistics, all on the same Glue Iceberg REST foundation. Glue↔Databricks Unity foreign catalogs (GA, bidirectional): Unity shows Glue tables as native without ETL. Non-AWS engines still need Polaris or the Iceberg REST endpoint to avoid the AWS SDK dependency.",
+    engines: ["Spark (EMR)", "Athena", "Glue ETL", "Redshift Spectrum", "SageMaker (via Lakehouse)", "Databricks (foreign catalog)"],
+    tradeoff: "Glue as backend, Polaris as the open front door — or use Glue's own Iceberg REST endpoint directly. SageMaker Lakehouse is the strongest argument for staying in Glue: analytics and ML training jobs share one Iceberg catalog with one permission model. The Glue↔Databricks foreign catalog link eliminates per-table ETL for hybrid AWS+Databricks architectures.",
   },
 ];
 
@@ -133,7 +133,7 @@ const interopCells = {
   gcsice:  { spark:"native",    trino:"native",    flink:"native",    duckdb:"bridge",    snowflake:"bridge",    bigquery:"native",    databricks:"native",    fabric:"none",      athena:"none",      onprk:"bridge"    },
   onprem:  { spark:"native",    trino:"native",    flink:"native",    duckdb:"bridge",    snowflake:"bridge",    bigquery:"none",      databricks:"bridge",    fabric:"none",      athena:"bridge",    onprk:"native"    },
   snow:    { spark:"connector", trino:"connector", flink:"none",      duckdb:"connector", snowflake:"self",      bigquery:"none",      databricks:"connector", fabric:"connector", athena:"none",      onprk:"connector" },
-  delta:   { spark:"native",    trino:"native",    flink:"bridge",    duckdb:"bridge",    snowflake:"connector", bigquery:"bridge",    databricks:"self",      fabric:"connector", athena:"bridge",    onprk:"bridge"    },
+  delta:   { spark:"native",    trino:"native",    flink:"native",    duckdb:"bridge",    snowflake:"connector", bigquery:"bridge",    databricks:"self",      fabric:"connector", athena:"bridge",    onprk:"native"    },
   onelake: { spark:"bridge",    trino:"bridge",    flink:"bridge",    duckdb:"bridge",    snowflake:"bridge",    bigquery:"none",      databricks:"bridge",    fabric:"self",      athena:"none",      onprk:"bridge"    },
 };
 
@@ -199,16 +199,16 @@ const interopMechanisms = {
     onprk:      { type:"connector", detail: "Snowflake Spark Connector on on-prem Spark cluster. Functional but requires network path to Snowflake and SDK dependency." },
   },
   delta: {
-    spark:      { type:"native",    detail: "UniForm (Universal Format) exposes Delta tables as Iceberg to any Iceberg-compatible engine. Spark reads via Iceberg reader — same files, Iceberg metadata generated by UniForm." },
-    trino:      { type:"native",    detail: "Trino reads Delta-as-Iceberg via UniForm. Polaris REST Catalog registered with UniForm-generated Iceberg metadata. Full Iceberg spec read path." },
-    flink:      { type:"bridge",    detail: "Flink Iceberg source on UniForm-generated Iceberg metadata. Streaming reads limited — UniForm metadata refresh interval creates latency vs native Delta streaming." },
+    spark:      { type:"native",    detail: "Two paths: (1) Databricks Iceberg REST Catalog (Public Preview) — Spark catalog config points to the Databricks REST endpoint with an OAuth2 service principal; no UniForm dependency. (2) UniForm — Delta tables expose Iceberg metadata on object storage for direct file reads. REST Catalog is the cleaner path; UniForm remains the fallback for offline or air-gapped access." },
+    trino:      { type:"native",    detail: "Databricks Iceberg REST Catalog (Public Preview) or UniForm. REST path: Trino catalog config points to Databricks REST endpoint with OAuth2 — no Polaris sidecar needed. UniForm path: Polaris-fronted Iceberg metadata on object storage. REST Catalog is simpler for managed tables." },
+    flink:      { type:"native",    detail: "Databricks Iceberg REST Catalog (Public Preview): Flink Iceberg connector connects via standard Iceberg REST — no UniForm metadata refresh lag. Managed Iceberg tables on Databricks are directly writable and readable by Flink. Full streaming ACID on open spec." },
     duckdb:     { type:"bridge",    detail: "DuckDB reads Iceberg via UniForm-generated metadata. Read-only. Iceberg metadata must be up to date — UniForm syncs on write, not continuously." },
     snowflake:  { type:"connector", detail: "Delta Sharing protocol — Databricks exposes a Delta Share, Snowflake consumes via Delta Sharing reader. Open protocol but not Iceberg REST — separate governance integration required." },
     bigquery:   { type:"bridge",    detail: "UniForm exposes Delta as Iceberg; BigLake can read Iceberg on S3/ADLS/GCS. Cross-cloud credential required. Functional path for analytics use cases." },
     databricks: { type:"self",      detail: "Same platform. Native Delta and Iceberg read/write." },
     fabric:     { type:"connector", detail: "Delta Sharing connector for Fabric (Shortcut to Delta Share). Open Delta Sharing protocol. Functional for governed sharing — not full Iceberg REST interop." },
     athena:     { type:"bridge",    detail: "Athena reads Delta-as-Iceberg via UniForm metadata on S3. Native Iceberg support in Athena applies to UniForm tables. Polaris REST Catalog or Glue Catalog with Iceberg tables." },
-    onprk:      { type:"bridge",    detail: "On-prem Spark reads UniForm-generated Iceberg metadata on cloud storage (S3/ADLS/GCS) via cloud storage driver. Credential + network path required as with any cross-environment cloud read." },
+    onprk:      { type:"native",    detail: "Databricks Iceberg REST Catalog (Public Preview): on-prem Spark points catalog at the Databricks REST endpoint with an OAuth2 service principal — same REST spec as any other Iceberg catalog. No UniForm dependency, no cloud storage SDK required for metadata resolution. Network path to Databricks control plane required." },
   },
   onelake: {
     spark:      { type:"bridge",    detail: "OneLake Iceberg REST Catalog endpoint (https://onelake.table.fabric.microsoft.com/iceberg). Spark connects via the Iceberg REST spec with an Entra bearer token — no raw ABFS SDK required. The REST endpoint abstracts storage; Parquet files read via OneLake storage behind the scenes. Bridge: Entra credential setup required, but open Iceberg protocol end-to-end." },
@@ -392,6 +392,14 @@ const federationLinks = [
     direction: "bidirectional",
     maturity: "Preview → GA",
     detail: "Snowflake Horizon Catalog-Linked Databases automatically sync with any Iceberg REST Catalog — Apache Polaris, Snowflake Open Catalog (managed Polaris), and AWS Glue. Horizon applies column masking, row access policies, and audit to external Iceberg objects synced from these catalogs, without moving the data. A single governance model spans Snowflake-native tables and open Iceberg tables managed by other catalogs.",
+  },
+  {
+    from: "Databricks Unity Catalog", fromColor: "#b8847b",
+    to:   "Spark · Trino · Flink · Fivetran · Kafka Connect", toColor: ACCENT,
+    protocol: "Iceberg REST Catalog API (Public Preview)",
+    direction: "outbound",
+    maturity: "Public Preview",
+    detail: "Databricks now exposes the standard Apache Iceberg REST Catalog API from Unity Catalog. Any REST-compatible engine — Spark, Trino, Flink, Fivetran, Kafka Connect, Redpanda — connects with an OAuth2 Databricks service principal. No Databricks SDK, no UniForm dependency for metadata resolution. Managed Iceberg tables get full read/write; Foreign tables (Glue, Snowflake Horizon, Hive) are read-accessible via Lakehouse Federation. Predictive Optimization handles snapshot expiration, file cleanup, and Liquid Clustering automatically.",
   },
   {
     from: "Databricks Delta Lake",    fromColor: "#b8847b",
@@ -962,7 +970,7 @@ export default function VoronoiPost2() {
             The Physical and Catalog Planes
           </h1>
           <p style={{ fontFamily: "'Lora', Georgia, serif", fontSize: "1.1rem", fontStyle: "italic", color: "#8a7a65", marginBottom: "2rem", lineHeight: 1.5 }}>
-            How to place an enterprise across AWS, Azure, and GCP — own the format, own the catalog, and walk into every cloud renewal with real negotiating leverage
+            Firms under regulatory pressure — or carrying the concentration risk of a single cloud dependency — need a data ecosystem that moves with their governance. This is how to build a central Data Lakehouse across AWS, Azure, and GCP, with cost as a first-class constraint.
           </p>
           <div style={{ display: "flex", alignItems: "center", gap: 16, paddingTop: "1.5rem", borderTop: "1px solid #1e1e1e" }}>
             <div style={{ width: 36, height: 36, borderRadius: "50%", background: `linear-gradient(135deg, ${ACCENT}, #2a5a6a)`, display: "flex", alignItems: "center", justifyContent: "center", color: "#0a0a0a", fontWeight: 700, fontSize: 14, fontFamily: "'JetBrains Mono', monospace" }}>SV</div>
@@ -1190,9 +1198,11 @@ export default function VoronoiPost2() {
             Your risk team is in Snowflake. Your ML team is in Databricks. Data engineering runs through Glue.
             None can see what the others have registered — until the platforms themselves started shipping
             federation protocols. Glue↔Unity foreign catalogs: GA, bidirectional. OneLake Iceberg REST endpoint:
-            any engine with a REST client connects with an Entra token. Snowflake Horizon Catalog-Linked
-            Databases: syncs with any Iceberg REST catalog, applies Horizon governance to external objects
-            without moving data. These are platform-level commitments, not one-off integrations.
+            any engine with a REST client connects with an Entra token. Databricks Unity Catalog: Iceberg REST
+            Catalog endpoint now in Public Preview — Spark, Trino, Flink connect directly without UniForm or a
+            Databricks SDK. Snowflake Horizon Catalog-Linked Databases: syncs with any Iceberg REST catalog,
+            applies Horizon governance to external objects without moving data. These are platform-level
+            commitments, not one-off integrations.
           </p>
           <p style={prose}>
             The central marketplace is no longer a green-field build. Apache Polaris federates over all domain
@@ -1329,6 +1339,30 @@ export default function VoronoiPost2() {
 
           <div style={{ margin: "1.5rem 0" }}>
             <ForceImpactGrid impacts={forceImpacts} />
+          </div>
+        </section>
+
+        {/* 12. Frictional realities */}
+        <section style={{ marginBottom: "3rem" }}>
+          <h2 style={{ fontFamily: "'Playfair Display', Georgia, serif", fontSize: "1.5rem", fontWeight: 700, color: "#e8d5b0", marginBottom: "1rem", marginTop: 0, letterSpacing: "-0.02em" }}>
+            The cost of doing this right
+          </h2>
+          <p style={prose}>
+            The open plane is the correct architectural choice — but it is not a free one. Two costs are non-negotiable and routinely underestimated.
+          </p>
+          <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(260px, 1fr))", gap: 1, background: "#1a1a1a", border: "1px solid #1e1e1e", margin: "1.5rem 0" }}>
+            <div style={{ background: "#0d0d0d", padding: "1.4rem", borderLeft: "3px solid #c87941" }}>
+              <div style={{ fontFamily: "'JetBrains Mono', monospace", fontSize: "0.65rem", color: "#c87941", marginBottom: 8, letterSpacing: "0.08em", textTransform: "uppercase" }}>The Egress Trap</div>
+              <p style={{ margin: 0, fontFamily: "'Lora', Georgia, serif", fontSize: "0.88rem", color: "#8a7a65", lineHeight: 1.75 }}>
+                Cross-cloud queries at petabyte scale generate egress fees that compound faster than compute savings. BigQuery reading Iceberg from S3, or Spark on GCP reading ADLS — each hop has a price. The answer is not to avoid cross-cloud; it is to co-locate compute with storage by default and treat cross-cloud reads as an exception that requires explicit cost justification, not a routine query path.
+              </p>
+            </div>
+            <div style={{ background: "#0d0d0d", padding: "1.4rem", borderLeft: "3px solid #9b8ab8" }}>
+              <div style={{ fontFamily: "'JetBrains Mono', monospace", fontSize: "0.65rem", color: "#9b8ab8", marginBottom: 8, letterSpacing: "0.08em", textTransform: "uppercase" }}>The Engineering Tax</div>
+              <p style={{ margin: 0, fontFamily: "'Lora', Georgia, serif", fontSize: "0.88rem", color: "#8a7a65", lineHeight: 1.75 }}>
+                OPA sidecars need policy authors. Catalog proxies add latency and failure modes. Cross-cloud identity — mapping AWS IAM roles to Entra service principals to GCP service accounts — is genuine infrastructure work. This platform rewards a dedicated, senior platform engineering team. Running it understaffed produces exactly the complexity it was designed to escape.
+              </p>
+            </div>
           </div>
         </section>
 
