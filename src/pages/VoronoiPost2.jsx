@@ -65,8 +65,8 @@ const catalogs = [
   },
   {
     name: "Unity Catalog", short: "Unity", color: "#b8847b",
-    standard: "Iceberg REST Catalog (Public Preview) + Delta Sharing",
-    open: false, branching: false, multiCloud: false,
+    standard: "Iceberg REST Catalog (Public Preview) + Delta Sharing + Glue Federation",
+    open: false, branching: false, multiCloud: true,
     governance: "Built-in (Databricks-native)",
     summary: "The most capable catalog inside the Databricks universe — now with a standard REST endpoint. Column-level access, row filters, attribute-based policies, and audit logs are built in. Iceberg REST Catalog support (Public Preview) opens Unity to any REST-compatible engine: Spark, Trino, Flink, Fivetran, Kafka Connect — without a Databricks license for the catalog call. Delta Sharing remains the governed sharing protocol for cross-platform consumers.",
     engines: ["Spark (any — via REST Catalog)", "Trino", "Flink", "Databricks SQL", "Snowflake (Delta Sharing)", "Fivetran · Kafka Connect (REST)", "Power BI (connector)"],
@@ -74,12 +74,12 @@ const catalogs = [
   },
   {
     name: "AWS Glue Catalog", short: "Glue", color: AMBER,
-    standard: "Hive Metastore + Glue extensions + Catalog Federation",
-    open: false, branching: false, multiCloud: false,
+    standard: "Iceberg REST Catalog + Lake Formation + Catalog Federation",
+    open: true, branching: false, multiCloud: true,
     governance: "Lake Formation (AWS-native)",
-    summary: "Deeply integrated with the AWS ecosystem. Glue now exposes a standard Iceberg REST Catalog API — the same spec as Polaris and OneLake. SageMaker Lakehouse sits above it: a unified analytics + ML layer that adds fine-grained permissions, table optimizers, and NDV statistics, all on the same Glue Iceberg REST foundation. Glue↔Databricks Unity foreign catalogs (GA, bidirectional): Unity shows Glue tables as native without ETL. Non-AWS engines still need Polaris or the Iceberg REST endpoint to avoid the AWS SDK dependency.",
-    engines: ["Spark (EMR)", "Athena", "Glue ETL", "Redshift Spectrum", "SageMaker (via Lakehouse)", "Databricks (foreign catalog)"],
-    tradeoff: "Glue as backend, Polaris as the open front door — or use Glue's own Iceberg REST endpoint directly. SageMaker Lakehouse is the strongest argument for staying in Glue: analytics and ML training jobs share one Iceberg catalog with one permission model. The Glue↔Databricks foreign catalog link eliminates per-table ETL for hybrid AWS+Databricks architectures.",
+    summary: "Glue now exposes the standard Iceberg REST Catalog API — same open spec as Polaris and OneLake. Any REST-compatible engine (Spark, Trino, Flink, Athena) resolves tables without the AWS SDK. Federation extends its reach beyond AWS: Glue↔Databricks Unity (GA, bidirectional) — Unity shows Glue tables as native objects. Glue↔Snowflake via external catalog integration. Glue→Polaris fronts the whole estate as a vendor-neutral REST surface. SageMaker Lakehouse layers analytics + ML on the same Iceberg REST foundation with unified permissions and table optimizers.",
+    engines: ["Spark (EMR · any)", "Athena", "Glue ETL", "Redshift Spectrum", "SageMaker (Lakehouse)", "Databricks (Glue foreign catalog)", "Snowflake (external catalog)"],
+    tradeoff: "Native branching is not a Glue feature — use Nessie behind Polaris for branch/tag/merge on data pipelines. Multi-cloud reach is through federation, not native cross-cloud: Glue stays AWS-hosted and Lake Formation stays the permission plane. The strength is the AWS ecosystem depth — SageMaker Lakehouse, EMR, Athena, and Redshift all share one catalog with one governance model.",
   },
 ];
 
@@ -1080,10 +1080,12 @@ export default function VoronoiPost2() {
             Parquet files directly. No vendor SDK. No proprietary protocol. Any catalog that implements
             the REST spec is interchangeable from the engine's perspective.
           </p>
-          <p style={prose}>
-            The catalog choice is where vendor lock-in most commonly enters without being noticed.
-            Select yours with the REST spec as the non-negotiable baseline.
-          </p>
+          <div style={{ borderLeft: "3px solid #c87941", margin: "2rem 0", padding: "1rem 1.5rem", background: "linear-gradient(90deg, #c8794108 0%, transparent 100%)" }}>
+            <p style={{ fontFamily: "'Playfair Display', Georgia, serif", fontSize: "1.15rem", fontStyle: "italic", color: "#e8d5b0", lineHeight: 1.6, margin: 0 }}>
+              The catalog choice is where vendor lock-in most commonly enters without being noticed.
+              Select yours with the REST spec as the non-negotiable baseline.
+            </p>
+          </div>
 
           <CatalogCompare catalogs={catalogs} />
         </section>
