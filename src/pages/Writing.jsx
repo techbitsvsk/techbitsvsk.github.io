@@ -2,6 +2,14 @@ import { Link } from 'react-router-dom'
 
 const essays = [
   {
+    path: '/writing/voronoi-ii',
+    cat: 'Platform Architecture · Multi-Cloud',
+    title: 'The Physical and Catalog Planes',
+    subtitle: 'Apache Iceberg, federated catalogs, and enterprise cloud economics',
+    excerpt:
+      'Where is the truth, and can every engine find it? Part II of the Voronoi series covers Apache Iceberg as the open table format, the Polaris REST Catalog as the vendor-neutral discovery layer, workload placement across AWS, Azure, and GCP, and how open formats become genuine negotiating leverage in cloud renewals.',
+  },
+  {
     path: '/writing/voronoi',
     cat: 'Platform Architecture · Conceptual',
     title: 'The Voronoi Platform Architecture',

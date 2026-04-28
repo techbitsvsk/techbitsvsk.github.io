@@ -5,6 +5,7 @@ import Footer from './components/Footer'
 import Home from './pages/Home'
 import Writing from './pages/Writing'
 import VoronoiPost from './pages/VoronoiPost'
+import VoronoiPost2 from './pages/VoronoiPost2'
 import ArchitectsPost from './pages/ArchitectsPost'
 import FabricPost from './pages/FabricPost'
 import LineagePost from './pages/LineagePost'
@@ -26,6 +27,7 @@ export default function App() {
           <Route path="/"                      element={<Home />} />
           <Route path="/writing"               element={<Writing />} />
           <Route path="/writing/voronoi"       element={<VoronoiPost />} />
+          <Route path="/writing/voronoi-ii"    element={<VoronoiPost2 />} />
           <Route path="/writing/architects"    element={<ArchitectsPost />} />
           <Route path="/writing/fabric"        element={<FabricPost />} />
           <Route path="/writing/lineage"       element={<LineagePost />} />
