@@ -199,86 +199,92 @@ export default function Home() {
             <div className="about-text">
               <p className="section-label">Background</p>
               <h2 className="section-title">Where the thinking comes from</h2>
-              <p>
-                The thinking here starts with a real constraint: regulatory requirements forcing a
-                hybrid architecture where 5% of data must remain on-premises while 95% runs in
-                the cloud. That boundary — not a preference, a compliance obligation — became the
-                forcing function for everything that followed.
+              <p style={{ color: 'var(--text-secondary, #888)', fontSize: '0.9rem', fontStyle: 'italic', marginBottom: '2rem', lineHeight: 1.7 }}>
+                Seven architectural layers, each forced by a constraint the previous layer alone could not solve.
               </p>
-              <p style={{ marginTop: '16px' }}>
-                The first architectural response was a <em>Build Once, Run Anywhere</em> framework.{' '}
-                The{' '}
-                <a href="https://github.com/techbitsvsk/multicloud_repo" target="_blank" rel="noopener noreferrer" style={linkStyle}>
-                  same ETL logic executing without modification on AWS Glue, Microsoft Fabric, and local Spark
-                </a>{' '}
-                — platform isolation via a factory pattern, no rewrites across clouds. That portability
-                demand led to a deep analysis of open table formats, and Apache Iceberg emerged as the
-                answer — ACID semantics, schema evolution, time-travel, and a{' '}
-                <a href="https://github.com/techbitsvsk/catalog_sync" target="_blank" rel="noopener noreferrer" style={linkStyle}>
-                  REST catalog interface (Nessie) that lets data travel across platform boundaries
-                </a>{' '}
-                or be accessed from a single point without duplication. Vendor-agnostic is not a
-                procurement position; it is a provable architectural guarantee.
-              </p>
-              <p style={{ marginTop: '16px' }}>
-                Portability alone is not enough. Data must also be discoverable, its lineage
-                traceable, and its quality observable. That is where a central platform layer
-                becomes load-bearing — not as a bottleneck, but as the entity that tracks
-                what exists, where it came from, and who can consume it. Data mesh fundamentals
-                gave the federated ownership model; the{' '}
-                <a href="https://github.com/techbitsvsk/data-product-platform" target="_blank" rel="noopener noreferrer" style={linkStyle}>
-                  marketplace gave it a contractual interface
-                </a>
-                . Data products are discoverable, schema-defined, and independently consumable —
-                not buried in pipelines or undocumented schemas.
-              </p>
-              <p style={{ marginTop: '16px' }}>
-                From the marketplace, a range of consumption patterns emerge: OLAP workloads
-                running analytical queries across the lakehouse, OLTP patterns requiring
-                low-latency access, and data product teams building interoperable applications
-                across cloud boundaries. Iceberg's ACID guarantees hold the consistency model
-                across all of them — the same table serving the same truth regardless of which
-                compute engine reads it.
-              </p>
-              <p style={{ marginTop: '16px' }}>
-                But a marketplace without provenance is a catalogue of unverified assertions. DAMA
-                distinguishes between data availability and data trustworthiness — a published data
-                product satisfies the former; certified lineage satisfies the latter. Consumers need
-                more than a schema contract: they need traceability from critical data elements back
-                through every transformation, business rule, and authoritative source system.
-                Without that chain, fitness-for-purpose cannot be assessed, data stewardship
-                accountability cannot be assigned, and regulatory attestation cannot be signed.
-                When provenance is declared at pipeline runtime — not reconstructed under audit
-                pressure — each data product carries a verifiable metadata lineage from ingestion
-                to publication. The product is not just discoverable; it is certifiably trustworthy.
-              </p>
-              <p style={{ marginTop: '16px' }}>
-                Holding the entire stack together is platform governance — not a department, but
-                an architectural layer.{' '}
-                <a href="https://github.com/techbitsvsk/fabric_automation" target="_blank" rel="noopener noreferrer" style={linkStyle}>
-                  Zero-trust provisioning and role reconciliation
-                </a>{' '}
-                and{' '}
-                <a href="https://github.com/techbitsvsk/catalog_sync/blob/main/docs/opa-policies.md" target="_blank" rel="noopener noreferrer" style={linkStyle}>
-                  OPA policy enforcement
-                </a>{' '}
-                do not operate in isolation. In the Voronoi stability model, these six forces
-                balance each other: when any one expands without the others, the structure deforms.
-                The platform engineering challenge is keeping them in equilibrium — at enterprise
-                scale, across jurisdictions, without manual intervention.
-              </p>
-              <p style={{ marginTop: '16px' }}>
-                Lineage is the load-bearing primitive that makes governance real.{' '}
-                <a href="https://github.com/techbitsvsk/stratum_tpch" target="_blank" rel="noopener noreferrer" style={linkStyle}>
-                  Stratum makes it structural
-                </a>
-                : every pipeline emits explicit column-level provenance via OpenLineage,
-                fanning out simultaneously to a Neo4j knowledge graph and a Marquez visual UI. A
-                five-hop Cypher traversal answers "what breaks if I change this column?" in
-                milliseconds. A Text2Cypher NLP layer means a CFO can ask that question in plain
-                English — no Cypher required, no three-week audit spreadsheet. The marketplace
-                publishes the product; lineage proves it.
-              </p>
+
+              {[
+                {
+                  n: "01",
+                  title: "The constraint",
+                  body: "5% of data must remain on-premises by regulatory obligation. That boundary became the forcing function: hybrid architecture, data sovereignty, and the DORA concentration risk framework now governing UK and EU financial entities.",
+                  links: [
+                    { type: "writing", to: "/writing/voronoi-iii", text: "When One Cloud Is Not Enough" },
+                  ],
+                },
+                {
+                  n: "02",
+                  title: "Build Once, Run Anywhere",
+                  body: "The same ETL logic executing without modification on AWS Glue, Microsoft Fabric, and local Spark. Platform isolation via a factory pattern, no rewrites across clouds. Apache Iceberg as the portability primitive across all three.",
+                  links: [
+                    { type: "writing", to: "/writing/voronoi-ii", text: "The Physical and Catalog Planes" },
+                    { type: "repo", href: "https://github.com/techbitsvsk/multicloud_repo", text: "multicloud_repo" },
+                  ],
+                },
+                {
+                  n: "03",
+                  title: "Open table formats and catalog",
+                  body: "Apache Iceberg gives ACID semantics, schema evolution, and time-travel across any engine. Apache Polaris provides the vendor-neutral REST Catalog: one endpoint, all engines. The catalog_sync project implements OPA-governed metadata replication with column-level security and JWT auth.",
+                  links: [
+                    { type: "writing", to: "/writing/voronoi-ii", text: "The Physical and Catalog Planes" },
+                    { type: "repo", href: "https://github.com/techbitsvsk/catalog_sync", text: "catalog_sync" },
+                  ],
+                },
+                {
+                  n: "04",
+                  title: "Platform trade-offs",
+                  body: "Microsoft Fabric unifies compute and storage into one capacity model. Databricks keeps the lakehouse open and engine-agnostic. Neither is universally correct. The choice depends on what the organisation needs to prove to regulators, auditors, and vendors.",
+                  links: [
+                    { type: "writing", to: "/writing/architects", text: "The Architects of Insight" },
+                    { type: "writing", to: "/writing/fabric", text: "Building a Full Microsoft Fabric Platform" },
+                  ],
+                },
+                {
+                  n: "05",
+                  title: "Marketplace",
+                  body: "Portability without discoverability is incomplete. Data mesh gave the federated ownership model; the marketplace gave it a contractual interface. Data products are schema-defined, SLA-governed, and independently consumable. The data-product-platform implements this as a JSON Schema marketplace with three-layer validation.",
+                  links: [
+                    { type: "writing", to: "/writing/voronoi", text: "The Voronoi Platform Architecture" },
+                    { type: "repo", href: "https://github.com/techbitsvsk/data-product-platform", text: "data-product-platform" },
+                  ],
+                },
+                {
+                  n: "06",
+                  title: "Lineage and provenance",
+                  body: "A marketplace without provenance is a catalogue of unverified assertions. Every pipeline emits column-level provenance via OpenLineage to a Neo4j knowledge graph. A five-hop Cypher traversal answers what breaks if a column changes, in milliseconds. Text2Cypher means a CFO can ask that in plain English.",
+                  links: [
+                    { type: "writing", to: "/writing/lineage", text: "The Lineage-First Data Platform" },
+                  ],
+                },
+                {
+                  n: "07",
+                  title: "Governance as equilibrium",
+                  body: "The Voronoi stability model: six forces balancing each other across clouds and jurisdictions. When any one expands without the others, the platform deforms. OPA as the neutral policy engine: one set of Rego rules, one audit log, regardless of which cloud enforced it.",
+                  links: [
+                    { type: "writing", to: "/writing/voronoi", text: "The Voronoi Platform Architecture" },
+                    { type: "repo", href: "https://github.com/techbitsvsk/catalog_sync", text: "catalog_sync" },
+                  ],
+                },
+              ].map(({ n, title, body, links }) => (
+                <div key={n} style={{ display: "flex", gap: "1.1rem", marginBottom: "1.4rem", paddingBottom: "1.4rem", borderBottom: "1px solid var(--border, #e5e5e5)", alignItems: "flex-start" }}>
+                  <span style={{ fontFamily: "var(--font-mono, monospace)", fontSize: "0.62rem", color: "var(--primary)", fontWeight: 700, letterSpacing: "0.1em", minWidth: 26, paddingTop: 3, flexShrink: 0 }}>{n}</span>
+                  <div style={{ flex: 1 }}>
+                    <strong style={{ display: "block", fontSize: "0.92rem", marginBottom: "0.3rem" }}>{title}</strong>
+                    <p style={{ margin: "0 0 0.5rem", fontSize: "0.875rem", lineHeight: 1.75, color: "var(--text-secondary, #555)" }}>{body}</p>
+                    {links.length > 0 && (
+                      <div style={{ display: "flex", flexWrap: "wrap", gap: "12px" }}>
+                        {links.map((l, li) =>
+                          l.type === "writing" ? (
+                            <Link key={li} to={l.to} style={{ ...linkStyle, fontSize: "0.78rem" }}>{l.text} &rarr;</Link>
+                          ) : (
+                            <a key={li} href={l.href} target="_blank" rel="noopener noreferrer" style={{ ...linkStyle, fontSize: "0.78rem", opacity: 0.75 }}>{l.text} &#x2197;</a>
+                          )
+                        )}
+                      </div>
+                    )}
+                  </div>
+                </div>
+              ))}
             </div>
             <div className="about-meta">
               <div className="meta-block">
