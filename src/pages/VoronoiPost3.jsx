@@ -344,24 +344,12 @@ export default function VoronoiPost3() {
 
       {/* ── Hero ─────────────────────────────────────────────────────────── */}
       <div style={{ position: "relative", padding: "5rem 2rem 4rem", borderBottom: "1px solid #1e1e1e", overflow: "hidden" }}>
-        <svg style={{ position: "absolute", top: 0, left: 0, width: "100%", height: "100%", opacity: 0.05, pointerEvents: "none" }}
-          viewBox="0 0 800 400" preserveAspectRatio="xMidYMid slice">
-          {/* three orbits — three cells, equidistant */}
-          {[
-            { cx: 200, cy: 200, r: 90 },
-            { cx: 500, cy: 130, r: 90 },
-            { cx: 500, cy: 270, r: 90 },
-          ].map((c, i) => (
-            <g key={i}>
-              <circle cx={c.cx} cy={c.cy} r={c.r} fill="none" stroke={ACCENT} strokeWidth="0.8" />
-              <circle cx={c.cx} cy={c.cy} r="3" fill={ACCENT} />
-            </g>
-          ))}
-          {/* boundary lines */}
-          <line x1="290" y1="200" x2="410" y2="130" stroke={ACCENT} strokeWidth="0.5" strokeDasharray="3,3" />
-          <line x1="290" y1="200" x2="410" y2="270" stroke={ACCENT} strokeWidth="0.5" strokeDasharray="3,3" />
-          <line x1="500" y1="220" x2="500" y2="180" stroke={ACCENT} strokeWidth="0.5" strokeDasharray="3,3" />
-        </svg>
+        <img
+          src="/assets/voronoi_part3_linkedin.png"
+          alt=""
+          aria-hidden="true"
+          style={{ position: "absolute", top: 0, left: 0, width: "100%", height: "100%", objectFit: "cover", objectPosition: "center", opacity: 0.18, pointerEvents: "none", userSelect: "none" }}
+        />
         <div style={{ maxWidth: 720, margin: "0 auto", position: "relative" }}>
           <div style={{ display: "inline-flex", alignItems: "center", gap: 10, marginBottom: "1.5rem" }}>
             <div style={{ width: 28, height: 1, background: ACCENT }} />
