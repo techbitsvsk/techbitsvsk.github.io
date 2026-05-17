@@ -2,6 +2,14 @@ import { Link } from 'react-router-dom'
 
 const essays = [
   {
+    path: '/writing/voronoi-iii',
+    cat: 'Platform Architecture · Multi-Cloud',
+    title: 'When One Cloud Is Not Enough',
+    subtitle: 'Honest architecture for moving data between AWS, GCP, and Microsoft Fabric',
+    excerpt:
+      'Multi-region answers most resilience questions. Five cases demand more: control plane failures, DORA concentration risk, platform strength mismatch, inherited estate, and jurisdictional sovereignty. Part III covers when multi-cloud earns its place — and how to do it privately, governed, and with complete provenance.',
+  },
+  {
     path: '/writing/voronoi-ii',
     cat: 'Platform Architecture · Multi-Cloud',
     title: 'The Physical and Catalog Planes',

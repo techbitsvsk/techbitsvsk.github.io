@@ -1383,23 +1383,14 @@ export default function VoronoiPost2() {
           </p>
         </div>
 
-        {/* Coming next */}
+        {/* Part III link */}
         <div style={{ borderTop: "1px solid #1e1e1e", paddingTop: "2rem", marginTop: "3rem" }}>
           <div style={{ fontFamily: "'JetBrains Mono', monospace", fontSize: "0.62rem", color: "#4a4035", letterSpacing: "0.1em", textTransform: "uppercase", marginBottom: "0.75rem" }}>
-            Coming Next · Part III
+            Part III
           </div>
-          <div style={{ fontFamily: "'Playfair Display', Georgia, serif", fontSize: "1.25rem", color: ACCENT, marginBottom: "0.75rem" }}>
-            The Marketplace Plane: Governed Discovery, Consumption, and the OLAP/OLTP divide
-          </div>
-          <p style={{ ...prose, color: "#4a4035", marginBottom: 0 }}>
-            The federation protocols are in place. Glue, Unity, Polaris, OneLake, and Horizon all
-            speak to each other. Now the question is: how do data consumers find, request, and consume
-            data products at scale — and how does a single platform serve both analytical (OLAP) and
-            operational (OLTP) patterns without two separate stacks? Part III covers the Marketplace
-            force: data product discovery, access request and approval workflows, SLA and quality
-            contracts, and the architectural patterns that let Iceberg serve both a risk model training
-            job and a real-time operational API from the same table.
-          </p>
+          <a href="/writing/voronoi-iii" style={{ fontFamily: "'Playfair Display', Georgia, serif", fontSize: "1rem", color: ACCENT, textDecoration: "none" }}>
+            When One Cloud Is Not Enough — multi-cloud architecture, DORA, private connectivity, and the six invisible layers →
+          </a>
         </div>
 
         {/* Back link */}
