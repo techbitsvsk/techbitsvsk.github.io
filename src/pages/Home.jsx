@@ -30,25 +30,24 @@ const projects = [
 
 const essays = [
   {
-    path: '/writing/voronoi',
-    cat: 'Platform Architecture',
-    title: 'The Voronoi Platform Architecture',
+    path: '/writing/voronoi-iii',
+    cat: 'Platform Architecture - Multi-Cloud',
+    title: 'When One Cloud Is Not Enough',
     excerpt:
-      'Six forces govern enterprise data platform stability: sovereignty, intelligence, marketplace, observability, governance, and security. When they balance, the architecture holds.',
+      'Five cases where multi-region is not enough: control plane failures, DORA concentration risk, platform mismatch, inherited estate, and jurisdictional sovereignty. How to cross cloud boundaries privately, governed, and with complete provenance.',
   },
   {
-    path: '/writing/architects',
-    cat: 'Comparative Architecture',
-    title: 'The Architects of Insight',
+    path: '/writing/voronoi-ii',
+    cat: 'Platform Architecture - Multi-Cloud',
+    title: 'The Physical and Catalog Planes',
     excerpt:
-      `A narrative comparison of Microsoft Fabric’s unified approach and Databricks’ open lakehouse flexibility — and why the choice depends on your kingdom’s character.`,
+      'Apache Iceberg as the open table format, Polaris as the vendor-neutral catalog, workload placement across AWS, Azure, and GCP — and why open formats are genuine negotiating leverage in cloud renewals.',
   },
   {
-    path: '/writing/fabric',
-    cat: 'Platform Engineering',
-    title: 'Building a Full Microsoft Fabric Platform',
-    excerpt:
-      'Governance, workspace provisioning, data marketplace design, and enterprise observability — turning Fabric from a UI layer into a governed enterprise platform.',
+    path: '/writing/lineage',
+    cat: 'Data Platform - Knowledge Graph',
+    title: 'The Lineage-First Data Platform',
+    excerpt: 'One audit question that takes three weeks to answer. Here is the architecture — OpenLineage, Neo4j, and Text2Cypher — that makes it take three seconds.',
   },
 ]
 

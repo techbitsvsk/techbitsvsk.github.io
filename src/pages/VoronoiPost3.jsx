@@ -267,7 +267,7 @@ function InvisibleLayersTabs({ layers }) {
   const cur = layers[active];
   return (
     <div style={{ border: "1px solid #1e1e1e" }}>
-      <div style={{ display: "flex", flexWrap: "wrap", borderBottom: "1px solid #1e1e1e", background: "#0a0a0a" }}>
+      <div className="tabs-row" style={{ display: "flex", flexWrap: "wrap", borderBottom: "1px solid #1e1e1e", background: "#0a0a0a" }}>
         {layers.map((l, i) => (
           <button key={l.id} onClick={() => setActive(i)} style={{
             flex: "1 1 auto", minWidth: 100,
@@ -303,7 +303,7 @@ function InvisibleLayersTabs({ layers }) {
 
 function LockInSpectrum({ panels }) {
   return (
-    <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(280px, 1fr))", gap: 1, background: "#1a1a1a", border: "1px solid #1e1e1e" }}>
+    <div className="lockspectrum-grid" style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(280px, 1fr))", gap: 1, background: "#1a1a1a", border: "1px solid #1e1e1e" }}>
       {panels.map((p, i) => (
         <div key={p.id} style={{ background: "#0d0d0d", padding: "1.5rem", borderTop: `3px solid ${p.color}` }}>
           <div style={{ fontFamily: "'JetBrains Mono', monospace", fontSize: "0.6rem", color: p.color, letterSpacing: "0.12em", textTransform: "uppercase", marginBottom: 6 }}>
@@ -340,10 +340,20 @@ export default function VoronoiPost3() {
         ::-webkit-scrollbar-thumb { background: ${ACCENT}; }
         a { color: ${ACCENT}; }
         button:focus { outline: 1px solid ${ACCENT}55; }
+        @media (max-width: 640px) {
+          .hero-section { padding: 3rem 1.25rem 2.5rem !important; }
+          .body-section { padding: 2rem 1.25rem 4rem !important; }
+          .compare-wrap { overflow-x: auto; -webkit-overflow-scrolling: touch; }
+          .compare-grid { min-width: 460px; }
+          .token-box { font-size: 0.6rem !important; padding: 1rem 1rem !important; }
+          .tabs-row { overflow-x: auto; flex-wrap: nowrap !important; }
+          .tabs-row button { flex-shrink: 0 !important; }
+          .lockspectrum-grid { grid-template-columns: 1fr !important; }
+        }
       `}</style>
 
       {/* ── Hero ─────────────────────────────────────────────────────────── */}
-      <div style={{ position: "relative", padding: "5rem 2rem 4rem", borderBottom: "1px solid #1e1e1e", overflow: "hidden" }}>
+      <div className="hero-section" style={{ position: "relative", padding: "5rem 2rem 4rem", borderBottom: "1px solid #1e1e1e", overflow: "hidden" }}>
         <img
           src="/assets/voronoi_part3_linkedin.png"
           alt=""
@@ -374,7 +384,7 @@ export default function VoronoiPost3() {
       </div>
 
       {/* ── Body ─────────────────────────────────────────────────────────── */}
-      <div style={{ maxWidth: 720, margin: "0 auto", padding: "3rem 2rem 6rem" }}>
+      <div className="body-section" style={{ maxWidth: 720, margin: "0 auto", padding: "3rem 2rem 6rem" }}>
 
         {/* §1 The day the region went down */}
         <section style={{ marginBottom: "3rem" }}>
@@ -421,7 +431,8 @@ export default function VoronoiPost3() {
             earns nothing by going further than the problem requires.
           </p>
 
-          <div style={{ display: "grid", gridTemplateColumns: "1.4fr 1fr 1fr", gap: 1, background: "#1a1a1a", border: "1px solid #1e1e1e", margin: "1.75rem 0", fontFamily: "'JetBrains Mono', monospace", fontSize: "0.72rem" }}>
+          <div className="compare-wrap" style={{ margin: "1.75rem 0" }}>
+          <div className="compare-grid" style={{ display: "grid", gridTemplateColumns: "1.4fr 1fr 1fr", gap: 1, background: "#1a1a1a", border: "1px solid #1e1e1e", fontFamily: "'JetBrains Mono', monospace", fontSize: "0.72rem" }}>
             {[
               ["Capability",           { v: "Cross-region (AWS)",      c: GREEN },  { v: "Cross-cloud (AWS→GCP)",   c: GOLD }],
               ["Data replication",     { v: "S3 CRR · minutes",         c: "#8a7a65" }, { v: "Iceberg sync · hours",   c: "#8a7a65" }],
@@ -434,6 +445,7 @@ export default function VoronoiPost3() {
               <div key={`a-${i}`} style={{ background: "#0d0d0d", padding: "10px 12px", color: row[1].c, fontWeight: i === 0 ? 700 : 400, letterSpacing: i === 0 ? "0.08em" : "0" }}>{row[1].v}</div>,
               <div key={`b-${i}`} style={{ background: "#0d0d0d", padding: "10px 12px", color: row[2].c, fontWeight: i === 0 ? 700 : 400, letterSpacing: i === 0 ? "0.08em" : "0" }}>{row[2].v}</div>,
             ])}
+          </div>
           </div>
 
           <div style={{ borderLeft: `3px solid ${ACCENT}`, margin: "2rem 0", padding: "1rem 1.5rem", background: `linear-gradient(90deg, ${ACCENT}10 0%, transparent 100%)` }}>
@@ -586,7 +598,7 @@ export default function VoronoiPost3() {
             apply — because the IAM role is a known principal.
           </p>
 
-          <div style={{ background: "#0d0d0d", border: `1px solid ${ACCENT}33`, padding: "1.25rem 1.5rem", margin: "1.25rem 0", fontFamily: "'JetBrains Mono', monospace", fontSize: "0.74rem", color: "#a8997a", lineHeight: 1.85 }}>
+          <div className="token-box" style={{ background: "#0d0d0d", border: `1px solid ${ACCENT}33`, padding: "1.25rem 1.5rem", margin: "1.25rem 0", fontFamily: "'JetBrains Mono', monospace", fontSize: "0.74rem", color: "#a8997a", lineHeight: 1.85 }}>
             <div style={{ color: ACCENT, fontSize: "0.6rem", letterSpacing: "0.1em", textTransform: "uppercase", marginBottom: 10 }}>The token exchange</div>
             <div>GCP Dataproc job (SA: <span style={{ color: GREEN }}>ml-train@project.iam</span>)</div>
             <div style={{ color: "#4a4035" }}>&nbsp;&nbsp;│ presents OIDC token to</div>
