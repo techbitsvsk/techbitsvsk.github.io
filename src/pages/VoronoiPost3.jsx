@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, Fragment } from "react";
 
 // ── palette ───────────────────────────────────────────────────────────────────
 const ACCENT  = "#6b8294";   // steel-blue: infrastructure, network, neutrality
@@ -143,6 +143,89 @@ const lockInPanels = [
     verdict: "Real portability requires vanilla open source. The tool that runs identically on-premises, AWS, GCP, and Azure earns its place. Cloud-managed Iceberg is not the same as Iceberg.",
   },
 ];
+// ── data: resilience categories ───────────────────────────────────────────────
+const resilienceCats = [
+  { id: "RC2", label: "ResCat 2", color: GREEN,
+    meaning: "Platform default for standard products",
+    rto: "≤ 12 hr", rpo: "≤ 30 min", tested: "Crossover, annually",
+    note: "Single-region within the primary cloud. In-region multi-AZ / multi-zone redundancy is the precondition beneath all categories — not a category itself.",
+  },
+  { id: "RC1", label: "ResCat 1", color: GOLD,
+    meaning: "Material business impact on failure",
+    rto: "≤ 4 hr", rpo: "≤ 15 min", tested: "Crossover, twice yearly",
+    note: "Active-passive across regions or clouds. The 15-minute RPO ceiling is the workhorse for high-availability workloads. Operator-invoked failover.",
+  },
+  { id: "RC0", label: "ResCat 0", color: DANGER,
+    meaning: "Zero-tolerance regulatory exposure; high blast radius",
+    rto: "≤ 1 hr", rpo: "≤ 5 min", tested: "Crossover, twice yearly",
+    note: "Strategy is rapid alternative provisioning, not failure prevention. Secondary compute is described in IaC and provisionable in under 15 minutes. The failover exercise is a stress test of the provisioning automation — and produces the supervisory audit artefact.",
+  },
+];
+
+// ── data: per-service matrix ──────────────────────────────────────────────────
+const serviceMatrix = [
+  { service: "Object storage + Iceberg",   rc2: "Single-region + periodic snapshot",                              rc1: "S3 CRR / ADLS GRS to 2nd region @15-min",                    rc0: "CRR+RTC / GZRS sub-min + sub-minute catalog-sync + warmed cross-cloud" },
+  { service: "Catalog",                    rc2: "Metadata snapshot in region",                                   rc1: "catalog-sync 15-min to standby catalog",                       rc0: "Dual-write or sub-minute catalog-sync" },
+  { service: "Batch — Glue / Fabric Spark",rc2: "In-region re-run (2 subnets / AZs)",                            rc1: "IaC redeploy 2nd region / GZRS + secondary workspace",        rc0: "Warmed 2nd region or cloud, provisionable < 15 min" },
+  { service: "Interactive — Athena / SQL Endpoint", rc2: "Re-point in region",                                   rc1: "Secondary-region endpoint",                                   rc0: "Warmed secondary endpoint" },
+  { service: "Warehouse — Redshift / Fabric",rc2: "Automated snapshots; restore in region",                     rc1: "Cross-region snapshot copy / geo-redundant + secondary workspace", rc0: "Warmed standby + cross-region snapshots / warmed secondary workspace" },
+  { service: "Run status — DynamoDB / Cosmos DB", rc2: "PITR",                                                   rc1: "Cross-region backup",                                         rc0: "Global Tables / Cosmos multi-region write" },
+  { service: "Eventing — SNS / Event Grid", rc2: "Regional",                                                     rc1: "Cross-region fan-out / re-subscribe",                          rc0: "Active in both regions" },
+  { service: "Streaming — Confluent Kafka", rc2: "Single cluster (multi-AZ)",                                    rc1: "MRC or Cluster Linking @15-min",                              rc0: "MRC near-zero RPO / dual-write; Cluster Linking cross-cloud" },
+  { service: "Orchestration — Astronomer",  rc2: "Single deployment",                                            rc1: "Standby deployment 2nd region",                               rc0: "Warmed standby on 2nd region / cloud K8s" },
+  { service: "Federated — Snowflake / Databricks", rc2: "Attach to authoritative catalog",                      rc1: "Secondary-region attach",                                     rc0: "Warmed secondary; Azure Databricks as cross-cloud peer" },
+  { service: "Policy — Immuta",            rc2: "HA instance",                                                   rc1: "HA + rehearsed emergency procedure",                           rc0: "HA + replicated policy artefacts + dual push" },
+  { service: "Identity — Entra ID",        rc2: "Provider-managed multi-region",                                 rc1: "(same)",                                                      rc0: "(same) + break-glass vault" },
+  { service: "Observability — central",    rc2: "Logs via Confluent to central platform",                        rc1: "Resilient Confluent path (MRC)",                               rc0: "Dual log path" },
+];
+
+// ── data: replication tiers ───────────────────────────────────────────────────
+const replicationTiers = [
+  { name: "Gold", color: GOLD,
+    rpo: "Seconds – single-digit minutes", rto: "Minutes", resCat: "ResCat 0 / tight ResCat 1",
+    mechanism: "CRR + Replication Time Control + sub-minute catalog-sync. Dual-write mode for metadata: every commit issued to both catalogs synchronously.",
+    cost: "Highest — directional egress fires on every change plus the always-on tight-sync infrastructure. Cost concentrates in the data replication, not the metadata rewrite.",
+  },
+  { name: "Silver", color: ACCENT,
+    rpo: "15 min – 1 hour", rto: "~1 hour", resCat: "ResCat 2 (platform default)",
+    mechanism: "Scheduled CRR + catalog-sync every 15–60 min. Async-with-designated-primary mode: commit to the authoritative catalog, replicate with reconciliation.",
+    cost: "Moderate — infrequent egress, volume-billed not frequency-billed. This is the default for most enterprise data products.",
+  },
+  { name: "Bronze", color: "#6a5a4a",
+    rpo: "Hours – one day", rto: "Day-plus", resCat: "Cold tables and audit",
+    mechanism: "On-demand or daily batch sync. No continuous sync infrastructure. The right answer for cold reference data, audit archives, and non-critical historical products.",
+    cost: "Minimal — the cost is the storage copy, not the transfer cadence. No replication-time infrastructure to maintain.",
+  },
+];
+
+// ── data: failover steps ──────────────────────────────────────────────────────
+const failoverSteps = [
+  { id: "steady",  label: "Steady state",       actor: "Automated",        color: GREEN,
+    desc: "Primary cloud serves writes. The secondary holds a warm replica — Iceberg synced per its tier RPO, Immuta policies pre-pushed, personas pre-configured on both sides, run-state store already multi-region. Nothing extraordinary is happening.",
+  },
+  { id: "detect",  label: "Detect",             actor: "Automated",        color: TEAL,
+    desc: "Alerting fires against RPO breach: catalog-sync lag exceeds the tier threshold, storage-replication lag spikes, identity-federation token exchanges fail, or cross-cloud egress deviates abnormally. Each metric is tuned to the workload's ResCat — a Gold-tier table has a tighter threshold than a Silver one.",
+  },
+  { id: "declare", label: "Declare DR",         actor: "Senior management", color: ACCENT,
+    desc: "A human decision with senior-management approval, evidenced and timestamped for regulatory audit. The declaration is not automatic. It is a deliberate act with a named owner — not a runbook that fires itself. Under DORA, the declaration and its rationale are part of the supervisory artefact.",
+  },
+  { id: "halt",    label: "Halt source writes", actor: "Platform operator", color: AMBER,
+    desc: "Writes to the primary catalog are halted. No new Iceberg commits land in the primary. This is the point of no ambiguity: the gap between primary and secondary is now fixed, and the clock for final sync starts here.",
+  },
+  { id: "sync",    label: "Final catalog-sync", actor: "Automated",        color: AMBER,
+    desc: "One last iceberg-catalog-sync run closes the gap. The metadata pointer advances only after confirming all in-flight data has landed in the staging bucket and passed schema validation, PII classification, and the circuit-breaker. This gating signal is what keeps the failover clean.",
+  },
+  { id: "cutover", label: "Cut over",           actor: "Platform operator", color: GOLD,
+    desc: "Traffic is re-pointed to the secondary. Orchestration, interactive queries, warehouse reads, and federated engines are each redirected per their own runbook. A top-level coordinator sequences the runbooks; each has a single owner. The declaration itself gates this step.",
+  },
+  { id: "validate",label: "Validate & reconcile",actor: "Platform operator",color: GOLD,
+    desc: "Canary queries confirm reads are live on the secondary. Immuta policy parity is verified — a denied subject must still be denied. Run-state is reconciled. Egress and identity-federation metrics confirm the boundary is functioning under the new routing.",
+  },
+  { id: "active",  label: "Secondary is primary",actor: "Automated + ops", color: GREEN,
+    desc: "The secondary is now the authoritative write surface. Failback is not a rollback — it reverses the same procedure as a second declared change, with a second senior-management sign-off and a second supervisory artefact. The full exercise is a stress test of the provisioning automation, and completing it annually (ResCat 2) or twice yearly (ResCat 0/1) is the regulatory evidence.",
+  },
+];
+
 // ── helper components ─────────────────────────────────────────────────────────
 
 function CaseAccordion({ items }) {
@@ -326,6 +409,141 @@ function LockInSpectrum({ panels }) {
     </div>
   );
 }
+function ResilienceCategoryMatrix({ cats, matrix }) {
+  const [active, setActive] = useState("RC2");
+  const cat = cats.find(c => c.id === active);
+  const colKey = active === "RC0" ? "rc0" : active === "RC1" ? "rc1" : "rc2";
+  return (
+    <div style={{ border: "1px solid #1e1e1e" }}>
+      <div style={{ display: "flex", borderBottom: "1px solid #1e1e1e", background: "#0a0a0a" }}>
+        {cats.map(c => (
+          <button key={c.id} onClick={() => setActive(c.id)} style={{
+            flex: 1, background: active === c.id ? `${c.color}15` : "transparent",
+            border: "none", borderBottom: active === c.id ? `2px solid ${c.color}` : "2px solid transparent",
+            color: active === c.id ? c.color : "#4a4035",
+            padding: "12px 8px", cursor: "pointer",
+            fontFamily: "'JetBrains Mono', monospace", fontSize: "0.68rem", letterSpacing: "0.08em",
+            transition: "all 0.2s",
+          }}>{c.label} — {c.rto} RTO</button>
+        ))}
+      </div>
+      <div style={{ padding: "1rem 1.5rem", background: `${cat.color}08`, borderBottom: "1px solid #1a1a1a" }}>
+        <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr 1fr", gap: "1rem", marginBottom: "0.75rem" }}>
+          {[["RTO", cat.rto], ["RPO", cat.rpo], ["Test cadence", cat.tested]].map(([k, v]) => (
+            <div key={k}>
+              <div style={{ fontFamily: "'JetBrains Mono', monospace", fontSize: "0.52rem", color: "#4a4035", letterSpacing: "0.1em", textTransform: "uppercase", marginBottom: 3 }}>{k}</div>
+              <div style={{ fontFamily: "'JetBrains Mono', monospace", fontSize: "0.82rem", color: cat.color, fontWeight: 700 }}>{v}</div>
+            </div>
+          ))}
+        </div>
+        <p style={{ margin: 0, fontFamily: "'Lora', Georgia, serif", fontSize: "0.84rem", fontStyle: "italic", color: "#6a5a4a", lineHeight: 1.65 }}>{cat.note}</p>
+      </div>
+      <div>
+        {matrix.map((row, i) => (
+          <div key={i} style={{
+            display: "grid", gridTemplateColumns: "180px 1fr",
+            borderBottom: i < matrix.length - 1 ? "1px solid #111" : "none",
+            borderLeft: `2px solid ${cat.color}33`,
+          }}>
+            <div style={{ padding: "9px 12px", fontFamily: "'JetBrains Mono', monospace", fontSize: "0.62rem", color: "#5a4a3a", background: "#0a0a0a", borderRight: "1px solid #1a1a1a", display: "flex", alignItems: "center", lineHeight: 1.5 }}>
+              {row.service}
+            </div>
+            <div style={{ padding: "9px 14px", fontFamily: "'Lora', Georgia, serif", fontSize: "0.85rem", color: "#a8997a", lineHeight: 1.65 }}>
+              {row[colKey]}
+            </div>
+          </div>
+        ))}
+      </div>
+    </div>
+  );
+}
+
+function ReplicationTierCards({ tiers }) {
+  return (
+    <div>
+      <div style={{ fontFamily: "'JetBrains Mono', monospace", fontSize: "0.62rem", color: ACCENT, letterSpacing: "0.12em", textTransform: "uppercase", marginBottom: "0.85rem" }}>
+        Replication tier · choose by RPO obligation
+      </div>
+      <div className="rep-tier-grid" style={{ display: "grid", gridTemplateColumns: "repeat(3, 1fr)", gap: 1, background: "#1a1a1a", border: "1px solid #1e1e1e" }}>
+        {tiers.map((t, i) => (
+          <div key={i} style={{ background: "#0d0d0d", padding: "1.25rem", borderTop: `3px solid ${t.color}` }}>
+            <div style={{ fontFamily: "'JetBrains Mono', monospace", fontSize: "0.56rem", color: t.color, letterSpacing: "0.12em", textTransform: "uppercase", marginBottom: 5 }}>{t.resCat}</div>
+            <div style={{ fontFamily: "'Playfair Display', Georgia, serif", fontSize: "1.15rem", fontWeight: 700, color: t.color, marginBottom: "0.7rem" }}>{t.name}</div>
+            <div style={{ display: "grid", gridTemplateColumns: "auto 1fr", gap: "4px 10px", fontFamily: "'JetBrains Mono', monospace", fontSize: "0.64rem", marginBottom: "0.75rem" }}>
+              <span style={{ color: "#4a4035" }}>RPO</span><span style={{ color: "#c8bfb0" }}>{t.rpo}</span>
+              <span style={{ color: "#4a4035" }}>RTO</span><span style={{ color: "#c8bfb0" }}>{t.rto}</span>
+            </div>
+            <p style={{ margin: "0 0 0.75rem", fontFamily: "'Lora', Georgia, serif", fontSize: "0.82rem", color: "#8a7a65", lineHeight: 1.7 }}>{t.mechanism}</p>
+            <div style={{ borderLeft: `2px solid ${t.color}33`, paddingLeft: 10 }}>
+              <div style={{ fontFamily: "'JetBrains Mono', monospace", fontSize: "0.52rem", color: t.color, letterSpacing: "0.08em", textTransform: "uppercase", marginBottom: 3 }}>Cost profile</div>
+              <p style={{ margin: 0, fontFamily: "'Lora', Georgia, serif", fontSize: "0.79rem", fontStyle: "italic", color: "#6a5a4a", lineHeight: 1.6 }}>{t.cost}</p>
+            </div>
+          </div>
+        ))}
+      </div>
+    </div>
+  );
+}
+
+function FailoverStateMachine({ steps }) {
+  const [active, setActive] = useState(0);
+  const cur = steps[active];
+  return (
+    <div style={{ border: "1px solid #1e1e1e" }}>
+      <div style={{ borderBottom: "1px solid #1e1e1e", background: "#0a0a0a", padding: "1rem 1.25rem" }}>
+        <div style={{ display: "flex", gap: 4, alignItems: "center", flexWrap: "wrap" }}>
+          {steps.map((s, i) => (
+            <Fragment key={s.id}>
+              <button onClick={() => setActive(i)} style={{
+                background: i <= active ? `${s.color}18` : "transparent",
+                border: `1px solid ${i === active ? s.color : i < active ? s.color + "44" : "#222"}`,
+                color: i === active ? s.color : i < active ? s.color + "99" : "#3a3028",
+                padding: "4px 10px", cursor: "pointer",
+                fontFamily: "'JetBrains Mono', monospace", fontSize: "0.58rem", letterSpacing: "0.05em",
+                transition: "all 0.2s", whiteSpace: "nowrap",
+              }}>
+                {String(i + 1).padStart(2, "0")} {s.label}
+              </button>
+              {i < steps.length - 1 && <span style={{ color: "#222", fontSize: 10, userSelect: "none", flexShrink: 0 }}>›</span>}
+            </Fragment>
+          ))}
+        </div>
+      </div>
+      <div style={{ padding: "1.5rem", borderLeft: `3px solid ${cur.color}` }}>
+        <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", marginBottom: "0.85rem", flexWrap: "wrap", gap: 8 }}>
+          <div>
+            <div style={{ fontFamily: "'JetBrains Mono', monospace", fontSize: "0.55rem", color: cur.color, letterSpacing: "0.1em", textTransform: "uppercase", marginBottom: 4 }}>
+              Step {active + 1} of {steps.length}
+            </div>
+            <div style={{ fontFamily: "'Playfair Display', Georgia, serif", fontSize: "1.15rem", fontWeight: 700, color: "#e8d5b0" }}>{cur.label}</div>
+          </div>
+          <div style={{ background: `${cur.color}12`, border: `1px solid ${cur.color}33`, padding: "4px 12px" }}>
+            <span style={{ fontFamily: "'JetBrains Mono', monospace", fontSize: "0.58rem", color: cur.color, letterSpacing: "0.06em" }}>{cur.actor}</span>
+          </div>
+        </div>
+        <p style={{ margin: "0 0 1.25rem", fontFamily: "'Lora', Georgia, serif", fontSize: "0.92rem", color: "#a8997a", lineHeight: 1.8 }}>{cur.desc}</p>
+        <div style={{ display: "flex", gap: 8, justifyContent: "flex-end" }}>
+          {active > 0 && (
+            <button onClick={() => setActive(active - 1)} style={{
+              background: "transparent", border: "1px solid #2a2a2a", color: "#6a5a4a",
+              padding: "6px 16px", cursor: "pointer",
+              fontFamily: "'JetBrains Mono', monospace", fontSize: "0.62rem", letterSpacing: "0.06em",
+            }}>← prev</button>
+          )}
+          {active < steps.length - 1 && (
+            <button onClick={() => setActive(active + 1)} style={{
+              background: `${cur.color}15`, border: `1px solid ${cur.color}`, color: cur.color,
+              padding: "6px 16px", cursor: "pointer",
+              fontFamily: "'JetBrains Mono', monospace", fontSize: "0.62rem", letterSpacing: "0.06em",
+              transition: "all 0.2s",
+            }}>next →</button>
+          )}
+        </div>
+      </div>
+    </div>
+  );
+}
+
 // ── main component ────────────────────────────────────────────────────────────
 export default function VoronoiPost3() {
   useEffect(() => { document.title = "When One Cloud Is Not Enough — Voronoi Part III"; }, []);
@@ -349,6 +567,7 @@ export default function VoronoiPost3() {
           .tabs-row { overflow-x: auto; flex-wrap: nowrap !important; }
           .tabs-row button { flex-shrink: 0 !important; }
           .lockspectrum-grid { grid-template-columns: 1fr !important; }
+          .rep-tier-grid { grid-template-columns: 1fr !important; }
         }
       `}</style>
 
@@ -453,6 +672,17 @@ export default function VoronoiPost3() {
               Cross-region is roughly a 10% premium. Multi-cloud is roughly a 10x premium. Multi-cloud must earn the difference.
             </p>
           </div>
+
+          <p style={{ ...prose, marginTop: "2rem" }}>
+            The three resilience categories below are the language the rest of this article uses. They
+            set the RTO and RPO the architecture commits to, the recovery mechanism that delivers it,
+            and the test cadence that proves it. In-region redundancy — multi-AZ on AWS, multi-zone on
+            Azure — is the precondition beneath every category, not a category itself.
+          </p>
+
+          <div style={{ margin: "1.5rem 0" }}>
+            <ResilienceCategoryMatrix cats={resilienceCats} matrix={serviceMatrix} />
+          </div>
         </section>
         {/* §3 Five cases */}
         <section style={{ marginBottom: "3rem" }}>
@@ -521,6 +751,112 @@ export default function VoronoiPost3() {
             </p>
           </div>
         </section>
+        {/* §4b AWS↔Azure/Fabric */}
+        <section style={{ marginBottom: "3rem" }}>
+          <h2 style={{ fontFamily: "'Playfair Display', Georgia, serif", fontSize: "1.5rem", fontWeight: 700, color: "#e8d5b0", marginBottom: "1rem", marginTop: 0, letterSpacing: "-0.02em" }}>
+            A producer in AWS, a consumer in Microsoft Fabric
+          </h2>
+          <p style={prose}>
+            The AWS↔GCP scenario is a platform-strength decision: the ML tooling is genuinely better
+            on GCP. The AWS↔Azure scenario is different in character. For many enterprise
+            organisations, the driver is the reporting and finance layer — Power BI, Fabric capacity,
+            the integrated OneLake surface — combined with a regulatory obligation to demonstrate
+            concentration risk reduction. The workload is not migrating. It is being extended across
+            a second cloud boundary, with the first cloud remaining the authoritative write surface.
+          </p>
+          <p style={prose}>
+            The economics of this scenario are distinct. A Fabric workspace held in cold standby costs
+            nothing for compute until failover. The ongoing charge is the sync and the replicated
+            storage — not the processing capacity. Scale-up happens only on activation. This is the
+            central economic argument for Fabric as the second cloud in a concentration-risk
+            architecture: active-passive resilience at active-passive prices. The architecture
+            satisfies the regulatory test without running two full compute environments simultaneously.
+          </p>
+
+          {/* The Equinix path */}
+          <h3 style={{ fontFamily: "'Playfair Display', Georgia, serif", fontSize: "1.1rem", fontWeight: 700, color: ACCENT, marginBottom: "0.75rem", marginTop: "1.75rem", letterSpacing: "-0.01em" }}>
+            The network path: Equinix neutral spine
+          </h3>
+          <p style={prose}>
+            The AWS↔GCP path uses the native hyperscaler interconnect — a joint AWS/Google product
+            that provisions in minutes over their shared backbone. That option does not exist for
+            AWS↔Azure. The two hyperscalers have no joint fabric. The private path between them runs
+            through a neutral co-location provider — typically Equinix — using Direct Connect on the
+            AWS side and ExpressRoute on the Azure side, meeting in a Meet-Me-Room or cross-connect
+            at the colocation facility.
+          </p>
+
+          <div style={{ background: "#0d0d0d", border: `1px solid ${ACCENT}33`, padding: "1.25rem 1.5rem", margin: "1.25rem 0", fontFamily: "'JetBrains Mono', monospace", fontSize: "0.74rem", color: "#a8997a", lineHeight: 1.85 }}>
+            <div style={{ color: ACCENT, fontSize: "0.6rem", letterSpacing: "0.1em", textTransform: "uppercase", marginBottom: 10 }}>The private path — AWS ↔ Azure via Equinix</div>
+            <div>AWS VPC → <span style={{ color: GREEN }}>Direct Connect</span> (dedicated 1–10 Gbps)</div>
+            <div style={{ color: "#4a4035" }}>&nbsp;&nbsp;│ terminates at Equinix colocation facility</div>
+            <div><span style={{ color: TEAL }}>Equinix Cross-Connect</span> (Meet-Me-Room or virtual)</div>
+            <div style={{ color: "#4a4035" }}>&nbsp;&nbsp;│ meets Azure circuit at the same facility</div>
+            <div><span style={{ color: GREEN }}>ExpressRoute</span> → Azure VNet (Private Peering)</div>
+            <div style={{ color: "#4a4035" }}>&nbsp;&nbsp;│ MACsec optional; no public internet at any hop</div>
+            <div style={{ color: ACCENT }}>ADLS Gen2 / OneLake · traffic never leaves private fabric</div>
+          </div>
+
+          <p style={prose}>
+            This is a higher upfront investment than the native hyperscaler interconnect for AWS↔GCP.
+            Equinix requires a colocation contract, physical or virtual cross-connects at the
+            facility, and dedicated circuit ports on both sides. The port fees and cross-connect
+            charges are fixed regardless of volume. It does not provision in minutes.
+          </p>
+          <p style={prose}>
+            The investment is worth it precisely because it removes the dependency on either
+            hyperscaler's cross-cloud fabric. The private path between AWS and Azure is owned and
+            operated by a genuinely independent third party. Neither cloud controls the routing.
+            Neither cloud's degradation — including a control-plane event on one side — affects the
+            network path to the other. Under DORA's concentration risk framework, that independence
+            is demonstrable, auditable, and evidence-producing in a way that a hyperscaler-managed
+            cross-cloud product cannot be. The Equinix relationship becomes its own third-party
+            ICT contract to manage under DORA Article 28 — that is an additional obligation, but it
+            is the correct trade-off for organisations for whom regulatory evidence is non-negotiable.
+          </p>
+
+          <div style={{ borderLeft: `3px solid ${GOLD}`, margin: "2rem 0", padding: "1rem 1.5rem", background: `linear-gradient(90deg, ${GOLD}10 0%, transparent 100%)` }}>
+            <p style={{ fontFamily: "'Playfair Display', Georgia, serif", fontSize: "1.1rem", fontStyle: "italic", color: "#e8d5b0", lineHeight: 1.6, margin: 0 }}>
+              A hyperscaler-managed cross-cloud product reduces operational complexity. A neutral
+              colocation spine reduces concentration dependency. They are not the same thing. The
+              architecture that needs to evidence the latter must build the latter.
+            </p>
+          </div>
+
+          {/* The staging bucket */}
+          <h3 style={{ fontFamily: "'Playfair Display', Georgia, serif", fontSize: "1.1rem", fontWeight: 700, color: ACCENT, marginBottom: "0.75rem", marginTop: "2rem", letterSpacing: "-0.01em" }}>
+            The staging bucket: the controlled handoff point
+          </h3>
+          <p style={prose}>
+            The AWS↔GCP scenario can use compute federation — the training job runs in AWS where the
+            data lives, and only the model artefact crosses. That option does not apply when the
+            consumption pattern requires the data to be present in Fabric: Power BI reports run
+            against OneLake, not against a remote S3 table. The data must cross. But it should not
+            cross directly.
+          </p>
+          <p style={prose}>
+            The correct pattern is a governed staging bucket at the boundary. S3 Cross-Region
+            Replication lands the data in a regional staging bucket. A worker validates it — schema
+            check, PII classification, lineage capture, data-contract enforcement, quarantine, circuit-breaker
+            — before syncing it to ADLS Gen2, where it surfaces as an OneLake shortcut or
+            a materialised copy. None of this is possible if Fabric reads S3 directly through a
+            shortcut. The staging bucket is the point at which the enterprise enforces its
+            data contracts, not the cloud boundary itself.
+          </p>
+
+          <div style={{ display: "grid", gridTemplateColumns: "auto 1fr", gap: "14px 18px", margin: "1.5rem 0", padding: "1.25rem 1.5rem", background: "#0d0d0d", border: "1px solid #1e1e1e", borderLeft: `3px solid ${TEAL}` }}>
+            {[
+              ["Data path",     "S3 → CRR → staging bucket (schema · PII · lineage · circuit-breaker) → sync worker → ADLS Gen2 → OneLake shortcut or materialised copy"],
+              ["Metadata path", "iceberg-catalog-sync rewrites S3 URIs to OneLake URIs, preserves snapshot history, commits atomically to the target catalog. Metadata pointer advances only after data is confirmed present."],
+              ["Policy",        "One Immuta instance pushes policy to both enforcement points — Lake Formation on AWS, Fabric layered workspace + OneLake security on Azure. Policy is not replicated: it is authored once and distributed."],
+              ["Identity",      "Microsoft Entra ID is the central identity provider. AWS IAM federates to Entra. WIF grants short-lived credentials across the boundary. No static secrets, no long-lived cross-cloud access keys."],
+            ].flatMap(([k, v], i) => [
+              <div key={`k-${i}`} style={{ fontFamily: "'JetBrains Mono', monospace", fontSize: "0.65rem", color: TEAL, letterSpacing: "0.06em", textTransform: "uppercase", paddingTop: 2 }}>{k}</div>,
+              <div key={`v-${i}`} style={{ fontFamily: "'Lora', Georgia, serif", fontSize: "0.9rem", color: "#a8997a", lineHeight: 1.75 }}>{v}</div>,
+            ])}
+          </div>
+        </section>
+
         {/* §5 The cross-cloud architecture */}
         <section style={{ marginBottom: "3rem" }}>
           <h2 style={{ fontFamily: "'Playfair Display', Georgia, serif", fontSize: "1.5rem", fontWeight: 700, color: "#e8d5b0", marginBottom: "1rem", marginTop: 0, letterSpacing: "-0.02em" }}>
@@ -562,6 +898,16 @@ export default function VoronoiPost3() {
 
           <div style={{ margin: "1.75rem 0" }}>
             <CostLineCalculator tiers={tiers} patterns={patterns} />
+          </div>
+
+          <p style={{ ...prose, marginTop: "1.5rem" }}>
+            Once the connectivity pattern is chosen, the next decision is how often the data crosses
+            it and how tightly the replica tracks the source. This is the replication tier — a
+            separate axis from the connectivity pattern, but linked to the workload's ResCat.
+          </p>
+
+          <div style={{ margin: "1.5rem 0" }}>
+            <ReplicationTierCards tiers={replicationTiers} />
           </div>
 
           {/* 5.2 egress asymmetry */}
@@ -650,6 +996,30 @@ export default function VoronoiPost3() {
             This is not vendor lock-in for the sake of appearance. It is lock-in operating in the
             background, under labels that claim to be open. The architecture has to distinguish them
             — and choose accordingly.
+          </p>
+
+          {/* 5.5 failover state machine */}
+          <h3 style={{ fontFamily: "'Playfair Display', Georgia, serif", fontSize: "1.1rem", fontWeight: 700, color: ACCENT, marginBottom: "0.75rem", marginTop: "2.25rem", letterSpacing: "-0.01em" }}>
+            5.5 · The failover state machine
+          </h3>
+          <p style={prose}>
+            Resiliency that has not been tested under realistic conditions is a hypothesis. The
+            failover state machine below is not a conceptual diagram — it is the operational
+            sequence every enterprise organisation must rehearse. ResCat 0 and ResCat 1 workloads
+            run it twice yearly; ResCat 2 runs it annually. Completing it produces the supervisory
+            artefact that satisfies DORA Article 28(8)'s requirement to test exit strategies for
+            material ICT providers.
+          </p>
+          <div style={{ margin: "1.5rem 0" }}>
+            <FailoverStateMachine steps={failoverSteps} />
+          </div>
+          <p style={prose}>
+            Two things make this sequence work at scale. First, each runbook — Astronomer,
+            Redshift, Glue, Confluent, Fabric workspace activation, Immuta parity check — has a
+            single owner. The platform supplies a coordinator that sequences them. Second, the
+            declaration is a human decision, not an automated trigger. At the scale and regulatory
+            weight where this architecture applies, an autonomous declaration would be an audit
+            finding. The machine prepares; the operator decides.
           </p>
         </section>
         {/* §6 Six invisible layers */}
