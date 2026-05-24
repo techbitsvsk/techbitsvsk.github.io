@@ -60,17 +60,20 @@ export default function Home() {
           <div className="hero-grid">
             <div className="hero-left fade-up">
               <p className="hero-eyebrow">
-                Data Strategist · Finacial Services · Glasgow, Scotland
+                Enterprise Architecture · Financial Services · Glasgow, Scotland
               </p>
               <h1 className="hero-name">Sravan Vadaga</h1>
               <p className="hero-title">
-                Enterprise Data Architecture &nbsp;·&nbsp; Cloud Transformation
-                &nbsp;·&nbsp; Platform Engineering
+                Enterprise Data Architecture &nbsp;·&nbsp; Multi-Cloud Resilience
+                &nbsp;·&nbsp; Platform Engineering &nbsp;·&nbsp; Regulatory Strategy
               </p>
               <p className="hero-desc">
-                Techno-Functional Leader at the crossroads of Data Engineering, Cloud Transformation,
-                and Intelligent Automation — backed by 18+ years of global experience architecting
-                how enterprises redefine decision intelligence and achieve large-scale, sustainable growth.
+                Engineering leader with 18+ years building the platforms that govern how large
+                organisations manage, move, and protect data across clouds, jurisdictions, and
+                regulatory boundaries. Specialist in multi-cloud concentration risk architecture —
+                AWS, Azure, and GCP — DORA-compliant resilience design, and the engineering
+                foundations that turn regulatory obligation into operational capability and
+                demonstrable supervisory evidence.
               </p>
               <div className="hero-contact">
                 <a href="mailto:sravankvadaga@gmail.com">sravankvadaga@gmail.com</a>
@@ -128,6 +131,10 @@ export default function Home() {
               <span className="metric-num">30</span>
               <span className="metric-label">Cross-Regional<br />Team US · UK · India</span>
             </div>
+            <div className="hero-metric">
+              <span className="metric-num">3</span>
+              <span className="metric-label">Cloud Platforms<br />AWS · Azure · GCP</span>
+            </div>
           </div>
         </div>
       </section>
@@ -135,8 +142,8 @@ export default function Home() {
       {/* ── Philosophy ───────────────────────────────────── */}
       <div className="philosophy">
         <p className="philosophy-quote">
-          "Analytics with intent and technology with purpose — transforming data
-          into decisions, insights into innovation, strategy into enduring business value."
+          "The architecture is the evidence. Not the claim. Build the system
+          that governs the system — and the regulator's question answers itself."
         </p>
         <p className="philosophy-attr">— Sravan Vadaga</p>
       </div>
@@ -265,6 +272,14 @@ export default function Home() {
                     { type: "repo", href: "https://github.com/techbitsvsk/catalog_sync", text: "catalog_sync" },
                   ],
                 },
+                {
+                  n: "08",
+                  title: "Multi-cloud resiliency and concentration risk",
+                  body: "Enterprise organisations face a regulatory imperative — DORA, PRA SS2/21, BCBS 239 — to demonstrate that critical workloads are not fatally dependent on a single cloud provider. The architecture that answers this is not three clouds with data in each. It is a Resilience Category framework (RTO/RPO per workload), a governed replication tier (Gold/Silver/Bronze), a neutral private network spine — Equinix with Direct Connect and ExpressRoute for AWS↔Azure, the native hyperscaler interconnect for AWS↔GCP — and a failover state machine that produces a supervisory audit artefact every time it runs. The Equinix path is a higher upfront investment than a hyperscaler-managed cross-cloud product. It removes the dependency on either hyperscaler's fabric, which is precisely what the regulatory evidence requires.",
+                  links: [
+                    { type: "writing", to: "/writing/voronoi-iii", text: "When One Cloud Is Not Enough" },
+                  ],
+                },
               ].map(({ n, title, body, links }) => (
                 <div key={n} style={{ display: "flex", gap: "1.1rem", marginBottom: "1.4rem", paddingBottom: "1.4rem", borderBottom: "1px solid var(--border, #e5e5e5)", alignItems: "flex-start" }}>
                   <span style={{ fontFamily: "var(--font-mono, monospace)", fontSize: "0.62rem", color: "var(--primary)", fontWeight: 700, letterSpacing: "0.1em", minWidth: 26, paddingTop: 3, flexShrink: 0 }}>{n}</span>
@@ -290,17 +305,21 @@ export default function Home() {
               <div className="meta-block">
                 <p className="meta-label">Engineering Philosophy</p>
                 <p className="meta-value">Architect. Not Operator.</p>
-                <p className="meta-sub">Eliminate failure classes architecturally · Governance as structure, not process · Platform over product</p>
+                <p className="meta-sub">Eliminate failure classes architecturally · Governance as structure, not process · The architecture is the regulatory evidence · Platform over product</p>
               </div>
               <div className="meta-block">
                 <p className="meta-label">Signature Patterns</p>
                 <div style={{ display: 'flex', flexWrap: 'wrap', gap: '6px', marginTop: '8px' }}>
+                  <span className="pill pill-blue">DORA Concentration Risk</span>
+                  <span className="pill pill-blue">Cross-Cloud Resiliency</span>
                   <span className="pill pill-blue">Project to Product Approach</span>
                   <span className="pill pill-blue">Zero-Trust Provisioning</span>
-                  <span className="pill pill-sage">Build Once Run Any where</span>
+                  <span className="pill pill-sage">Build Once Run Anywhere</span>
                   <span className="pill pill-sage">Multi-Cloud Portability</span>
+                  <span className="pill pill-sage">Regulatory Exit Strategy</span>
                   <span className="pill pill-grey">Federated Governance</span>
                   <span className="pill pill-grey">ADR Standardisation</span>
+                  <span className="pill pill-grey">ResCat Framework</span>
                 </div>
               </div>
             </div>
