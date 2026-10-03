@@ -1,0 +1,247 @@
+/* ============================================================
+   TechBitsVSK — design tokens
+   Palette: obsidian · warm parchment · copper · sage
+   Single source of truth. The legacy :root aliases below feed
+   the older styles.css and the inline styles in the essay
+   pages; both are retired incrementally.
+   ============================================================ */
+
+/* Layer order, declared before anything else so it wins.
+   The legacy stylesheet sits between components and utilities:
+   it still beats Tailwind's preflight, so the existing pages keep
+   their look, but a Tailwind utility now overrides it.
+
+   This matters more than it sounds. An unlayered stylesheet beats
+   every layered rule no matter the specificity, so while
+   styles.css sat outside the layers its `* { margin: 0 }` was
+   silently cancelling every margin utility on the site. */
+@layer theme, base, components, legacy, utilities;
+
+@import 'tailwindcss';
+@import '../../styles.css' layer(legacy);
+
+/* Tailwind v4 scans source files relative to this stylesheet. */
+@source '../**/*.{js,jsx}';
+
+@theme {
+  /* ── Surfaces ─────────────────────────────────────────── */
+  --color-obsidian: #0a0a0a; /* page ground */
+  --color-ink: #0d0d0d; /* lifted band */
+  --color-surface: #111111; /* card */
+  --color-void: #050505; /* deepest — metrics strip */
+
+  /* ── Accents ──────────────────────────────────────────── */
+  --color-copper: #c87941; /* primary accent */
+  --color-copper-mid: #d4885a;
+  --color-copper-soft: #1c1008; /* dark copper tint */
+  --color-sage: #8aab7a; /* secondary accent */
+  --color-sage-soft: #0d1409;
+
+  /* ── Text ─────────────────────────────────────────────── */
+  --color-parchment: #e8d5b0; /* headings */
+  --color-parchment-muted: #c8bfb0; /* body */
+  --color-parchment-dim: #8a7a65; /* meta */
+
+  /* ── Lines ────────────────────────────────────────────── */
+  --color-rule: #2a2a2a;
+  --color-rule-soft: #1e1e1e;
+
+  /* ── Essay diagram palette (used across the posts) ────── */
+  --color-steel: #6b8294;
+  --color-teal: #5a9eb5;
+  --color-danger: #b8847b;
+  --color-gold: #c8a050;
+
+  /* ── Type ─────────────────────────────────────────────── */
+  --font-display: 'Playfair Display', Georgia, serif;
+  --font-prose: 'Lora', Georgia, serif;
+  --font-mono: 'JetBrains Mono', ui-monospace, SFMono-Regular, monospace;
+
+  /* ── Radii ────────────────────────────────────────────── */
+  --radius-card: 10px;
+  --radius-panel: 16px;
+
+  /* ── Elevation ────────────────────────────────────────── */
+  --shadow-near: 0 1px 3px rgb(0 0 0 / 0.5), 0 1px 2px rgb(0 0 0 / 0.4);
+  --shadow-mid: 0 4px 18px rgb(0 0 0 / 0.6), 0 2px 6px rgb(0 0 0 / 0.4);
+  --shadow-far: 0 12px 40px rgb(0 0 0 / 0.7), 0 4px 12px rgb(0 0 0 / 0.5);
+
+  /* ── Layout ───────────────────────────────────────────── */
+  --container-prose: 1100px;
+}
+
+/* ── Legacy aliases ───────────────────────────────────────────
+   styles.css and the inline styles in the essay pages read
+   these. Pointing them at the tokens above means one palette,
+   not two, while the migration is in flight. */
+:root {
+  --bg: var(--color-obsidian);
+  --bg-alt: var(--color-ink);
+  --bg-card: var(--color-surface);
+  --bg-dark: var(--color-void);
+  --primary: var(--color-copper);
+  --primary-mid: var(--color-copper-mid);
+  --primary-soft: var(--color-copper-soft);
+  --accent: var(--color-sage);
+  --accent-soft: var(--color-sage-soft);
+  --copper: var(--color-copper);
+  --text: var(--color-parchment);
+  --text-muted: var(--color-parchment-muted);
+  --text-secondary: var(--color-parchment-muted);
+  --text-light: var(--color-parchment-dim);
+  --border: var(--color-rule);
+  --border-light: var(--color-rule-soft);
+  --shadow-sm: var(--shadow-near);
+  --shadow-md: var(--shadow-mid);
+  --shadow-lg: var(--shadow-far);
+  --radius: var(--radius-card);
+  --radius-lg: var(--radius-panel);
+  --max-w: var(--container-prose);
+  --font-mono: 'JetBrains Mono', ui-monospace, SFMono-Regular, monospace;
+}
+
+@layer base {
+  /* Keyboard focus is visible everywhere. There was no focus
+     style at all before this. */
+  :focus-visible {
+    outline: 2px solid var(--color-copper);
+    outline-offset: 3px;
+    border-radius: 2px;
+  }
+
+  /* Pointer users don't get the ring; keyboard users always do. */
+  :focus:not(:focus-visible) {
+    outline: none;
+  }
+
+  ::selection {
+    background: var(--color-copper);
+    color: var(--color-obsidian);
+  }
+}
+
+@layer utilities {
+  /* Tailwind ships a `.container` utility of its own, and now that
+     the legacy stylesheet sits in a lower layer, Tailwind's would
+     win and the page would lose its centred column. Redeclaring it
+     in the same layer, after the import, puts it back.
+
+     This is the only class name the two stylesheets share — checked
+     against the utility set, not assumed. */
+  .container {
+    width: 100%;
+    max-width: var(--container-prose);
+    margin-inline: auto;
+    padding-inline: 28px;
+  }
+}
+
+@layer components {
+  /* Skip link — visually hidden until focused. */
+  .skip-link {
+    position: fixed;
+    top: 0;
+    left: 50%;
+    z-index: 200;
+    translate: -50% -120%;
+    padding: 0.7rem 1.2rem;
+    font-family: var(--font-mono);
+    font-size: 0.8rem;
+    color: var(--color-obsidian);
+    background: var(--color-copper);
+    border-radius: 0 0 var(--radius-card) var(--radius-card);
+    transition: translate 0.18s ease;
+  }
+  .skip-link:focus {
+    translate: -50% 0;
+  }
+
+  /* ── Dialog enter / exit ──────────────────────────────── */
+  .dlg-overlay[data-state='open'] {
+    animation: dlg-fade 160ms ease-out;
+  }
+  .dlg-overlay[data-state='closed'] {
+    animation: dlg-fade 130ms ease-in reverse;
+  }
+  .dlg-content[data-state='open'] {
+    animation: dlg-rise 180ms cubic-bezier(0.22, 1, 0.36, 1);
+  }
+  .dlg-content[data-state='closed'] {
+    animation: dlg-rise 130ms ease-in reverse;
+  }
+
+  /* ── Mobile nav sheet ─────────────────────────────────── */
+  .sheet[data-state='open'] {
+    animation: sheet-in 220ms cubic-bezier(0.22, 1, 0.36, 1);
+  }
+  .sheet[data-state='closed'] {
+    animation: sheet-in 160ms ease-in reverse;
+  }
+
+  /* ── Loading placeholder for media ────────────────────── */
+  .media-skeleton {
+    background: linear-gradient(
+      100deg,
+      var(--color-ink) 20%,
+      #16130f 42%,
+      var(--color-ink) 64%
+    );
+    background-size: 220% 100%;
+    animation: media-shimmer 1.5s ease-in-out infinite;
+  }
+}
+
+@keyframes dlg-fade {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes dlg-rise {
+  from {
+    opacity: 0;
+    transform: translate(-50%, calc(-50% + 10px)) scale(0.98);
+  }
+  to {
+    opacity: 1;
+    transform: translate(-50%, -50%) scale(1);
+  }
+}
+
+@keyframes sheet-in {
+  from {
+    transform: translateX(100%);
+  }
+  to {
+    transform: translateX(0);
+  }
+}
+
+@keyframes media-shimmer {
+  from {
+    background-position: 160% 0;
+  }
+  to {
+    background-position: -60% 0;
+  }
+}
+
+/* ── Reduced motion ───────────────────────────────────────────
+   Respected globally. The fade-up entrance animations in
+   styles.css had no guard, and the bio page animates on scroll. */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+  html {
+    scroll-behavior: auto !important;
+  }
+}

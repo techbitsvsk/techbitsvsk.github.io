@@ -1,55 +1,6 @@
 import { Link } from 'react-router-dom'
+import { essays } from '@/content/essays'
 
-const essays = [
-  {
-    path: '/writing/voronoi-iii',
-    cat: 'Platform Architecture · Multi-Cloud',
-    title: 'When One Cloud Is Not Enough',
-    subtitle: 'Honest architecture for moving data between AWS, GCP, and Microsoft Fabric',
-    excerpt:
-      'Multi-region answers most resilience questions. Five cases demand more: control plane failures, DORA concentration risk, platform strength mismatch, inherited estate, and jurisdictional sovereignty. Part III covers when multi-cloud earns its place — and how to do it privately, governed, and with complete provenance.',
-  },
-  {
-    path: '/writing/voronoi-ii',
-    cat: 'Platform Architecture · Multi-Cloud',
-    title: 'The Physical and Catalog Planes',
-    subtitle: 'Apache Iceberg, federated catalogs, and enterprise cloud economics',
-    excerpt:
-      'Where is the truth, and can every engine find it? Part II of the Voronoi series covers Apache Iceberg as the open table format, the Polaris REST Catalog as the vendor-neutral discovery layer, workload placement across AWS, Azure, and GCP, and how open formats become genuine negotiating leverage in cloud renewals.',
-  },
-  {
-    path: '/writing/voronoi',
-    cat: 'Platform Architecture · Conceptual',
-    title: 'The Voronoi Platform Architecture',
-    subtitle: 'Equilibrium for Enterprise Data',
-    excerpt:
-      'The geometry of enterprise data platforms is not accidental — it is governed by competing forces. Six forces: sovereignty, intelligence, marketplace, observability, governance, and security. When balanced, the platform is stable. When one dominates, it deforms.',
-  },
-  {
-    path: '/writing/architects',
-    cat: 'Comparative Architecture · Narrative',
-    title: 'The Architects of Insight',
-    subtitle: 'A Tale of Data Kingdoms',
-    excerpt:
-      "A metaphorical exploration comparing Microsoft Fabric\u2019s unified approach with Databricks\u2019 open lakehouse. Two master architects, two philosophies, and kingdoms that must choose which vision fits their character.",
-  },
-  {
-    path: '/writing/fabric',
-    cat: 'Platform Engineering · Practical',
-    title: 'Building a Full Microsoft Fabric Platform',
-    subtitle: 'Governance, provisioning, and observability at enterprise scale',
-    excerpt:
-      'Many organisations treat Fabric as a UI layer. The result is workspaces without policy, data products that are hard to discover, and compliance that satisfies no one. Here is how to do it right — before the first workspace is created.',
-  },
-  {
-    path: '/writing/lineage',
-    cat: 'Data Platform · Knowledge Graph',
-    title: 'The Lineage-First Data Platform',
-    subtitle: 'Column provenance, semantic search, and graph traversal at enterprise scale',
-    excerpt:
-      'Hundreds of data products. Dozens of Lines of Business. One audit question that takes three weeks to answer. Here is the architecture — OpenLineage, Neo4j, and Text2Cypher — that makes it take three seconds, and why treating lineage as a graph problem changes everything for business users, auditors, and platform engineers.',
-  },
-]
 
 export default function Writing() {
   return (
