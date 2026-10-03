@@ -1,0 +1,315 @@
+/* ============================================================
+   Animation primitives for the built-in SVG diagrams.
+
+   Every animated element carries a class starting `anim-`, so
+   the Media wrapper can freeze a whole diagram with a single
+   `.motion-paused` class when the figure scrolls away or the
+   visitor prefers reduced motion.
+
+   Each diagram runs on one shared cycle length so its parts
+   stay in step; individual elements offset themselves with
+   `--d` (delay) rather than owning a separate timeline.
+   ============================================================ */
+
+/* Frozen state.
+
+   Pausing mid-animation would freeze a diagram in a half-drawn
+   frame — and anyone who prefers reduced motion would see the
+   animation's *first* frame, which for the "after" elements is
+   blank. So instead of pausing the timeline, the diagram snaps
+   to a deliberately composed resolved state: edges drawn,
+   replacements present, legacy dimmed, transient packets gone.
+
+   Elements opt out with data-static. */
+.motion-paused [class*='anim-'] {
+  animation: none !important;
+  transform: none !important;
+  stroke-dashoffset: 0 !important;
+  opacity: 1;
+}
+.motion-paused [data-static='dim'] {
+  opacity: 0.12;
+}
+.motion-paused [data-static='hide'] {
+  opacity: 0;
+}
+
+/* Stagger hook: every primitive reads --d. */
+[class*='anim-'] {
+  animation-delay: var(--d, 0s);
+}
+
+/* ── Fades ─────────────────────────────────────────────────── */
+
+/* Legacy component being strangled: present, then dimmed out. */
+@keyframes mo-erode {
+  0%,
+  10% {
+    opacity: 1;
+  }
+  26%,
+  92% {
+    opacity: 0.1;
+  }
+  100% {
+    opacity: 1;
+  }
+}
+.anim-erode {
+  animation: mo-erode 8s linear infinite both;
+}
+
+/* Replacement arriving.
+
+   It rests at a low opacity rather than zero: a visitor meets the
+   diagram at whatever point the cycle has reached, and a figure
+   whose right-hand half is briefly empty reads as broken. */
+@keyframes mo-emerge {
+  0%,
+  12% {
+    opacity: 0.22;
+  }
+  28%,
+  92% {
+    opacity: 1;
+  }
+  100% {
+    opacity: 0.22;
+  }
+}
+.anim-emerge {
+  animation: mo-emerge 8s ease-out infinite both;
+}
+
+/* Steady attention pulse. */
+@keyframes mo-pulse {
+  0%,
+  100% {
+    opacity: 0.25;
+  }
+  50% {
+    opacity: 1;
+  }
+}
+.anim-pulse {
+  animation: mo-pulse 2.6s ease-in-out infinite both;
+}
+
+/* Brief highlight inside a longer sequence. Rests visible enough
+   that the connection it draws still reads when unlit. */
+@keyframes mo-flash {
+  0%,
+  14% {
+    opacity: 0.3;
+  }
+  24%,
+  40% {
+    opacity: 1;
+  }
+  55%,
+  100% {
+    opacity: 0.3;
+  }
+}
+.anim-flash {
+  animation: mo-flash 8s ease-in-out infinite both;
+}
+
+/* ── Movement ──────────────────────────────────────────────── */
+
+/* Packet travelling left to right across --dist pixels. */
+@keyframes mo-travel {
+  0% {
+    opacity: 0;
+    transform: translateX(0);
+  }
+  8% {
+    opacity: 1;
+  }
+  88% {
+    opacity: 1;
+  }
+  100% {
+    opacity: 0;
+    transform: translateX(var(--dist, 100px));
+  }
+}
+.anim-travel {
+  animation: mo-travel 3.2s linear infinite both;
+}
+
+/* Packet travelling right to left. */
+@keyframes mo-travel-back {
+  0% {
+    opacity: 0;
+    transform: translateX(0);
+  }
+  8% {
+    opacity: 1;
+  }
+  88% {
+    opacity: 1;
+  }
+  100% {
+    opacity: 0;
+    transform: translateX(calc(var(--dist, 100px) * -1));
+  }
+}
+.anim-travel-back {
+  animation: mo-travel-back 3.2s linear infinite both;
+}
+
+/* Rise into place. Rests visible, for the same reason as mo-emerge:
+   an element that is invisible for the first beat of the cycle
+   reads as a gap in the diagram, not as an entrance. */
+@keyframes mo-rise {
+  0%,
+  12% {
+    opacity: 0.25;
+    transform: translateY(6px);
+  }
+  30%,
+  92% {
+    opacity: 1;
+    transform: translateY(0);
+  }
+  100% {
+    opacity: 0.25;
+    transform: translateY(6px);
+  }
+}
+.anim-rise {
+  animation: mo-rise 8s cubic-bezier(0.22, 1, 0.36, 1) infinite both;
+}
+
+/* ── Line drawing ──────────────────────────────────────────── */
+
+/* Edge drawing itself in. Pair with stroke-dasharray on the element. */
+@keyframes mo-draw {
+  0%,
+  10% {
+    stroke-dashoffset: var(--len, 120);
+    opacity: 0.2;
+  }
+  34%,
+  90% {
+    stroke-dashoffset: 0;
+    opacity: 1;
+  }
+  100% {
+    stroke-dashoffset: var(--len, 120);
+    opacity: 0.2;
+  }
+}
+.anim-draw {
+  animation: mo-draw 8s ease-in-out infinite both;
+}
+
+/* Continuous flow along a dashed path. */
+@keyframes mo-flow {
+  from {
+    stroke-dashoffset: 24;
+  }
+  to {
+    stroke-dashoffset: 0;
+  }
+}
+.anim-flow {
+  stroke-dasharray: 4 8;
+  animation: mo-flow 1.1s linear infinite both;
+}
+
+/* ── Cross-fade pair (before / after values) ───────────────── */
+
+@keyframes mo-swap-out {
+  0%,
+  34% {
+    opacity: 1;
+  }
+  46%,
+  88% {
+    opacity: 0;
+  }
+  100% {
+    opacity: 1;
+  }
+}
+.anim-swap-out {
+  animation: mo-swap-out 8s ease-in-out infinite both;
+}
+
+@keyframes mo-swap-in {
+  0%,
+  34% {
+    opacity: 0;
+  }
+  46%,
+  88% {
+    opacity: 1;
+  }
+  100% {
+    opacity: 0;
+  }
+}
+.anim-swap-in {
+  animation: mo-swap-in 8s ease-in-out infinite both;
+}
+
+/* ── Failover-specific phases ──────────────────────────────── */
+
+/* Primary: healthy, then degraded. */
+@keyframes mo-degrade {
+  0%,
+  26% {
+    opacity: 1;
+  }
+  38%,
+  86% {
+    opacity: 0;
+  }
+  100% {
+    opacity: 1;
+  }
+}
+.anim-degrade {
+  animation: mo-degrade 9s ease-in-out infinite both;
+}
+
+/* Secondary: warm, then carrying the load. */
+@keyframes mo-promote {
+  0%,
+  30% {
+    opacity: 0;
+  }
+  44%,
+  86% {
+    opacity: 1;
+  }
+  100% {
+    opacity: 0;
+  }
+}
+.anim-promote {
+  animation: mo-promote 9s ease-in-out infinite both;
+}
+
+/* The audit artefact, emitted last. */
+@keyframes mo-artefact {
+  0%,
+  56% {
+    opacity: 0;
+    transform: translateY(5px);
+  }
+  70%,
+  88% {
+    opacity: 1;
+    transform: translateY(0);
+  }
+  100% {
+    opacity: 0;
+    transform: translateY(5px);
+  }
+}
+.anim-artefact {
+  animation: mo-artefact 9s cubic-bezier(0.22, 1, 0.36, 1) infinite both;
+}

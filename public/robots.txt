@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://techbitsvsk.github.io/sitemap.xml

@@ -1,4 +1,4 @@
-import { useState, useEffect, Fragment } from "react";
+import { useState, Fragment } from "react";
 
 // ── palette ───────────────────────────────────────────────────────────────────
 const ACCENT  = "#6b8294";   // steel-blue: infrastructure, network, neutrality
@@ -546,7 +546,6 @@ function FailoverStateMachine({ steps }) {
 
 // ── main component ────────────────────────────────────────────────────────────
 export default function VoronoiPost3() {
-  useEffect(() => { document.title = "When One Cloud Is Not Enough — Voronoi Part III"; }, []);
 
   return (
     <div style={{ background: "#0a0a0a", color: "#c8bfb0", minHeight: "100vh", fontFamily: "'Lora', Georgia, serif" }}>
@@ -573,12 +572,17 @@ export default function VoronoiPost3() {
 
       {/* ── Hero ─────────────────────────────────────────────────────────── */}
       <div className="hero-section" style={{ position: "relative", padding: "5rem 2rem 4rem", borderBottom: "1px solid #1e1e1e", overflow: "hidden" }}>
-        <img
-          src="/assets/voronoi_part3_linkedin.png"
-          alt=""
-          aria-hidden="true"
-          style={{ position: "absolute", top: 0, left: 0, width: "100%", height: "100%", objectFit: "cover", objectPosition: "center", opacity: 0.18, pointerEvents: "none", userSelect: "none" }}
-        />
+        <picture>
+          <source type="image/webp" srcSet="/assets/voronoi_part3_linkedin.webp" />
+          <img
+            src="/assets/voronoi_part3_linkedin.jpg"
+            alt=""
+            aria-hidden="true"
+            loading="lazy"
+            decoding="async"
+            style={{ position: "absolute", top: 0, left: 0, width: "100%", height: "100%", objectFit: "cover", objectPosition: "center", opacity: 0.18, pointerEvents: "none", userSelect: "none" }}
+          />
+        </picture>
         <div style={{ maxWidth: 720, margin: "0 auto", position: "relative" }}>
           <div style={{ display: "inline-flex", alignItems: "center", gap: 10, marginBottom: "1.5rem" }}>
             <div style={{ width: 28, height: 1, background: ACCENT }} />

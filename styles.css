@@ -4,32 +4,9 @@
    Dark editorial theme — matches blog post style throughout
    ============================================================ */
 
-@import url('https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;0,900;1,400;1,700&family=Lora:ital,wght@0,400;0,500;1,400&family=JetBrains+Mono:wght@400;500&display=swap');
-
-/* ── Variables — dark editorial palette ────────────────────── */
-:root {
-  --bg:           #0a0a0a;   /* obsidian */
-  --bg-alt:       #0d0d0d;   /* slightly lifted */
-  --bg-card:      #111111;   /* card surface */
-  --bg-dark:      #050505;   /* deepest — metrics strip */
-  --primary:      #c87941;   /* copper — main accent */
-  --primary-mid:  #d4885a;
-  --primary-soft: #1c1008;   /* dark copper tint */
-  --accent:       #8aab7a;   /* sage green */
-  --accent-soft:  #0d1409;
-  --copper:       #c87941;   /* copper for labels */
-  --text:         #e8d5b0;   /* warm parchment */
-  --text-muted:   #c8bfb0;
-  --text-light:   #8a7a65;
-  --border:       #2a2a2a;
-  --border-light: #1e1e1e;
-  --shadow-sm:    0 1px 3px rgba(0,0,0,.5), 0 1px 2px rgba(0,0,0,.4);
-  --shadow-md:    0 4px 18px rgba(0,0,0,.6), 0 2px 6px rgba(0,0,0,.4);
-  --shadow-lg:    0 12px 40px rgba(0,0,0,.7), 0 4px 12px rgba(0,0,0,.5);
-  --radius:       10px;
-  --radius-lg:    16px;
-  --max-w:        1100px;
-}
+/* Fonts are preconnected and loaded from index.html — a CSS
+   @import here blocked rendering on the critical path.
+   Palette tokens now live in src/styles/theme.css. */
 
 /* ── Reset ─────────────────────────────────────────────────── */
 *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
@@ -90,6 +67,13 @@ p  { color: var(--text-muted); line-height: 1.8; }
 }
 .brand span { color: var(--accent); }
 .site-nav { display: flex; align-items: center; gap: 32px; }
+/* Below the md breakpoint the sheet menu takes over. This lives
+   here rather than as a Tailwind utility on the element because
+   this stylesheet is loaded after Tailwind during the migration,
+   so `.site-nav` would otherwise win on source order. */
+@media (max-width: 767px) {
+  .site-nav { display: none; }
+}
 .site-nav a {
   font-size: 0.875rem;
   font-weight: 500;
@@ -708,13 +692,21 @@ footer { background: var(--bg-dark); color: var(--text-light); padding: 48px 0; 
 /* ── Hero Metrics strip (inside home hero) ─────────────────── */
 .hero-metrics {
   display: grid;
-  grid-template-columns: repeat(5, 1fr);
+  /* Six metrics, so the track count has to divide six — at five
+     the last one was orphaned onto a row of its own. */
+  grid-template-columns: repeat(6, 1fr);
   border-top: 1px solid var(--border-light);
   margin-top: 0;
   padding-top: 0;
   background: var(--bg-dark);
   margin: 48px -28px -1px;
   padding: 0 28px;
+}
+@media (max-width: 1040px) {
+  .hero-metrics { grid-template-columns: repeat(3, 1fr); }
+}
+@media (max-width: 560px) {
+  .hero-metrics { grid-template-columns: repeat(2, 1fr); }
 }
 .hero-metric {
   padding: 28px 16px;
